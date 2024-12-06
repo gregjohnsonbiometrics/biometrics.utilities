@@ -102,13 +102,13 @@ Common values for `dominant_cohort_size` are 100 and 40 trees.
 
 where:
 
-- `expansion` = vexpansion factors (vector)
+- `expansion` = expansion factors (vector)
 - `dom_height` = dominant height (scalar) 
 - `imperial_units` = TRUE = imperial (default), FALSE = metric
 
 `relative_spacing computes Wilson's Relative Spacing[^7]. Relative spacing is defined as the average tree spacing relative to dominant height.
 
-`relative+_spacing` returns a scalar with the spacing as a fraction of dominant height.
+`relative_spacing` returns a scalar with the spacing as a fraction of dominant height.
 
 ### Crown Competition Factor (`ccf`)
 
@@ -170,7 +170,8 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 The source and binary packages can be found in the repository:
 
-Windows Binary: [biometrics.utilities.zip](./test/test.cpp)
+- Windows Binary: [biometrics.utilities_1.0.zip](./biometrics.utilities_1.0.zip)
+- Source: Windows Binary: [biometrics.utilities_1.0.tar.gz](./biometrics.utilities_1.0.tar.gz)
 
 [^1]: R Core Team (2024). _R: A Language and Environment for Statistical Computing_. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
 
