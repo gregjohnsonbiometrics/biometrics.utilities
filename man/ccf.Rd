@@ -22,7 +22,7 @@ Compute Crown Competition Factor
 Krajicek, J.E., K.A. Brinkman, and F.S. Gingrich.  1961.  Crown competition: a measure of density.  For. Sci. 7:36 – 42.  
 
 Crown competition factor is the ratio of the open-grown crown area of all trees as a percentage of an acre:
-\eqn{CCF = 100 \sum{CA}/43560}, 
+\eqn{CCF = 100 \sum{CA expansion} /43560}, 
 where CA is the open-grown crown area of a given tree.
 
 The function allows for computing the equivalent index in metric units.

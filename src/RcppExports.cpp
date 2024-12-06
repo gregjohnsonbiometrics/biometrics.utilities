@@ -11,27 +11,27 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // bal
-Rcpp::NumericVector bal(Rcpp::NumericVector dbh, Rcpp::NumericVector expansion, bool imperial_units);
+std::vector<double> bal(const std::vector<double> dbh, const std::vector<double> expansion, bool imperial_units);
 RcppExport SEXP _biometrics_utilities_bal(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dbh(dbhSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
     Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(bal(dbh, expansion, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
 // ccfl
-Rcpp::NumericVector ccfl(Rcpp::NumericVector dbh, Rcpp::NumericVector mcw, Rcpp::NumericVector expansion, bool imperial_units);
+std::vector<double> ccfl(const std::vector<double> dbh, const std::vector<double> mcw, const std::vector<double> expansion, bool imperial_units);
 RcppExport SEXP _biometrics_utilities_ccfl(SEXP dbhSEXP, SEXP mcwSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type dbh(dbhSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type mcw(mcwSEXP);
-    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type mcw(mcwSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
     Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(ccfl(dbh, mcw, expansion, imperial_units));
     return rcpp_result_gen;

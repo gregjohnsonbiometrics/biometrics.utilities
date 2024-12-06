@@ -23,14 +23,13 @@
 //' @export
 // [[Rcpp::export]]
 
-Rcpp::NumericVector bal( Rcpp::NumericVector dbh, Rcpp::NumericVector expansion, bool imperial_units = true )
+std::vector<double> bal( const std::vector<double> dbh, 
+                         const std::vector<double> expansion, 
+                         bool imperial_units = true )
 {
-    std::vector<double> vdbh(dbh.begin(), dbh.end());
-    std::vector<double> vexpansion(expansion.begin(), expansion.end());
+    auto bal_vector = compute_bal( dbh, expansion, imperial_units );
 
-    auto bal_vector = compute_bal( vdbh, vexpansion, imperial_units );
-
-    return Rcpp::wrap(bal_vector);
+    return bal_vector;
 }
 
 
@@ -62,15 +61,14 @@ Rcpp::NumericVector bal( Rcpp::NumericVector dbh, Rcpp::NumericVector expansion,
 //' @export
 // [[Rcpp::export]]
 
-Rcpp::NumericVector ccfl( Rcpp::NumericVector dbh, Rcpp::NumericVector mcw, Rcpp::NumericVector expansion, bool imperial_units )
+std::vector<double> ccfl( const std::vector<double> dbh, 
+                          const std::vector<double> mcw, 
+                          const std::vector<double> expansion, 
+                          bool imperial_units )
 {
-    std::vector<double> vdbh(dbh.begin(), dbh.end());
-    std::vector<double> vmcw(mcw.begin(), mcw.end());
-    std::vector<double> vexpansion(expansion.begin(), expansion.end());
+    auto ccfl_vector = compute_ccfl( dbh, mcw, expansion, imperial_units );
 
-    auto ccfl_vector = compute_ccfl( vdbh, vmcw, vexpansion, imperial_units );
-
-    return Rcpp::wrap(ccfl_vector);
+    return ccfl_vector;
 }
 
 //' @title cch() compute closure at tree tip without using interpolation.
@@ -252,7 +250,7 @@ double reineke_sdi( const std::vector<double> dbh,
 //' Krajicek, J.E., K.A. Brinkman, and F.S. Gingrich.  1961.  Crown competition: a measure of density.  For. Sci. 7:36 – 42.  
 //' 
 //' Crown competition factor is the ratio of the open-grown crown area of all trees as a percentage of an acre:
-//' \eqn{CCF = 100 \sum{CA}/43560}, 
+//' \eqn{CCF = 100 \sum{CA expansion} /43560}, 
 //' where CA is the open-grown crown area of a given tree.
 //'
 //' The function allows for computing the equivalent index in metric units.

@@ -9,9 +9,7 @@ concepts.
 
 ## Metrics
 
-### Tree-level
-
-#### Crown closure at tree tip (`cch`)
+### Crown closure at tree tip (`cch`)
 
 `cch( dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units )`
 
@@ -36,7 +34,7 @@ $cwa =  rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}$
 
 where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` vector.
 
-#### Basal Area in Larger Trees (`bal`)
+### Basal Area in Larger Trees (`bal`)
 
 `bal( dbh, expansion, imperial_units)`
 
@@ -52,7 +50,7 @@ The `bal` function returns a vector in the original tree order of the input vari
 
 `bal` is typically used to quantify one-sided competition in diameter growth equations.
 
-#### Crown Competition Factor in Larger Trees (`ccfl`)
+### Crown Competition Factor in Larger Trees (`ccfl`)
 
 `ccfl( dbh, expansion, imperial_units)`
 
@@ -76,7 +74,7 @@ The `ccfl` function returns a vector in the original tree order of the input var
 `ccfl` is often used to quantify one-sided competition in growth equations.
 
 
-#### Dominant Height
+### Dominant Height
 
 `dominant_height( height, dbh, expansion, dominant_cohort_size, method )`
 
@@ -98,7 +96,21 @@ Common values for `dominant_cohort_size` are 100 and 40 trees.
 
 `dominant_cohort_size` returns a scalar with the specified dominant height for the stand or plot.
 
-#### Crown Competition Factor (`ccf`)
+### Wilson's Relative Spacing (`relative_spacing`)
+
+`relative_spacing( expansion, dom_height, imperial_units )`
+
+where:
+
+- `expansion` = vexpansion factors (vector)
+- `dom_height` = dominant height (scalar) 
+- `imperial_units` = TRUE = imperial (default), FALSE = metric
+
+`relative_spacing computes Wilson's Relative Spacing[^7]. Relative spacing is defined as the average tree spacing relative to dominant height.
+
+`relative+_spacing` returns a scalar with the spacing as a fraction of dominant height.
+
+### Crown Competition Factor (`ccf`)
 
 `ccf( crown_width, expansion, imperial_units )`
 
@@ -116,7 +128,7 @@ where $ca_i$ is the open-grown crown area for tree $i$.
 
 `ccf` returns a scalar with the crown competition factor for the stand or plot.
 
-#### Curtis' Relative Density (`curtis_rd`)
+### Curtis' Relative Density (`curtis_rd`)
 
 `curtis_rd( dbh, expansion, imperial_units )`
 
@@ -136,7 +148,7 @@ where G is basal area and Dg is quadratic mean stand diameter.
 
 `curtis_rd` returns a scalar with Curtis' Relative Density.
 
-#### Reineke's Stand Density Index (`reineke_sdi`)
+### Reineke's Stand Density Index (`reineke_sdi`)
 
 `reineke_sdi( dbh, expansion, imperial_units )`
 
@@ -154,6 +166,11 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 `reineke_sdi` returns a scalar with the Reineke's Stand Density Index.
 
+## R Packages
+
+The source and binary packages can be found in the repository:
+
+Windows Binary: [biometrics.utilities.zip](./test/test.cpp)
 
 [^1]: R Core Team (2024). _R: A Language and Environment for Statistical Computing_. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
 
@@ -166,3 +183,5 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 [^5]: Curtis, R.O. 1982. A Simple Index of Stand Density for Douglas-fir. Forest Sci., Vol. 28, No. 1, pp. 92-94.
 
 [^6]: Reineke, L.H. 1933. Perfecting a stand density index for even-aged forests. Jour. Agric. Res.  46: 627 – 638. 
+
+[^7]: Wilson, F.G. 1946. Numerical expression of stocking in terms of height. Journal of Forestry, 44:758–761.  
