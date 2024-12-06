@@ -34,6 +34,8 @@ $cwa =  rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}$
 
 where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` vector.
 
+-------------
+
 ### Basal Area in Larger Trees (`bal`)
 
 `bal( dbh, expansion, imperial_units)`
@@ -49,6 +51,8 @@ The `bal` function sorts in-place the dbh and expansion vectors in decreasing or
 The `bal` function returns a vector in the original tree order of the input variables.
 
 `bal` is typically used to quantify one-sided competition in diameter growth equations.
+
+-------------
 
 ### Crown Competition Factor in Larger Trees (`ccfl`)
 
@@ -73,6 +77,7 @@ The `ccfl` function returns a vector in the original tree order of the input var
 
 `ccfl` is often used to quantify one-sided competition in growth equations.
 
+-------------
 
 ### Dominant Height
 
@@ -96,6 +101,8 @@ Common values for `dominant_cohort_size` are 100 and 40 trees.
 
 `dominant_cohort_size` returns a scalar with the specified dominant height for the stand or plot.
 
+-------------
+
 ### Wilson's Relative Spacing (`relative_spacing`)
 
 `relative_spacing( expansion, dom_height, imperial_units )`
@@ -109,6 +116,8 @@ where:
 `relative_spacing computes Wilson's Relative Spacing[^7]. Relative spacing is defined as the average tree spacing relative to dominant height.
 
 `relative_spacing` returns a scalar with the spacing as a fraction of dominant height.
+
+-------------
 
 ### Crown Competition Factor (`ccf`)
 
@@ -127,6 +136,8 @@ $ccf = 100 \frac{\sum{(ca_i expansion)}}{43560}$
 where $ca_i$ is the open-grown crown area for tree $i$.
 
 `ccf` returns a scalar with the crown competition factor for the stand or plot.
+
+-------------
 
 ### Curtis' Relative Density (`curtis_rd`)
 
@@ -147,6 +158,8 @@ $rd = G/(Dg^{0.5})$
 where G is basal area and Dg is quadratic mean stand diameter.
 
 `curtis_rd` returns a scalar with Curtis' Relative Density.
+
+-------------
 
 ### Reineke's Stand Density Index (`reineke_sdi`)
 
