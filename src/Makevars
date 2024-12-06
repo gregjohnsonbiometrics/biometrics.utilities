@@ -1,0 +1,7 @@
+CC = gcc
+CXX_STD = CXX23
+
+CPPSRC = $(wildcard ./*.cpp)
+
+SOURCES =  $(CPPSRC)
+OBJECTS =  $(CPPSRC:.cpp=.o)

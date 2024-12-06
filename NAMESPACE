@@ -1,0 +1,3 @@
+useDynLib(biometrics.utilities, .registration=TRUE)
+importFrom(Rcpp, evalCpp)
+exportPattern("^[[:alpha:]]+")
