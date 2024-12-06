@@ -61,13 +61,13 @@ The `bal` function returns a vector in the original tree order of the input vari
 where:
 
 - `dbh` = diameter at breast height (vector)
-= `mcw` = maximum crown width of open grown tree (vector)
+- `mcw` = maximum crown width of open grown tree (vector)
 - `expansion` = tree factor to expand to per area basis (vector)
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
 Sorts the `dbh`, `mcw`, and `expansion` vectors in-place in decreasing order of `dbh` and computes cumulative maximum crown area in larger trees. Ties in `dbh` are handled appropriately (each tree has the same `ccfl`).
 
-`mcw` is an estimate of the maximum crown width (open grown) for a tree of diameter `dbh`. Hann (1999[^3] used the following equation form:
+`mcw` is an estimate of the maximum crown width (open grown) for a tree of diameter `dbh`. Hann (1999)[^3] used the following equation form:
 
 $mcw = \beta_0 + \beta_1 dbh + \beta_2 dbh^2$
 
@@ -85,11 +85,11 @@ The `ccfl` function returns a vector in the original tree order of the input var
 
 where:
 
-`height` = total height (vector)
-`dbh` = diameter at breast height (vector)
-`expansion` = expansion factors (vector) 
-`dominant_cohort_size` = number of trees in the dominant height cohort
-`method` = 0 (default), 1, or 2 (see below for definitions)
+- `height` = total height (vector)
+- `dbh` = diameter at breast height (vector)
+- `expansion` = expansion factors (vector) 
+- `dominant_cohort_size` = number of trees in the dominant height cohort
+- `method` = 0 (default), 1, or 2 (see below for definitions)
 
 `dominant_height` computes the expansion factor weighted average height of trees in the defined dominant tree cohort. Each method defines the cohort differently:
 
@@ -111,9 +111,9 @@ where:
 
 - `expansion` = expansion factors (vector)
 - `dom_height` = dominant height (scalar) 
-- `imperial_units` = TRUE = imperial (default), FALSE = metric
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
-`relative_spacing computes Wilson's Relative Spacing[^7]. Relative spacing is defined as the average tree spacing relative to dominant height.
+`relative_spacing` computes Wilson's Relative Spacing[^7]. It is defined as the average tree spacing relative to dominant height.
 
 `relative_spacing` returns a scalar with the spacing as a fraction of dominant height.
 
@@ -127,7 +127,7 @@ where:
 
 - `crown_width` = open-grown crown widths (vector) 
 - `expansion` = vexpansion factors (vector)
-- `imperial_units` = TRUE = imperial (default), FALSE = metric
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
 `ccf` computes the Crown Competition Factor[^4] for the stand or plot. `ccf` is the ratio of the open-grown crown area of all trees as a percentage of an acre (or hectare depending on `imperial_units`). In the imperial units case:
 
