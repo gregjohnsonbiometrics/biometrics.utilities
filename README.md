@@ -7,7 +7,20 @@ tree and stand conditions. Several of them are somewhat complex and computationa
 translates these metrics into C++ for computational efficiency and hopefully sound implementations of the 
 concepts.
 
+If you have suggestions for additional metrics, let me know ([Greg Johnson](mailto:greg@nosnhoj.org)).
+
 ## Metrics
+
+* Crown closure at tree tip ([cch](#crown-closure-at-tree-tip-cch))
+* Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
+* Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
+* Dominant Height ([dominant_height](#dominant-height))
+* Wilson's Relative Spacing ([relative_spacing](#wilsons-relative-spacing-relative_spacing))
+* Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
+* Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
+* Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
+
+-------------
 
 ### Crown closure at tree tip (`cch`)
 
@@ -33,6 +46,8 @@ The `cwa` equation is used to compute the crown width at a point above the large
 $cwa =  rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}$
 
 where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` vector.
+
+`cch` returns a vector of crown closures for each tree.
 
 -------------
 
