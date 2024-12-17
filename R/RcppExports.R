@@ -115,6 +115,23 @@ dominant_height <- function(height, dbh, expansion, dominant_cohort_size, method
     .Call(`_biometrics_utilities_dominant_height`, height, dbh, expansion, dominant_cohort_size, method)
 }
 
+#' @title qmd() compute the quadratic mean diameter of a stand or plot.
+#' @name qmd
+#'
+#' @param dbh                  : double | vector of diameter at breast height
+#' @param expansion            : double | vector of expansion factors 
+#'
+#' @description
+#' Compute the quadratic mean diameter (basal area weighted mean diameter) of a stand or plot.
+#'
+#' @return
+#' Returns the qmd.
+#'
+#' @export
+qmd <- function(dbh, expansion) {
+    .Call(`_biometrics_utilities_qmd`, dbh, expansion)
+}
+
 #' @title relative_spacing() compute Wilson's Relative Spacing
 #' @name relative_spacing
 #'

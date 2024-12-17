@@ -121,6 +121,29 @@ double compute_dominant_height( const std::vector<double> height,
     return dominant_height;
 }
 
+
+double compute_qmd( const std::vector<double> dbh,
+                    const std::vector<double> expansion )
+{
+    // compute quadratic mean diameter
+    double stocking = 0.0;
+    double qmd = 0.0;
+    for( size_t i = 0; i < dbh.size(); i++ )
+    {
+        stocking += expansion[i];
+        qmd += dbh[i] * dbh[i] * expansion[i];
+    }
+
+    if( stocking > 0.0 )
+    {
+        qmd = std::sqrt( qmd/stocking );
+    } else {
+        throw std::invalid_argument("stocking is 0.\n");    
+    }
+
+    return qmd;
+} 
+
 double compute_relative_spacing( const std::vector<double> expansion,
                                  const double dominant_height,
                                  bool imperial )

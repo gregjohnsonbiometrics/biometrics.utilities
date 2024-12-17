@@ -42,6 +42,9 @@ double compute_dominant_height( const std::vector<double> height,
                                 const int dominant_cohort_size,
                                 const int method );  
 
+double compute_qmd( const std::vector<double> dbh,
+                    const std::vector<double> expansion );
+
 double compute_relative_spacing( const std::vector<double> expansion,
                                  const double dominant_height,
                                  bool imperial );  

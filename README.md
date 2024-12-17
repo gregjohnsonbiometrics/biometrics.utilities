@@ -11,10 +11,11 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 ## Metrics
 
-* Crown closure at tree tip ([cch](#crown-closure-at-tree-tip-cch))
+* Crown Closure at Tree Tip ([cch](#crown-closure-at-tree-tip-cch))
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
 * Dominant Height ([dominant_height](#dominant-height))
+* Quadratic Mean Diameter ([qmd](#quadratic-mean-diameter))
 * Wilson's Relative Spacing ([relative_spacing](#wilsons-relative-spacing-relative_spacing))
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
@@ -118,6 +119,21 @@ Common values for `dominant_cohort_size` are 100 and 40 trees.
 
 -------------
 
+### Quadratic Mean Diameter
+
+`qmd( dbh, expansion )`
+
+where:
+
+- `dbh` = diameter at breast height (vector)
+- `expansion` = expansion factors (vector) 
+
+`qmd` computes the quadratic mean diameter^[8] (basal area weighted mean diameter) for the stand or plot.
+
+`qmd` returns a scalar with the quadratic mean diameter.
+
+-------------
+
 ### Wilson's Relative Spacing (`relative_spacing`)
 
 `relative_spacing( expansion, dom_height, imperial_units )`
@@ -214,3 +230,5 @@ The source and binary packages can be found in the repository:
 [^6]: Reineke, L.H. 1933. Perfecting a stand density index for even-aged forests. Jour. Agric. Res.  46: 627 – 638. 
 
 [^7]: Wilson, F.G. 1946. Numerical expression of stocking in terms of height. Journal of Forestry, 44:758–761.  
+
+[^8]: Curtis, Robert O.; Marshall, David D. 2000. Why quadratic mean diameter? Western Journal of Applied Forestry, 15 (3): 137–139.

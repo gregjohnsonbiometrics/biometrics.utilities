@@ -70,6 +70,18 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// qmd
+double qmd(const std::vector<double> dbh, const std::vector<double> expansion);
+RcppExport SEXP _biometrics_utilities_qmd(SEXP dbhSEXP, SEXP expansionSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
+    rcpp_result_gen = Rcpp::wrap(qmd(dbh, expansion));
+    return rcpp_result_gen;
+END_RCPP
+}
 // relative_spacing
 double relative_spacing(const std::vector<double> expansion, const double dominant_height, bool imperial);
 RcppExport SEXP _biometrics_utilities_relative_spacing(SEXP expansionSEXP, SEXP dominant_heightSEXP, SEXP imperialSEXP) {
@@ -128,6 +140,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_ccfl", (DL_FUNC) &_biometrics_utilities_ccfl, 4},
     {"_biometrics_utilities_cch", (DL_FUNC) &_biometrics_utilities_cch, 8},
     {"_biometrics_utilities_dominant_height", (DL_FUNC) &_biometrics_utilities_dominant_height, 5},
+    {"_biometrics_utilities_qmd", (DL_FUNC) &_biometrics_utilities_qmd, 2},
     {"_biometrics_utilities_relative_spacing", (DL_FUNC) &_biometrics_utilities_relative_spacing, 3},
     {"_biometrics_utilities_curtis_rd", (DL_FUNC) &_biometrics_utilities_curtis_rd, 3},
     {"_biometrics_utilities_reineke_sdi", (DL_FUNC) &_biometrics_utilities_reineke_sdi, 3},

@@ -19,6 +19,8 @@
 #' - Reineke, L.H. 1933. Perfecting a stand density index for even-aged forests. Jour. Agric. Res. 46: 627 – 638.
 #' 
 #' - Wilson, F.G. 1946. Numerical expression of stocking in terms of height. Journal of Forestry, 44:758–761.
+#' 
+#' - Curtis, Robert O.; Marshall, David D. 2000, Why quadratic mean diameter? Western Journal of Applied Forestry, 15 (3): 137–139.
 #'      
 #' 
 "_PACKAGE"

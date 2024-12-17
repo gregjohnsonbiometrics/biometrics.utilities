@@ -154,6 +154,27 @@ double dominant_height( const std::vector<double> height,
     return compute_dominant_height( height, dbh, expansion, dominant_cohort_size, method );
 }
 
+//' @title qmd() compute the quadratic mean diameter of a stand or plot.
+//' @name qmd
+//'
+//' @param dbh                  : double | vector of diameter at breast height
+//' @param expansion            : double | vector of expansion factors 
+//'
+//' @description
+//' Compute the quadratic mean diameter (basal area weighted mean diameter) of a stand or plot.
+//'
+//' @return
+//' Returns the qmd.
+//'
+//' @export
+// [[Rcpp::export]]
+
+double qmd( const std::vector<double> dbh,
+            const std::vector<double> expansion )
+{
+    return compute_qmd( dbh, expansion );
+}
+
 
 //' @title relative_spacing() compute Wilson's Relative Spacing
 //' @name relative_spacing
