@@ -15,7 +15,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
 * Dominant Height ([dominant_height](#dominant-height))
-* Quadratic Mean Diameter ([qmd](#quadratic-mean-diameter))
+* Quadratic Mean Diameter ([qmd](#quadratic-mean-diameter-qmd))
 * Wilson's Relative Spacing ([relative_spacing](#wilsons-relative-spacing-relative_spacing))
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
@@ -119,7 +119,7 @@ Common values for `dominant_cohort_size` are 100 and 40 trees.
 
 -------------
 
-### Quadratic Mean Diameter
+### Quadratic Mean Diameter (qmd)
 
 `qmd( dbh, expansion )`
 
