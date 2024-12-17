@@ -128,7 +128,7 @@ where:
 - `dbh` = diameter at breast height (vector)
 - `expansion` = expansion factors (vector) 
 
-`qmd` computes the quadratic mean diameter^[8] (basal area weighted mean diameter) for the stand or plot.
+`qmd` computes the quadratic mean diameter[^8] (basal area weighted mean diameter) for the stand or plot.
 
 `qmd` returns a scalar with the quadratic mean diameter.
 
