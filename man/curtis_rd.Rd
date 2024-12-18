@@ -17,9 +17,14 @@ curtis_rd(dbh, expansion, imperial_units = TRUE)
 Returns the Curtis' Relative Density.
 }
 \description{
-Compute Curtis' Relative Density \url{https://www.fs.usda.gov/pnw/olympia/silv/publications/opt/232_Curtis1982.pdf}.
+Compute Curtis' Relative Density (Curtis 1982).
 
 The expression \eqn{RD = G/(Dg^{0.5})}, where G is basal area and Dg is quadratic mean
 stand diameter, provides a simple and convenient scale of relative stand density for Douglas-fir, 
 equivalent to other generally accepted diameter-based stand density measures.
+}
+\examples{
+data(treelist)
+curtis_rd( treelist$dbh, treelist$tpa )
+
 }

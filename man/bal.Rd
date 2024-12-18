@@ -21,8 +21,7 @@ Sorts the dbh and expansion vectors in decreasing order of dbh and computes cumu
 handled appropriately (each tree has the same bal).
 }
 \examples{
-dbh <- c(3.5, 4.7, 9.9, 10.2, 1.1)
-tpa <- rep(40.0,5)
-bal( dbh, tpa, TRUE )
+data(treelist)
+bal( treelist$dbh, treelist$tpa )
 
 }

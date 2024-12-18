@@ -4,7 +4,7 @@
 \alias{ccfl}
 \title{ccfl() compute crown competition factor in larger trees.}
 \usage{
-ccfl(dbh, mcw, expansion, imperial_units)
+ccfl(dbh, mcw, expansion, imperial_units = TRUE)
 }
 \arguments{
 \item{dbh}{: double | vector of diameter at breast height}
@@ -27,9 +27,15 @@ record's crown.  It uses the maximum crown width to estimate the coverage for ea
 acre or hectare basis using the supplied expansion factor.
 }
 \examples{
-dbh <- c(3.5, 4.7, 9.9, 10.2, 1.1)
-mcw <- c(8.15, 9.91, 17.6, 18.00, 4.62)*2
-tpa <- rep(40.0,5)
-ccfl( dbh, mcw, tpa, TRUE )
+library( dplyr )
+data(treelist)
+# use Hann's (1998) maximum crown width equation for Douglas-fir, western hemlock, bigleaf maple, and red alder
+mcw.parms <- data.frame( species=c(202,263,312, 351),
+                         c0=c(4.6198,4.5652,4.0953,8.0000),
+                         c1=c(1.8426,1.4147,2.3849,1.5300),
+                         c2=c(-0.011311,0.000000,-0.011630,0.00000))
+temp <- treelist \%>\% inner_join( mcw.parms, by="species" ) \%>\%
+            mutate( mcw=c0 + c1*dbh + c2*dbh^2)
+ccfl( temp$dbh, temp$mcw, temp$tpa )
 
 }

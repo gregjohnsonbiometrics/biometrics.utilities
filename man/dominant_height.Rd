@@ -30,3 +30,11 @@ defines the cohort differently:
    \item 2 : Lorey height (height of the tree of average basal area)
 }
 }
+\examples{
+data(treelist)
+# compute the height of the 40 largest trees by dbh
+dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
+# compute the height of the 100 largest trees by height
+dominant_height( treelist$height, treelist$dbh, treelist$tpa, 100, 1 )
+
+}

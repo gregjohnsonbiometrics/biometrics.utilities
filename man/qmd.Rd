@@ -17,3 +17,9 @@ Returns the qmd.
 \description{
 Compute the quadratic mean diameter (basal area weighted mean diameter) of a stand or plot.
 }
+\examples{
+data(treelist)
+# compute the quadratic mean diameter
+qmd( treelist$dbh, treelist$tpa )
+
+}

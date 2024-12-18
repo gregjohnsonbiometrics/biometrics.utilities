@@ -17,7 +17,7 @@ reineke_sdi(dbh, expansion, imperial_units = TRUE)
 Returns the Reineke's Stand Density Index.
 }
 \description{
-Compute Reineke's Stand Density Index \url{https://research.fs.usda.gov/treesearch/60134}.
+Compute Reineke's Stand Density Index (Reineke 1933).
 
 Reineke (1933) developed a stand density index (SDI) that relates the current
 stand density to an equivalent density in a stand with a quadratic mean diameter (Dq) of 10 inches.
@@ -27,4 +27,9 @@ where SDI = Reineke’s stand-density index, N = trees per acre, Dq = quadratic 
 b = exponent of Reineke’s equation, often reported to equal –1.605.
 
 The function allows for computing the equivalent index in metric units.
+}
+\examples{
+data(treelist)
+reineke_sdi( treelist$dbh, treelist$tpa )
+
 }

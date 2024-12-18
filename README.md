@@ -144,7 +144,8 @@ where:
 - `dom_height` = dominant height (scalar) 
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
-`relative_spacing` computes Wilson's Relative Spacing[^7]. It is defined as the average tree spacing relative to dominant height.
+`relative_spacing` computes Wilson's Relative Spacing[^7]. It is defined as the average tree spacing relative to dominant height. Smaller
+values indicate more crowding or inter-tree competition.
 
 `relative_spacing` returns a scalar with the spacing as a fraction of dominant height.
 

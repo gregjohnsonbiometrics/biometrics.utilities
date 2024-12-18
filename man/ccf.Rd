@@ -17,13 +17,37 @@ ccf(crown_width, expansion, imperial_units = TRUE)
 Returns the crown competition factor.
 }
 \description{
-Compute Crown Competition Factor 
-\url{https://cmapspublic3.ihmc.us/rid=1N4TSFQX6-GWW4BN-14PZ/Crown\%20competition\%20-\%20A\%20measure\%20of\%20density.pdf}.
-Krajicek, J.E., K.A. Brinkman, and F.S. Gingrich.  1961.  Crown competition: a measure of density.  For. Sci. 7:36 – 42.  
+Compute Crown Competition Factor (Krajicek, et al. 1961). 
 
 Crown competition factor is the ratio of the open-grown crown area of all trees as a percentage of an acre:
 \eqn{CCF = 100 \sum{CA expansion} /43560}, 
 where CA is the open-grown crown area of a given tree.
 
 The function allows for computing the equivalent index in metric units.
+}
+\examples{
+data(treelist)
+library( dplyr )
+# use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
+mcw.parms <- data.frame( species=c(202,263,312,351),
+                         c0=c(4.6198,4.5652,4.0953,8.0000),
+                         c1=c(1.8426,1.4147,2.3849,1.5300),
+                         c2=c(-0.011311,0.000000,-0.011630,0.00000))
+
+# use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
+lcw.parms <- data.frame( species=c(202,263,312,351), 
+                         b0=c(0.0,         0.0, 0.0,      0.3227140 ),
+                         b1=c(0.004363240, 0.0, 0.0,      0.0       ),
+                         b2=c(0.6020020,   0.0, 1.470180, 0.0       ))
+
+temp <- treelist \%>\% 
+            inner_join( mcw.parms, by="species" ) \%>\%
+            inner_join( lcw.parms, by="species" ) \%>\%
+            mutate( crown_length = height - htlc,
+                    cr = crown_length/height,
+                    mcw = c0 + c1*dbh + c2*dbh^2,
+                    lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)) )
+
+ccf( temp$lcw, temp$tpa )
+
 }

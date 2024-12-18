@@ -17,5 +17,13 @@ relative_spacing(expansion, dominant_height, imperial = TRUE)
 Returns the relative spacing as a fraction of dominant height.
 }
 \description{
-Compute Wilson's Relative Spacing (average tree spacing relative to dominant height).
+Compute Wilson's Relative Spacing (average tree spacing relative to dominant height). The smaller
+the relative spacing, the more crowded or overstocked the stand or plot is.
+}
+\examples{
+data(treelist)
+# compute the relative spacing for HT40 dominant height
+dom.ht <- dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
+relative_spacing( treelist$tpa, dom.ht )
+
 }

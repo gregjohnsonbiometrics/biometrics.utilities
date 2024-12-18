@@ -16,9 +16,8 @@
 #' Returns numeric vector with the basal area in larger trees in the original tree order (unsorted):
 #'
 #' @examples
-#' dbh <- c(3.5, 4.7, 9.9, 10.2, 1.1)
-#' tpa <- rep(40.0,5)
-#' bal( dbh, tpa, TRUE )
+#' data(treelist)
+#' bal( treelist$dbh, treelist$tpa )
 #'
 #' @export
 bal <- function(dbh, expansion, imperial_units = TRUE) {
@@ -45,13 +44,19 @@ bal <- function(dbh, expansion, imperial_units = TRUE) {
 #' Returns numeric vector with the crown competition factor in larger trees in the original tree order (unsorted):
 #'
 #' @examples
-#' dbh <- c(3.5, 4.7, 9.9, 10.2, 1.1)
-#' mcw <- c(8.15, 9.91, 17.6, 18.00, 4.62)*2
-#' tpa <- rep(40.0,5)
-#' ccfl( dbh, mcw, tpa, TRUE )
+#' library( dplyr )
+#' data(treelist)
+#' # use Hann's (1998) maximum crown width equation for Douglas-fir, western hemlock, bigleaf maple, and red alder
+#' mcw.parms <- data.frame( species=c(202,263,312, 351),
+#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
+#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
+#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
+#' temp <- treelist %>% inner_join( mcw.parms, by="species" ) %>%
+#'             mutate( mcw=c0 + c1*dbh + c2*dbh^2)
+#' ccfl( temp$dbh, temp$mcw, temp$tpa )
 #'
 #' @export
-ccfl <- function(dbh, mcw, expansion, imperial_units) {
+ccfl <- function(dbh, mcw, expansion, imperial_units = TRUE) {
     .Call(`_biometrics_utilities_ccfl`, dbh, mcw, expansion, imperial_units)
 }
 
@@ -71,8 +76,7 @@ ccfl <- function(dbh, mcw, expansion, imperial_units) {
 #' Computes the crown area as a fraction of an acre or hectare (depending on \code{imperial_units}) that lies in a horizontal
 #' plane tangential to the tip of the tree.
 #' 
-#' cch() depends on \code{dacb} and \code{lcw} which must be estimated for each tree (normally species and size dependent)
-#' independently. 
+#' cch() depends on \code{dacb} and \code{lcw} which must be estimated for each tree independently (normally species and size dependent).
 #' 
 #' The \code{parameters} vector contains coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
 #' \eqn{adjustment = rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}}
@@ -83,6 +87,41 @@ ccfl <- function(dbh, mcw, expansion, imperial_units) {
 #' @return
 #' A vector of \code{cch} values for each tree.
 #' 
+#' @examples
+#' data(treelist)
+#' library( dplyr )
+#' # use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
+#' mcw.parms <- data.frame( species=c(202,263,312,351),
+#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
+#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
+#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
+#'
+#' # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
+#' lcw.parms <- data.frame( species=c(202,263,312,351), 
+#'                          b0=c(0.0,         0.0, 0.0,      0.3227140 ),
+#'                          b1=c(0.004363240, 0.0, 0.0,      0.0       ),
+#'                          b2=c(0.6020020,   0.0, 1.470180, 0.0       ))
+#'
+#' # estimate distance above crown base: use Hann 1999 for Douglas-fir, Marshall et al. 2003 for western hemlock, and assuming 0.0 for 
+#' # bigleaf maple and red alder
+#' dacb.parms <- data.frame( species=c(202,263,312,351), 
+#'                          d0=c(0.06200, 0.355270, 0.0, 0.0 ) )
+#'
+#' # use crown profile parameters for Douglas-fir
+#' cch.parms <- c( 0.929973, -0.1352120, -0.0157579 )
+#'
+#' temp <- treelist %>% 
+#'             inner_join( mcw.parms, by="species" ) %>%
+#'             inner_join( lcw.parms, by="species" ) %>%
+#'             inner_join( dacb.parms, by="species" ) %>%
+#'             mutate( crown_length = height - htlc,
+#'                     cr = crown_length/height,
+#'                     mcw = c0 + c1*dbh + c2*dbh^2,
+#'                     lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)),
+#'                     dacb = d0 * crown_length )
+#'                     
+#' cch( temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
+#'
 #' @export
 cch <- function(dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units = TRUE) {
     .Call(`_biometrics_utilities_cch`, dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units)
@@ -110,6 +149,13 @@ cch <- function(dbh, height, crown_length, dacb, lcw, expansion, parameters, imp
 #' @return
 #' Returns the specified dominant height.
 #'
+#' @examples
+#' data(treelist)
+#' # compute the height of the 40 largest trees by dbh
+#' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
+#' # compute the height of the 100 largest trees by height
+#' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 100, 1 )
+#'
 #' @export
 dominant_height <- function(height, dbh, expansion, dominant_cohort_size, method = 0L) {
     .Call(`_biometrics_utilities_dominant_height`, height, dbh, expansion, dominant_cohort_size, method)
@@ -127,6 +173,11 @@ dominant_height <- function(height, dbh, expansion, dominant_cohort_size, method
 #' @return
 #' Returns the qmd.
 #'
+#' @examples
+#' data(treelist)
+#' # compute the quadratic mean diameter
+#' qmd( treelist$dbh, treelist$tpa )
+#'
 #' @export
 qmd <- function(dbh, expansion) {
     .Call(`_biometrics_utilities_qmd`, dbh, expansion)
@@ -140,10 +191,17 @@ qmd <- function(dbh, expansion) {
 #' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 #'
 #' @description
-#' Compute Wilson's Relative Spacing (average tree spacing relative to dominant height).
+#' Compute Wilson's Relative Spacing (average tree spacing relative to dominant height). The smaller
+#' the relative spacing, the more crowded or overstocked the stand or plot is.
 #' 
 #' @return
 #' Returns the relative spacing as a fraction of dominant height.
+#'
+#' @examples
+#' data(treelist)
+#' # compute the relative spacing for HT40 dominant height
+#' dom.ht <- dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
+#' relative_spacing( treelist$tpa, dom.ht )
 #'
 #' @export
 relative_spacing <- function(expansion, dominant_height, imperial = TRUE) {
@@ -158,7 +216,7 @@ relative_spacing <- function(expansion, dominant_height, imperial = TRUE) {
 #' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 #'
 #' @description
-#' Compute Curtis' Relative Density \url{https://www.fs.usda.gov/pnw/olympia/silv/publications/opt/232_Curtis1982.pdf}.
+#' Compute Curtis' Relative Density (Curtis 1982).
 #'
 #' The expression \eqn{RD = G/(Dg^{0.5})}, where G is basal area and Dg is quadratic mean
 #' stand diameter, provides a simple and convenient scale of relative stand density for Douglas-fir, 
@@ -166,6 +224,10 @@ relative_spacing <- function(expansion, dominant_height, imperial = TRUE) {
 #' 
 #' @return
 #' Returns the Curtis' Relative Density.
+#'
+#' @examples
+#' data(treelist)
+#' curtis_rd( treelist$dbh, treelist$tpa )
 #'
 #' @export
 curtis_rd <- function(dbh, expansion, imperial_units = TRUE) {
@@ -180,7 +242,7 @@ curtis_rd <- function(dbh, expansion, imperial_units = TRUE) {
 #' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 #'
 #' @description
-#' Compute Reineke's Stand Density Index \url{https://research.fs.usda.gov/treesearch/60134}.
+#' Compute Reineke's Stand Density Index (Reineke 1933).
 #'
 #' Reineke (1933) developed a stand density index (SDI) that relates the current
 #' stand density to an equivalent density in a stand with a quadratic mean diameter (Dq) of 10 inches.
@@ -193,6 +255,10 @@ curtis_rd <- function(dbh, expansion, imperial_units = TRUE) {
 #' 
 #' @return
 #' Returns the Reineke's Stand Density Index.
+#'
+#' @examples
+#' data(treelist)
+#' reineke_sdi( treelist$dbh, treelist$tpa )
 #'
 #' @export
 reineke_sdi <- function(dbh, expansion, imperial_units = TRUE) {
@@ -207,9 +273,7 @@ reineke_sdi <- function(dbh, expansion, imperial_units = TRUE) {
 #' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 #'
 #' @description
-#' Compute Crown Competition Factor 
-#' \url{https://cmapspublic3.ihmc.us/rid=1N4TSFQX6-GWW4BN-14PZ/Crown\%20competition\%20-\%20A\%20measure\%20of\%20density.pdf}.
-#' Krajicek, J.E., K.A. Brinkman, and F.S. Gingrich.  1961.  Crown competition: a measure of density.  For. Sci. 7:36 – 42.  
+#' Compute Crown Competition Factor (Krajicek, et al. 1961). 
 #' 
 #' Crown competition factor is the ratio of the open-grown crown area of all trees as a percentage of an acre:
 #' \eqn{CCF = 100 \sum{CA expansion} /43560}, 
@@ -219,6 +283,31 @@ reineke_sdi <- function(dbh, expansion, imperial_units = TRUE) {
 #' 
 #' @return
 #' Returns the crown competition factor.
+#'
+#' @examples
+#' data(treelist)
+#' library( dplyr )
+#' # use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
+#' mcw.parms <- data.frame( species=c(202,263,312,351),
+#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
+#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
+#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
+#'
+#' # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
+#' lcw.parms <- data.frame( species=c(202,263,312,351), 
+#'                          b0=c(0.0,         0.0, 0.0,      0.3227140 ),
+#'                          b1=c(0.004363240, 0.0, 0.0,      0.0       ),
+#'                          b2=c(0.6020020,   0.0, 1.470180, 0.0       ))
+#'
+#' temp <- treelist %>% 
+#'             inner_join( mcw.parms, by="species" ) %>%
+#'             inner_join( lcw.parms, by="species" ) %>%
+#'             mutate( crown_length = height - htlc,
+#'                     cr = crown_length/height,
+#'                     mcw = c0 + c1*dbh + c2*dbh^2,
+#'                     lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)) )
+#'
+#' ccf( temp$lcw, temp$tpa )
 #'
 #' @export
 ccf <- function(crown_width, expansion, imperial_units = TRUE) {
