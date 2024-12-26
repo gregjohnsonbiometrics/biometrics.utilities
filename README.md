@@ -2,7 +2,7 @@
 A computationally efficient implementation in R[^1] of tree and plot level metrics used in Forest Biometrics.
 
 ## Purpose
-This R package is a collection on metrics (mostly focused on competition indicies) that are useful in describing
+This R package is a collection of metrics (mostly focused on competition indicies) that are useful in describing
 tree and stand conditions. Several of them are somewhat complex and computationally expensive. The code here
 translates these metrics into C++ for computational efficiency and hopefully sound implementations of the 
 concepts.
@@ -81,7 +81,7 @@ where:
 - `expansion` = tree factor to expand to per area basis (vector)
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
-Sorts the `dbh`, `mcw`, and `expansion` vectors in-place in decreasing order of `dbh` and computes cumulative maximum crown area in larger trees. Ties in `dbh` are handled appropriately (each tree has the same `ccfl`).
+The `ccfl` function computes the [crown competition factor](#crown-competition-factor-ccf) for a tree based on a subset of trees in the stand or plot that have a `dbh` greater than the subject tree. The function sorts the `dbh`, `mcw`, and `expansion` vectors in-place in decreasing order of `dbh` and computes cumulative maximum crown area in larger trees. Ties in `dbh` are handled appropriately (each tree has the same `ccfl`).
 
 `mcw` is an estimate of the maximum crown width (open grown) for a tree of diameter `dbh`. Hann (1999)[^3] used the following equation form:
 

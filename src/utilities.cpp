@@ -146,7 +146,7 @@ double compute_qmd( const std::vector<double> dbh,
 
 double compute_relative_spacing( const std::vector<double> expansion,
                                  const double dominant_height,
-                                 bool imperial )
+                                 const bool imperial )
 {
     double area = (imperial ? 43560.0 : 10000.0 );
     auto stocking = std::accumulate( expansion.begin(), expansion.end(), 0.0 );
@@ -161,7 +161,7 @@ double compute_relative_spacing( const std::vector<double> expansion,
 
 double compute_curtis_rd( const std::vector<double> dbh,
                           const std::vector<double> expansion,
-                          bool imperial )
+                          const bool imperial )
 {
     double k = imperial ? 0.005454154 : 0.00007853975;
 
@@ -180,16 +180,14 @@ double compute_curtis_rd( const std::vector<double> dbh,
         double ba = qmd * k;
         qmd = std::sqrt( qmd/stocking );
         curtis_rd = ba / std::sqrt( qmd );
-    } else {
-        throw std::invalid_argument("stocking is 0.\n");    
-    }
+    } 
 
     return curtis_rd;
 } 
 
 double compute_reineke_sdi( const std::vector<double> dbh,
                             const std::vector<double> expansion,
-                            bool imperial )
+                            const bool imperial )
 {
     double k = imperial ? 10.0 : 25.4;
 
@@ -207,16 +205,14 @@ double compute_reineke_sdi( const std::vector<double> dbh,
     {
         qmd = std::sqrt( qmd/stocking );
         sdi = stocking * std::pow(qmd/k,1.605);
-    } else {
-        throw std::invalid_argument("stocking is 0.\n");    
-    }
+    } 
 
     return sdi;
 } 
 
 double compute_ccf( const std::vector<double> crown_width,
                     const std::vector<double> expansion,
-                    bool imperial )
+                    const bool imperial )
 {
     const double area = imperial ? 43560.0 : 10000.0;
 

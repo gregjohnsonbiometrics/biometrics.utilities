@@ -9,10 +9,10 @@
 // where b0,b1,b2 are species-specific parameters and rp is relative position in the crown.
 // The adjustment is applied to the largest crown width of the tree
 double _cwa( const double rp, 
-            const double lcw, 
-            const double dbh, 
-            const double height, 
-            const std::vector<double> parameters ) 
+             const double lcw, 
+             const double dbh, 
+             const double height, 
+             const std::vector<double> parameters ) 
 {
     double cwa = 0.0;
 
@@ -35,7 +35,7 @@ double compute_cch( const double ht, // height of tree to compute cch for
                     const std::vector<double> &lcw,          // largest crown width of each tree
                     const std::vector<double> &expansion,
                     const std::vector<double> &parameters,   // three parameters of equation describing crown shape from base to tip
-                    bool imperial )                          // (see _cwa() function for details.)
+                    const bool imperial )                    // (see _cwa() function for details.)
 {
 
     double cch = 0.0;

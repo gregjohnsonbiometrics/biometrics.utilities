@@ -34,7 +34,7 @@ double compute_cch( const double ht,
                     const std::vector<double> &lcw,
                     const std::vector<double> &expansion,
                     const std::vector<double> &parameters,
-                    bool imperial );
+                    const bool imperial );
 
 double compute_dominant_height( const std::vector<double> height,
                                 const std::vector<double> dbh,
@@ -47,17 +47,17 @@ double compute_qmd( const std::vector<double> dbh,
 
 double compute_relative_spacing( const std::vector<double> expansion,
                                  const double dominant_height,
-                                 bool imperial );  
+                                 const bool imperial );  
 
 double compute_curtis_rd( const std::vector<double> dbh,
                           const std::vector<double> expansion,
-                          bool imperial );                                                                               
+                          const bool imperial );                                                                               
 
 double compute_reineke_sdi( const std::vector<double> dbh,
                             const std::vector<double> expansion,
-                            bool imperial );  
+                            const bool imperial );  
 
 double compute_ccf( const std::vector<double> crown_width,
                     const std::vector<double> expansion,
-                    bool imperial );                                                       
+                    const bool imperial );                                                       
 #endif
