@@ -257,7 +257,7 @@ where $ba_j$ and $ba_i$ are the basal areas of the jth and ith tree respectively
 Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. If `imperial_units`
 is TRUE, the coordinates will be converted to meters prior to calculations.
 
-`hegyi` returns a vector of ratios, one for each tree in the 6-meter plot.
+`hegyi` returns ratios for each tree in the input vectors (preserving their order).
 
 -------------
 
