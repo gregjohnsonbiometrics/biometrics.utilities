@@ -250,7 +250,7 @@ where:
 
 The ratio for the ith tree in the 6-meter radius plot is:
 
-$heygi_i = \sum{\frac{ba_j/ba_i}{d_{ij}}}$
+$hegyi_i = \sum{\frac{ba_j/ba_i}{d_{ij}}}$
 
 where $ba_j$ and $ba_i$ are the basal areas of the jth and ith tree respectively, $d_{ij}$ is the distance between tree i and j.
 
