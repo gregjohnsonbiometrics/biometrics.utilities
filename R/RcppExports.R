@@ -314,3 +314,36 @@ ccf <- function(crown_width, expansion, imperial_units = TRUE) {
     .Call(`_biometrics_utilities_ccf`, crown_width, expansion, imperial_units)
 }
 
+#' @title Clark_Evans_R() compute Clark Evan's R
+#' @name Clark_Evans_R
+#'
+#' @param x         : double | vector of x coordinates of trees on plot
+#' @param y         : double | vector of y coordinates of trees on plot
+#' @param plot_area : double | area of plot in square units (same units as coordinate system)
+#'
+#' @description
+#' Compute the Clark and Evans Aggregation Index (R) (1954). The aggregation index R is a measure
+#' of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor
+#' distance in the trees to that expected for a Poisson point process of the same intensity. A value 
+#' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
+#' proposed as a two-sided, distance-dependent tree competition metric.
+#'
+#' This implementation does not do edge correction.
+#'
+#' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
+#'
+#' where: \eqn{d_i} is the nearest neighbor distance for the ith tree, A is the plot area, and N is the number of 
+#' trees on the plot.
+#'
+#' @return
+#' Returns the Clark Evans R statistic.
+#'
+#' @examples
+#' data(treelist)
+#' ## to do
+#'
+#' @export
+Clark_Evans_R <- function(x, y, plot_area) {
+    .Call(`_biometrics_utilities_Clark_Evans_R`, x, y, plot_area)
+}
+

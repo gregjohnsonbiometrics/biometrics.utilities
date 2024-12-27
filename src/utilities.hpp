@@ -59,5 +59,9 @@ double compute_reineke_sdi( const std::vector<double> dbh,
 
 double compute_ccf( const std::vector<double> crown_width,
                     const std::vector<double> expansion,
-                    const bool imperial );                                                       
+                    const bool imperial ); 
+
+double compute_R( const std::vector<double> x, 
+                  const std::vector<double> y,
+                  const double plot_area );                                                                         
 #endif

@@ -11,20 +11,20 @@ Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
 // bal
-std::vector<double> bal(const std::vector<double> dbh, const std::vector<double> expansion, bool imperial_units);
+std::vector<double> bal(const std::vector<double> dbh, const std::vector<double> expansion, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_bal(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(bal(dbh, expansion, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
 // ccfl
-std::vector<double> ccfl(const std::vector<double> dbh, const std::vector<double> mcw, const std::vector<double> expansion, bool imperial_units);
+std::vector<double> ccfl(const std::vector<double> dbh, const std::vector<double> mcw, const std::vector<double> expansion, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_ccfl(SEXP dbhSEXP, SEXP mcwSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -32,13 +32,13 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type mcw(mcwSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(ccfl(dbh, mcw, expansion, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
 // cch
-std::vector<double> cch(const std::vector<double> dbh, const std::vector<double> height, const std::vector<double> crown_length, const std::vector<double> dacb, const std::vector<double> lcw, const std::vector<double> expansion, const std::vector<double> parameters, bool imperial_units);
+std::vector<double> cch(const std::vector<double> dbh, const std::vector<double> height, const std::vector<double> crown_length, const std::vector<double> dacb, const std::vector<double> lcw, const std::vector<double> expansion, const std::vector<double> parameters, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_cch(SEXP dbhSEXP, SEXP heightSEXP, SEXP crown_lengthSEXP, SEXP dacbSEXP, SEXP lcwSEXP, SEXP expansionSEXP, SEXP parametersSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
@@ -50,7 +50,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const std::vector<double> >::type lcw(lcwSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type parameters(parametersSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(cch(dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units));
     return rcpp_result_gen;
 END_RCPP
@@ -83,40 +83,40 @@ BEGIN_RCPP
 END_RCPP
 }
 // relative_spacing
-double relative_spacing(const std::vector<double> expansion, const double dominant_height, bool imperial);
+double relative_spacing(const std::vector<double> expansion, const double dominant_height, const bool imperial);
 RcppExport SEXP _biometrics_utilities_relative_spacing(SEXP expansionSEXP, SEXP dominant_heightSEXP, SEXP imperialSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
     Rcpp::traits::input_parameter< const double >::type dominant_height(dominant_heightSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial(imperialSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial(imperialSEXP);
     rcpp_result_gen = Rcpp::wrap(relative_spacing(expansion, dominant_height, imperial));
     return rcpp_result_gen;
 END_RCPP
 }
 // curtis_rd
-double curtis_rd(const std::vector<double> dbh, const std::vector<double> expansion, bool imperial_units);
+double curtis_rd(const std::vector<double> dbh, const std::vector<double> expansion, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_curtis_rd(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(curtis_rd(dbh, expansion, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
 // reineke_sdi
-double reineke_sdi(const std::vector<double> dbh, const std::vector<double> expansion, bool imperial_units);
+double reineke_sdi(const std::vector<double> dbh, const std::vector<double> expansion, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_reineke_sdi(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
-    Rcpp::traits::input_parameter< bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(reineke_sdi(dbh, expansion, imperial_units));
     return rcpp_result_gen;
 END_RCPP
@@ -134,6 +134,19 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Clark_Evans_R
+double Clark_Evans_R(const std::vector<double> x, const std::vector<double> y, const double plot_area);
+RcppExport SEXP _biometrics_utilities_Clark_Evans_R(SEXP xSEXP, SEXP ySEXP, SEXP plot_areaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const double >::type plot_area(plot_areaSEXP);
+    rcpp_result_gen = Rcpp::wrap(Clark_Evans_R(x, y, plot_area));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -145,6 +158,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_curtis_rd", (DL_FUNC) &_biometrics_utilities_curtis_rd, 3},
     {"_biometrics_utilities_reineke_sdi", (DL_FUNC) &_biometrics_utilities_reineke_sdi, 3},
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
+    {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 3},
     {NULL, NULL, 0}
 };
 

@@ -211,6 +211,28 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 `reineke_sdi` returns a scalar with the Reineke's Stand Density Index.
 
+-------------
+
+### Clark Evans Aggregation Index (`clark_evans_R`)
+
+`clark_evans_R( x, y, plot_area )`
+
+where:
+
+- `x` = x coordinates of trees on a plot (vector)
+- `y` = y coordinates of trees on a plot (vector)
+- `plot_area` = plot area in square units (same units as coordinate system)
+
+`clark_evans_R` compute Clark and Evans (1954) aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
+
+This implementation does not do edge correction.
+
+$R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
+
+`clark_evans_R` returns a scalar with the Clark Evans R statistic.
+
+-------------
+
 ## R Packages
 
 The source and binary packages can be found in the repository:
@@ -233,3 +255,5 @@ The source and binary packages can be found in the repository:
 [^7]: Wilson, F.G. 1946. Numerical expression of stocking in terms of height. Journal of Forestry, 44:758–761.  
 
 [^8]: Curtis, Robert O.; Marshall, David D. 2000. Why quadratic mean diameter? Western Journal of Applied Forestry, 15 (3): 137–139.
+
+[^9]: Clark, P. J., & Evans, F. C. 1954. Distance to Nearest Neighbor as a Measure of Spatial Relationships in Populations. Ecology, 35(4), 445–453. <https://doi.org/10.2307/1931034>

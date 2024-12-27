@@ -24,7 +24,7 @@
 
 std::vector<double> bal( const std::vector<double> dbh, 
                          const std::vector<double> expansion, 
-                         bool imperial_units = true )
+                         const bool imperial_units = true )
 {
     auto bal_vector = compute_bal( dbh, expansion, imperial_units );
 
@@ -69,7 +69,7 @@ std::vector<double> bal( const std::vector<double> dbh,
 std::vector<double> ccfl( const std::vector<double> dbh, 
                           const std::vector<double> mcw, 
                           const std::vector<double> expansion, 
-                          bool imperial_units = true )
+                          const bool imperial_units = true )
 {
     auto ccfl_vector = compute_ccfl( dbh, mcw, expansion, imperial_units );
 
@@ -147,7 +147,7 @@ std::vector<double> cch( const std::vector<double> dbh,
                          const std::vector<double> lcw,
                          const std::vector<double> expansion,
                          const std::vector<double> parameters,
-                         bool imperial_units = true )
+                         const bool imperial_units = true )
 {
     std::vector<double> cch_vector;
 
@@ -251,7 +251,7 @@ double qmd( const std::vector<double> dbh,
 // [[Rcpp::export]]
 double relative_spacing( const std::vector<double> expansion,
                          const double dominant_height,
-                         bool imperial = true )
+                         const bool imperial = true )
 {
     return compute_relative_spacing( expansion, dominant_height, imperial );
 }
@@ -282,7 +282,7 @@ double relative_spacing( const std::vector<double> expansion,
 // [[Rcpp::export]]
 double curtis_rd( const std::vector<double> dbh,
                   const std::vector<double> expansion,
-                  bool imperial_units = true )
+                  const bool imperial_units = true )
 {
     return compute_curtis_rd( dbh, expansion, imperial_units );
 }                            
@@ -318,7 +318,7 @@ double curtis_rd( const std::vector<double> dbh,
 // [[Rcpp::export]]
 double reineke_sdi( const std::vector<double> dbh,
                     const std::vector<double> expansion,
-                    bool imperial_units = true )
+                    const bool imperial_units = true )
 {
     return compute_reineke_sdi( dbh, expansion, imperial_units );
 }  
@@ -375,4 +375,43 @@ double ccf( const std::vector<double> crown_width,
             bool imperial_units = true )
 {
     return compute_ccf( crown_width, expansion, imperial_units );
+}
+
+
+//' @title Clark_Evans_R() compute Clark Evan's R
+//' @name Clark_Evans_R
+//'
+//' @param x         : double | vector of x coordinates of trees on plot
+//' @param y         : double | vector of y coordinates of trees on plot
+//' @param plot_area : double | area of plot in square units (same units as coordinate system)
+//'
+//' @description
+//' Compute the Clark and Evans Aggregation Index (R) (1954). The aggregation index R is a measure
+//' of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor
+//' distance in the trees to that expected for a Poisson point process of the same intensity. A value 
+//' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
+//' proposed as a two-sided, distance-dependent tree competition metric.
+//'
+//' This implementation does not do edge correction.
+//'
+//' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
+//'
+//' where: \eqn{d_i} is the nearest neighbor distance for the ith tree, A is the plot area, and N is the number of 
+//' trees on the plot.
+//'
+//' @return
+//' Returns the Clark Evans R statistic.
+//'
+//' @examples
+//' data(treelist)
+//' ## to do
+//'
+//' @export
+// [[Rcpp::export]]
+
+double Clark_Evans_R( const std::vector<double> x,
+                      const std::vector<double> y,
+                      const double plot_area )
+{
+    return( compute_R( x, y, plot_area ) );
 }
