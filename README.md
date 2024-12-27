@@ -234,6 +234,32 @@ $R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
 
 -------------
 
+### Hegyi Competition Index (`Hegyi`)
+
+`hegyi( x, y, dbh, imperial_units )`
+
+where:
+
+- `x` = x coordinates of trees on a plot (vector)
+- `y` = y coordinates of trees on a plot (vector)
+- `dbh` = diameter at breast height (vector)
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+
+`hegyi` computes the distance-weighted size ratio (a two-sided competition index) based on Hegyi (1974)[^10] for trees within a 6-meter fixed radius plot.
+
+The ratio for the ith tree in the 6-meter radius plot is:
+
+$heygi_i = \sum{\frac{ba_j/ba_i}{d_{ij}}}$
+
+where $ba_j$ and $ba_i$ are the basal areas of the jth and ith tree respectively, $d_{ij}$ is the distance between tree i and j.
+
+Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. If `imperial_units`
+is TRUE, the coordinates will be converted to meters prior to calculations.
+
+`hegyi` returns a vector of ratios, one for each tree in the 6-meter plot.
+
+-------------
+
 ## R Packages
 
 The source and binary packages can be found in the repository:
@@ -258,3 +284,5 @@ The source and binary packages can be found in the repository:
 [^8]: Curtis, Robert O.; Marshall, David D. 2000. Why quadratic mean diameter? Western Journal of Applied Forestry, 15 (3): 137–139.
 
 [^9]: Clark, P. J., & Evans, F. C. 1954. Distance to Nearest Neighbor as a Measure of Spatial Relationships in Populations. Ecology, 35(4), 445–453. <https://doi.org/10.2307/1931034>
+
+[^10]: Hegyi, F. 1974. A simulation model for managing jack-pine stands. J. Fries (Ed.), Growth Models for Tree and Stand Simulation, Royal College of Forestry, Stockholm, Sweden (1974), pp. 74-90.

@@ -63,5 +63,11 @@ double compute_ccf( const std::vector<double> crown_width,
 
 double compute_R( const std::vector<double> x, 
                   const std::vector<double> y,
-                  const double plot_area );                                                                         
+                  const double plot_area ); 
+
+std::vector<double> compute_Hegyi( const std::vector<double> x, 
+                                   const std::vector<double> y,
+                                   const std::vector<double> dbh,
+                                   const bool imperial_units );
+
 #endif

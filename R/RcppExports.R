@@ -347,3 +347,34 @@ Clark_Evans_R <- function(x, y, plot_area) {
     .Call(`_biometrics_utilities_Clark_Evans_R`, x, y, plot_area)
 }
 
+#' @title Hegyi() compute Hegyi's distance weighted size ratio.
+#' @name Hegyi
+#'
+#' @param x              : double | vector of x coordinates of trees on plot
+#' @param y              : double | vector of y coordinates of trees on plot
+#' @param dbh            : double | vector of diameter at breast height 
+#' @param imperial_units : bool   | TRUE = imperial, FALSE = metric (default)
+#'
+#' @description
+#' Compute Hegyi's (1974) distance-weighted size ratio (a two-sided competition index) for trees within a 6-meter fixed radius plot.
+#' The ratio for the ith tree in the 6-meter radius plot is:
+#'
+#' \eqn{heygi_i = \sum{\frac{ba_j/ba_i}{d_{ij}}}}
+#'
+#' where \eqn{ba_j} and \eqn{ba_i} are the basal areas of the jth and ith tree respectively, \eqn{d_{ij}} is the distance between tree i and j.
+#'
+#' Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. 
+#' If \code{imperial_units} is TRUE, the coordinates will be converted to meters prior to calculations.
+#'
+#' @return
+#' Returns the Hegyi's distance weighted size ratio for each tree.
+#'
+#' @examples
+#' data(treelist)
+#' ## to do
+#'
+#' @export
+Hegyi <- function(x, y, dbh, imperial_units = FALSE) {
+    .Call(`_biometrics_utilities_Hegyi`, x, y, dbh, imperial_units)
+}
+

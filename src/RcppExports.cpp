@@ -147,6 +147,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Hegyi
+std::vector<double> Hegyi(const std::vector<double> x, const std::vector<double> y, const std::vector<double> dbh, const bool imperial_units);
+RcppExport SEXP _biometrics_utilities_Hegyi(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double> >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Hegyi(x, y, dbh, imperial_units));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -159,6 +173,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_reineke_sdi", (DL_FUNC) &_biometrics_utilities_reineke_sdi, 3},
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
     {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 3},
+    {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 4},
     {NULL, NULL, 0}
 };
 

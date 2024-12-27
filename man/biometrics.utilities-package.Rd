@@ -20,6 +20,8 @@ both the tree and stand or plot level.
  
 - Hann, D.W. 1999. An adjustable predictor of crown profile for stand-grown Douglas-fir trees. For. Sci. 45: 217–225.
 
+- Hegyi, F. 1974. A simulation model for managing jack-pine stands. J. Fries (Ed.), Growth Models for Tree and Stand Simulation, Royal College of Forestry, Stockholm, Sweden (1974), pp. 74-90..
+
 - Krajicek, J.E., K.A. Brinkman, and F.S. Gingrich. 1961. Crown competition: a measure of density. For. Sci. 7:36 – 42.
 
 - Marshall D.D, G.P. Johnson, and D.W. Hann. 2003. Crown profile equations for stand-grown western hemlock trees in northwestern Oregon. Can. J. For. Res. 33: 2059–2066. 
