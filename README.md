@@ -20,6 +20,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
+* Clark Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 
 -------------
 
