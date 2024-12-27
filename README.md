@@ -224,7 +224,7 @@ where:
 - `y` = y coordinates of trees on a plot (vector)
 - `plot_area` = plot area in square units (same units as coordinate system)
 
-`clark_evans_R` compute Clark and Evans (1954) aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
+`clark_evans_R` compute Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
 
 This implementation does not do edge correction.
 
