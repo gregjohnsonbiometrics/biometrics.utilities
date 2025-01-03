@@ -11,6 +11,8 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 ## Metrics
 
+### Distance Independent
+
 * Crown Closure at Tree Tip ([cch](#crown-closure-at-tree-tip-cch))
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
@@ -20,9 +22,11 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
+* Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
+
+### Distance Dependent
 * Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 * Hegyi's Disance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
-* Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
 
 -------------
 
