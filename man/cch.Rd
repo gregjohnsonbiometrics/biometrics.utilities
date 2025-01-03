@@ -50,11 +50,6 @@ vector of c(1.0,0.0,0.0).
 \examples{
 data(treelist)
 library( dplyr )
-# use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
-mcw.parms <- data.frame( species=c(202,263,312,351),
-                         c0=c(4.6198,4.5652,4.0953,8.0000),
-                         c1=c(1.8426,1.4147,2.3849,1.5300),
-                         c2=c(-0.011311,0.000000,-0.011630,0.00000))
 
 # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
 lcw.parms <- data.frame( species=c(202,263,312,351), 
@@ -70,14 +65,12 @@ dacb.parms <- data.frame( species=c(202,263,312,351),
 # use crown profile parameters for Douglas-fir
 cch.parms <- c( 0.929973, -0.1352120, -0.0157579 )
 
-temp <- treelist \%>\% 
-            inner_join( mcw.parms, by="species" ) \%>\%
+temp <- treelist \%>\% mutate( mcw.hat=mcw( species, dbh ) ) \%>\%
             inner_join( lcw.parms, by="species" ) \%>\%
             inner_join( dacb.parms, by="species" ) \%>\%
             mutate( crown_length = height - htlc,
                     cr = crown_length/height,
-                    mcw = c0 + c1*dbh + c2*dbh^2,
-                    lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)),
+                    lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)),
                     dacb = d0 * crown_length )
                     
 cch( temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )

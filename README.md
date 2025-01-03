@@ -20,8 +20,9 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
-* Clark Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
+* Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 * Hegyi's Disance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
+* Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
 
 -------------
 
@@ -215,7 +216,7 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 -------------
 
-### Clark Evans Aggregation Index (`clark_evans_R`)
+### Clark-Evans Aggregation Index (`clark_evans_R`)
 
 `clark_evans_R( x, y, plot_area )`
 
@@ -260,6 +261,28 @@ is TRUE, the coordinates will be converted to meters prior to calculations.
 `hegyi` returns ratios for each tree in the input vectors (preserving their order).
 
 -------------
+
+### Maximum Crown Width (`mcw`)
+
+`mcw( fia, dbh, imperial_units, default_fia )`
+
+where:
+
+- `fia` = FIA numeric species code (vector)
+- `dbh` = diameter at breast height (vector)
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+- `default_fia` = FIA species code to use if supplied `fia` code is not in parameter table.
+
+`mcw` uses publicly available parameter estimates for one of two maximum crown width estimatation functions. The equations are either two or three parameter
+equations of the following forms:
+
+1: $\widehat{mcw} = A + B dbh + C dbh^2$, or
+
+2: $\widehat{mcw} = A dbh^B$
+
+`mcw` returns the maximum crown width for each tree in the input vectors in feet or meters depending on `imperial_units`.
+
+A helper function: `mcw_species()` is available to produce a `data.frame` of FIA species codes and species names with parameter estimates available.
 
 ## R Packages
 

@@ -75,9 +75,9 @@ std::vector<double> compute_ccfl( const std::vector<double> &dbh, const std::vec
 // method 0: average height of the dominant_cohort_size trees by decreasing dbh
 //        1: average height of the dominant_cohort_size trees by decreasing height
 //        2: Lorey height (height of the tree of average basal area) 
-double compute_dominant_height( const std::vector<double> height,
-                                const std::vector<double> dbh,
-                                const std::vector<double> expansion,
+double compute_dominant_height( const std::vector<double> &height,
+                                const std::vector<double> &dbh,
+                                const std::vector<double> &expansion,
                                 const int dominant_cohort_size,
                                 const int method )
 {
@@ -122,8 +122,8 @@ double compute_dominant_height( const std::vector<double> height,
 }
 
 
-double compute_qmd( const std::vector<double> dbh,
-                    const std::vector<double> expansion )
+double compute_qmd( const std::vector<double> &dbh,
+                    const std::vector<double> &expansion )
 {
     // compute quadratic mean diameter
     double stocking = 0.0;
@@ -144,7 +144,7 @@ double compute_qmd( const std::vector<double> dbh,
     return qmd;
 } 
 
-double compute_relative_spacing( const std::vector<double> expansion,
+double compute_relative_spacing( const std::vector<double> &expansion,
                                  const double dominant_height,
                                  const bool imperial )
 {
@@ -159,8 +159,8 @@ double compute_relative_spacing( const std::vector<double> expansion,
     return rs;
 }
 
-double compute_curtis_rd( const std::vector<double> dbh,
-                          const std::vector<double> expansion,
+double compute_curtis_rd( const std::vector<double> &dbh,
+                          const std::vector<double> &expansion,
                           const bool imperial )
 {
     double k = imperial ? 0.005454154 : 0.00007853975;
@@ -185,8 +185,8 @@ double compute_curtis_rd( const std::vector<double> dbh,
     return curtis_rd;
 } 
 
-double compute_reineke_sdi( const std::vector<double> dbh,
-                            const std::vector<double> expansion,
+double compute_reineke_sdi( const std::vector<double> &dbh,
+                            const std::vector<double> &expansion,
                             const bool imperial )
 {
     double k = imperial ? 10.0 : 25.4;
@@ -210,8 +210,8 @@ double compute_reineke_sdi( const std::vector<double> dbh,
     return sdi;
 } 
 
-double compute_ccf( const std::vector<double> crown_width,
-                    const std::vector<double> expansion,
+double compute_ccf( const std::vector<double> &crown_width,
+                    const std::vector<double> &expansion,
                     const bool imperial )
 {
     const double area = imperial ? 43560.0 : 10000.0;

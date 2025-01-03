@@ -2,4 +2,5 @@
 ^\.Rproj\.user$
 ^.*zip$
 ^.*gz$
+^.Rxx
 test.r

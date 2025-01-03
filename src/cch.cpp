@@ -12,7 +12,7 @@ double _cwa( const double rp,
              const double lcw, 
              const double dbh, 
              const double height, 
-             const std::vector<double> parameters ) 
+             const std::vector<double> &parameters ) 
 {
     double cwa = 0.0;
 

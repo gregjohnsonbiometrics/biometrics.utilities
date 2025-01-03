@@ -2,10 +2,23 @@
 #define BIOUTIL
 
 #include <vector>
+#include <string>
 #include <numeric>      // std::iota, std::accumulate
 #include <algorithm>    // std::sort, std::stable_sort
 
 constexpr auto PI = 3.14159265358979323846;
+
+struct MCWPARMS {
+    std::string name;
+    std::string genus;
+    int EQ_type; // 1 = A + (B * DBH) + (C * dbh^2), 2 = A * dbh^B
+    bool imperial_units; // true = imperial, false = metric
+    double A;
+    double B;
+    double C;
+    std::string reference;
+};
+
 
 // sorting machinery for generated indices to decreasing sorted vector 
 template <typename T>
@@ -36,38 +49,45 @@ double compute_cch( const double ht,
                     const std::vector<double> &parameters,
                     const bool imperial );
 
-double compute_dominant_height( const std::vector<double> height,
-                                const std::vector<double> dbh,
-                                const std::vector<double> expansion,
+double compute_dominant_height( const std::vector<double> &height,
+                                const std::vector<double> &dbh,
+                                const std::vector<double> &expansion,
                                 const int dominant_cohort_size,
                                 const int method );  
 
-double compute_qmd( const std::vector<double> dbh,
-                    const std::vector<double> expansion );
+double compute_qmd( const std::vector<double> &dbh,
+                    const std::vector<double> &expansion );
 
-double compute_relative_spacing( const std::vector<double> expansion,
+double compute_relative_spacing( const std::vector<double> &expansion,
                                  const double dominant_height,
                                  const bool imperial );  
 
-double compute_curtis_rd( const std::vector<double> dbh,
-                          const std::vector<double> expansion,
+double compute_curtis_rd( const std::vector<double> &dbh,
+                          const std::vector<double> &expansion,
                           const bool imperial );                                                                               
 
-double compute_reineke_sdi( const std::vector<double> dbh,
-                            const std::vector<double> expansion,
+double compute_reineke_sdi( const std::vector<double> &dbh,
+                            const std::vector<double> &expansion,
                             const bool imperial );  
 
-double compute_ccf( const std::vector<double> crown_width,
-                    const std::vector<double> expansion,
+double compute_ccf( const std::vector<double> &crown_width,
+                    const std::vector<double> &expansion,
                     const bool imperial ); 
 
-double compute_R( const std::vector<double> x, 
-                  const std::vector<double> y,
+double compute_R( const std::vector<double> &x, 
+                  const std::vector<double> &y,
                   const double plot_area ); 
 
-std::vector<double> compute_Hegyi( const std::vector<double> x, 
-                                   const std::vector<double> y,
-                                   const std::vector<double> dbh,
+std::vector<double> compute_Hegyi( const std::vector<double> &x, 
+                                   const std::vector<double> &y,
+                                   const std::vector<double> &dbh,
                                    const bool imperial_units );
+
+std::vector<std::pair<int, std::string>> get_mcw_species();
+
+std::vector<double> compute_mcw( const std::vector<int> &fia,
+                                 const std::vector<double> &dbh,
+                                 const bool imperial_units,
+                                 const int default_fia );
 
 #endif

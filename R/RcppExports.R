@@ -46,14 +46,7 @@ bal <- function(dbh, expansion, imperial_units = TRUE) {
 #' @examples
 #' library( dplyr )
 #' data(treelist)
-#' # use Hann's (1998) maximum crown width equation for Douglas-fir, western hemlock, bigleaf maple, and red alder
-#' mcw.parms <- data.frame( species=c(202,263,312, 351),
-#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
-#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
-#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
-#' temp <- treelist %>% inner_join( mcw.parms, by="species" ) %>%
-#'             mutate( mcw=c0 + c1*dbh + c2*dbh^2)
-#' ccfl( temp$dbh, temp$mcw, temp$tpa )
+#' ccfl( treelist$dbh, mcw( treelist$species, treelist$dbh ), treelist$tpa )
 #'
 #' @export
 ccfl <- function(dbh, mcw, expansion, imperial_units = TRUE) {
@@ -90,11 +83,6 @@ ccfl <- function(dbh, mcw, expansion, imperial_units = TRUE) {
 #' @examples
 #' data(treelist)
 #' library( dplyr )
-#' # use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
-#' mcw.parms <- data.frame( species=c(202,263,312,351),
-#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
-#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
-#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
 #'
 #' # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
 #' lcw.parms <- data.frame( species=c(202,263,312,351), 
@@ -110,14 +98,12 @@ ccfl <- function(dbh, mcw, expansion, imperial_units = TRUE) {
 #' # use crown profile parameters for Douglas-fir
 #' cch.parms <- c( 0.929973, -0.1352120, -0.0157579 )
 #'
-#' temp <- treelist %>% 
-#'             inner_join( mcw.parms, by="species" ) %>%
+#' temp <- treelist %>% mutate( mcw.hat=mcw( species, dbh ) ) %>%
 #'             inner_join( lcw.parms, by="species" ) %>%
 #'             inner_join( dacb.parms, by="species" ) %>%
 #'             mutate( crown_length = height - htlc,
 #'                     cr = crown_length/height,
-#'                     mcw = c0 + c1*dbh + c2*dbh^2,
-#'                     lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)),
+#'                     lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)),
 #'                     dacb = d0 * crown_length )
 #'                     
 #' cch( temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
@@ -287,11 +273,6 @@ reineke_sdi <- function(dbh, expansion, imperial_units = TRUE) {
 #' @examples
 #' data(treelist)
 #' library( dplyr )
-#' # use Paine and Hann (1992) maximum crown width equations for Douglas-fir, western hemlock, bigleaf maple, and red alder
-#' mcw.parms <- data.frame( species=c(202,263,312,351),
-#'                          c0=c(4.6198,4.5652,4.0953,8.0000),
-#'                          c1=c(1.8426,1.4147,2.3849,1.5300),
-#'                          c2=c(-0.011311,0.000000,-0.011630,0.00000))
 #'
 #' # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
 #' lcw.parms <- data.frame( species=c(202,263,312,351), 
@@ -299,13 +280,11 @@ reineke_sdi <- function(dbh, expansion, imperial_units = TRUE) {
 #'                          b1=c(0.004363240, 0.0, 0.0,      0.0       ),
 #'                          b2=c(0.6020020,   0.0, 1.470180, 0.0       ))
 #'
-#' temp <- treelist %>% 
-#'             inner_join( mcw.parms, by="species" ) %>%
+#' temp <- treelist %>% mutate( mcw.hat=mcw( species, dbh ) ) %>%
 #'             inner_join( lcw.parms, by="species" ) %>%
 #'             mutate( crown_length = height - htlc,
 #'                     cr = crown_length/height,
-#'                     mcw = c0 + c1*dbh + c2*dbh^2,
-#'                     lcw = mcw * cr^(b0+b1*crown_length+b2*(dbh/height)) )
+#'                     lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)) )
 #'
 #' ccf( temp$lcw, temp$tpa )
 #'
@@ -376,5 +355,52 @@ Clark_Evans_R <- function(x, y, plot_area) {
 #' @export
 Hegyi <- function(x, y, dbh, imperial_units = FALSE) {
     .Call(`_biometrics_utilities_Hegyi`, x, y, dbh, imperial_units)
+}
+
+#' @title mcw() Estimate maximum crown width for a species
+#' @name mcw
+#'
+#' @param fia            : int    | vector of FIA species code
+#' @param dbh            : double | vector of diameter at breast height
+#' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+#' @param default_fia    : int    | FIA species code to use if supplied FIA code does not have parameters (default = 202 (Douglas-fir))
+#'
+#' @description
+#' Estimate the maximum (open-grown) crown width for trees using publically available equation parameters. A list of available species
+#' can be found using \code{mcw_species()}. If an FIA species code does not have a parameter set, the \code{default_fia} species is used.
+#'
+#' @return
+#' Returns numeric vector with maximum crown width in the original tree order (unsorted).
+#'
+#' @examples
+#' # compute maximum crown width for a 10 inch Douglas-fir, red alder, and Atlantic White-cedar (parameters not available, will default to Douglas-fir)
+#' mcw( c(202,351,43), c(10,10,10) )
+#'
+#' @export
+mcw <- function(fia, dbh, imperial_units = TRUE, default_fia = 202L) {
+    .Call(`_biometrics_utilities_mcw`, fia, dbh, imperial_units, default_fia)
+}
+
+#' @title mcw_species() List species with available Maximum Crown Width equation parameters
+#' @name mcw_species
+#'
+#' @description
+#' Builds a data.frame with the FIA species codes and common names of species with maximum crown
+#' width equation parameters available for use.
+#'
+#' @return
+#' A data.frame with:
+#' \itemize{
+#'    \item fia : FIA species code
+#'    \item name : common name
+#' }
+#'
+#' @examples
+#' # list available maximum crown width species
+#' mcw_species()
+#'
+#' @export
+mcw_species <- function() {
+    .Call(`_biometrics_utilities_mcw_species`)
 }
 

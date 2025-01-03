@@ -161,6 +161,30 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// mcw
+std::vector<double> mcw(const std::vector<int>& fia, const std::vector<double>& dbh, const bool imperial_units, const int default_fia);
+RcppExport SEXP _biometrics_utilities_mcw(SEXP fiaSEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP, SEXP default_fiaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type fia(fiaSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const int >::type default_fia(default_fiaSEXP);
+    rcpp_result_gen = Rcpp::wrap(mcw(fia, dbh, imperial_units, default_fia));
+    return rcpp_result_gen;
+END_RCPP
+}
+// mcw_species
+Rcpp::DataFrame mcw_species();
+RcppExport SEXP _biometrics_utilities_mcw_species() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(mcw_species());
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -174,6 +198,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
     {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 3},
     {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 4},
+    {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},
+    {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},
     {NULL, NULL, 0}
 };
 

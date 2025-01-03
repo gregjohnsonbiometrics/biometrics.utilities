@@ -3,7 +3,7 @@ Type: Package
 Title: Efficient biometric calculations for R.
 Version: 1.0
 Date: 2024-12-26
-Author: Greg Johnson
+Author: Greg Johnson, David Marshall
 Maintainer: Greg Johnson <greg@nosnhoj.org>
 Description: Provides access to computationally efficient biometric calculations for R.
 License: GPL (>= 2)

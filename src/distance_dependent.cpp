@@ -12,8 +12,8 @@ double _distance(const Point& p1, const Point& p2) {
     return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
 }
 
-std::vector<double> findNearestNeighborDistance( std::vector<double> x, 
-                                                 std::vector<double> y ) 
+std::vector<double> findNearestNeighborDistance( const std::vector<double> &x, 
+                                                 const std::vector<double> &y ) 
 {
     int n = x.size();
     std::vector<double> nn_distance( n, 0.0 ); 
@@ -51,8 +51,8 @@ std::vector<double> findNearestNeighborDistance( std::vector<double> x,
 }
 
 
-double compute_R( const std::vector<double> x, 
-                  const std::vector<double> y,
+double compute_R( const std::vector<double> &x, 
+                  const std::vector<double> &y,
                   const double plot_area )
 {
     auto distances = findNearestNeighborDistance( x, y );
@@ -66,9 +66,9 @@ double compute_R( const std::vector<double> x,
     return R;
 }
 
-std::vector<double> compute_Hegyi( const std::vector<double> x, 
-                                   const std::vector<double> y,
-                                   const std::vector<double> dbh,
+std::vector<double> compute_Hegyi( const std::vector<double> &x, 
+                                   const std::vector<double> &y,
+                                   const std::vector<double> &dbh,
                                    const bool imperial_units )
 {
     std::vector<double> h( x.size(), 0.0 );

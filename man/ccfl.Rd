@@ -29,13 +29,6 @@ acre or hectare basis using the supplied expansion factor.
 \examples{
 library( dplyr )
 data(treelist)
-# use Hann's (1998) maximum crown width equation for Douglas-fir, western hemlock, bigleaf maple, and red alder
-mcw.parms <- data.frame( species=c(202,263,312, 351),
-                         c0=c(4.6198,4.5652,4.0953,8.0000),
-                         c1=c(1.8426,1.4147,2.3849,1.5300),
-                         c2=c(-0.011311,0.000000,-0.011630,0.00000))
-temp <- treelist \%>\% inner_join( mcw.parms, by="species" ) \%>\%
-            mutate( mcw=c0 + c1*dbh + c2*dbh^2)
-ccfl( temp$dbh, temp$mcw, temp$tpa )
+ccfl( treelist$dbh, mcw( treelist$species, treelist$dbh ), treelist$tpa )
 
 }
