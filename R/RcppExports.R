@@ -307,7 +307,7 @@ ccf <- function(crown_width, expansion, imperial_units = TRUE) {
 #' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
 #' proposed as a two-sided, distance-dependent tree competition metric.
 #'
-#' This implementation does not do edge correction.
+#' This implementation does not perform edge bias correction.
 #'
 #' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
 #'
@@ -318,12 +318,56 @@ ccf <- function(crown_width, expansion, imperial_units = TRUE) {
 #' Returns the Clark Evans R statistic.
 #'
 #' @examples
-#' data(treelist)
-#' ## to do
+#' data(treelistxy)
+#' x_width <- max(treelistxy$x) - min(treelistxy$x)
+#' y_width <- max(treelistxy$y) - min(treelistxy$y)
+#' clark_evans_R( treelistxy$x, treelistxy$y, x_width*y_width )
 #'
 #' @export
 Clark_Evans_R <- function(x, y, plot_area) {
     .Call(`_biometrics_utilities_Clark_Evans_R`, x, y, plot_area)
+}
+
+#' @title Clark_Evans_Rdc() compute Clark Evan's R with Donnelly Edge Correction
+#' @name Clark_Evans_Rdc
+#'
+#' @param x         : double | vector of x coordinates of trees on plot
+#' @param y         : double | vector of y coordinates of trees on plot
+#' @param plot_area : double | area of plot in square units (same units as coordinate system)
+#' @param ulx       : double | upper left corner x of plot rectangle if using Donnelly correction. 
+#' @param uly       : double | upper left corner y of plot rectangle if using Donnelly correction.
+#' @param x_width   : double | width of rectangular plot on x axis if using Donnelly correction. 
+#' @param y_width   : double | width of rectangular plot on y axis if using Donnelly correction. 
+#'
+#' @description
+#' Compute the Clark and Evans Aggregation Index (R) (1954). The aggregation index R is a measure
+#' of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor
+#' distance in the trees to that expected for a Poisson point process of the same intensity. A value 
+#' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
+#' proposed as a two-sided, distance-dependent tree competition metric.
+#'
+#' This implementation uses Donnelly's correction (Donnelly 1978) for rectangular plots.
+#'
+#' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
+#'
+#' where: \eqn{d_i} is the nearest neighbor distance for the ith tree, A is the plot area, and N is the number of 
+#' trees on the plot.
+#'
+#' @return
+#' Returns the Clark Evans R statistic.
+#'
+#' @examples
+#' data(treelistxy)
+#' ulx <- min(treelistxy$x)
+#' uly <- min(treelistxy$y)
+#' x_width <- max(treelistxy$x) - min(treelistxy$x)
+#' y_width <- max(treelistxy$y) - min(treelistxy$y)
+#' clark_evans_Rdc( treelistxy$x, treelistxy$y, x_width*y_width, ulx, uly, x_width, y_width )
+#' 
+#'
+#' @export
+Clark_Evans_Rdc <- function(x, y, plot_area, ulx = -1.0, uly = -1.0, x_width = 0.0, y_width = 0.0) {
+    .Call(`_biometrics_utilities_Clark_Evans_Rdc`, x, y, plot_area, ulx, uly, x_width, y_width)
 }
 
 #' @title Hegyi() compute Hegyi's distance weighted size ratio.
@@ -346,15 +390,47 @@ Clark_Evans_R <- function(x, y, plot_area) {
 #' If \code{imperial_units} is TRUE, the coordinates will be converted to meters prior to calculations.
 #'
 #' @return
-#' Returns the Hegyi's distance weighted size ratio for each tree.
+#' Returns the Hegyi's distance weighted size ratio for each tree. A `NaN` is returned if a tree has a `dbh` of 0.0.
 #'
 #' @examples
-#' data(treelist)
-#' ## to do
+#' data(treelistxy)
+#' Hegyi( treelistxy$x, treelistxy$y, treelist$dbh, imperial_units=T )
 #'
 #' @export
 Hegyi <- function(x, y, dbh, imperial_units = FALSE) {
     .Call(`_biometrics_utilities_Hegyi`, x, y, dbh, imperial_units)
+}
+
+#' @title Arney_CSI() compute Arney's competitive stress index.
+#' @name Arney_CSI
+#'
+#' @param x              : double | vector of x coordinates of trees on plot (in same units as mcw)
+#' @param y              : double | vector of y coordinates of trees on plot (in same units as mcw)
+#' @param dbh            : double | vector of diameter at breast height 
+#' @param mcw            : double | vector of maximum crown width for the tree record
+#' @param imperial_units : bool   | TRUE = imperial, FALSE = metric (default)
+#'
+#' @description
+#' Compute Arney's Competitive Stress Index as described in Arney (1973). CSI is the sum of percentage competing trees crown area overlaping
+#' a subject tree to the subject tree's crown area.
+#'
+#' \eqn{CSI_i = 100 \sum{\frac{AO_j}{CA_i}}}
+#'
+#' where \eqn{AO_j} is the area of overlap of tree j on subject tree i, \eqn{CA_i} is the crown area of the subject tree i, and \eqn{CSI_i} is the
+#' competitive stress index for tree i.
+#'
+#' This version currently does not adjust for edge effects.
+#'
+#' @return
+#' Returns the Arney's CSI for each tree.
+#'
+#' @examples
+#' data(treelistxy)
+#' Arney_CSI( treelistxy$x, treelistxy$y, treelistxy$dbh, mcw( treelistxy$fia, treelistxy$dbh ) )
+#'
+#' @export
+Arney_CSI <- function(x, y, dbh, mcw) {
+    .Call(`_biometrics_utilities_Arney_CSI`, x, y, dbh, mcw)
 }
 
 #' @title mcw() Estimate maximum crown width for a species

@@ -135,29 +135,60 @@ BEGIN_RCPP
 END_RCPP
 }
 // Clark_Evans_R
-double Clark_Evans_R(const std::vector<double> x, const std::vector<double> y, const double plot_area);
+double Clark_Evans_R(const std::vector<double>& x, const std::vector<double>& y, const double plot_area);
 RcppExport SEXP _biometrics_utilities_Clark_Evans_R(SEXP xSEXP, SEXP ySEXP, SEXP plot_areaSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::vector<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const double >::type plot_area(plot_areaSEXP);
     rcpp_result_gen = Rcpp::wrap(Clark_Evans_R(x, y, plot_area));
     return rcpp_result_gen;
 END_RCPP
 }
+// Clark_Evans_Rdc
+double Clark_Evans_Rdc(const std::vector<double>& x, const std::vector<double>& y, const double plot_area, const double ulx, const double uly, const double x_width, const double y_width);
+RcppExport SEXP _biometrics_utilities_Clark_Evans_Rdc(SEXP xSEXP, SEXP ySEXP, SEXP plot_areaSEXP, SEXP ulxSEXP, SEXP ulySEXP, SEXP x_widthSEXP, SEXP y_widthSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const double >::type plot_area(plot_areaSEXP);
+    Rcpp::traits::input_parameter< const double >::type ulx(ulxSEXP);
+    Rcpp::traits::input_parameter< const double >::type uly(ulySEXP);
+    Rcpp::traits::input_parameter< const double >::type x_width(x_widthSEXP);
+    Rcpp::traits::input_parameter< const double >::type y_width(y_widthSEXP);
+    rcpp_result_gen = Rcpp::wrap(Clark_Evans_Rdc(x, y, plot_area, ulx, uly, x_width, y_width));
+    return rcpp_result_gen;
+END_RCPP
+}
 // Hegyi
-std::vector<double> Hegyi(const std::vector<double> x, const std::vector<double> y, const std::vector<double> dbh, const bool imperial_units);
+std::vector<double> Hegyi(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double> dbh, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_Hegyi(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::vector<double> >::type x(xSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
     rcpp_result_gen = Rcpp::wrap(Hegyi(x, y, dbh, imperial_units));
+    return rcpp_result_gen;
+END_RCPP
+}
+// Arney_CSI
+std::vector<double> Arney_CSI(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& dbh, const std::vector<double>& mcw);
+RcppExport SEXP _biometrics_utilities_Arney_CSI(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP mcwSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type mcw(mcwSEXP);
+    rcpp_result_gen = Rcpp::wrap(Arney_CSI(x, y, dbh, mcw));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -197,7 +228,9 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_reineke_sdi", (DL_FUNC) &_biometrics_utilities_reineke_sdi, 3},
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
     {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 3},
+    {"_biometrics_utilities_Clark_Evans_Rdc", (DL_FUNC) &_biometrics_utilities_Clark_Evans_Rdc, 7},
     {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 4},
+    {"_biometrics_utilities_Arney_CSI", (DL_FUNC) &_biometrics_utilities_Arney_CSI, 4},
     {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},
     {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},
     {NULL, NULL, 0}

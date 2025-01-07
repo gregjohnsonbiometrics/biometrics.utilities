@@ -16,7 +16,7 @@ Hegyi(x, y, dbh, imperial_units = FALSE)
 \item{imperial_units}{: bool   | TRUE = imperial, FALSE = metric (default)}
 }
 \value{
-Returns the Hegyi's distance weighted size ratio for each tree.
+Returns the Hegyi's distance weighted size ratio for each tree. A `NaN` is returned if a tree has a `dbh` of 0.0.
 }
 \description{
 Compute Hegyi's (1974) distance-weighted size ratio (a two-sided competition index) for trees within a 6-meter fixed radius plot.
@@ -30,7 +30,7 @@ Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree w
 If \code{imperial_units} is TRUE, the coordinates will be converted to meters prior to calculations.
 }
 \examples{
-data(treelist)
-## to do
+data(treelistxy)
+Hegyi( treelistxy$x, treelistxy$y, treelist$dbh, imperial_units=T )
 
 }

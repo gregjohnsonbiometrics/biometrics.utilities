@@ -7,6 +7,8 @@ tree and stand conditions. Several of them are somewhat complex and computationa
 translates these metrics into C++ for computational efficiency and hopefully sound implementations of the 
 concepts.
 
+This is a collaborative effort with David Marshall.
+
 If you have suggestions for additional metrics, let me know ([Greg Johnson](mailto:greg@nosnhoj.org)).
 
 ## Metrics
@@ -27,6 +29,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 ### Distance Dependent
 * Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 * Hegyi's Disance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
+* Arney's Competitive Stress Index ([Arney_CSI](#arneys-competitive-stress-index-arney_csi))
 
 -------------
 
@@ -224,15 +227,21 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 `clark_evans_R( x, y, plot_area )`
 
+`clark_evans_Rdc( x, y, plot_area, ulx, uly, x_width, y_width )`
+
 where:
 
 - `x` = x coordinates of trees on a plot (vector)
 - `y` = y coordinates of trees on a plot (vector)
 - `plot_area` = plot area in square units (same units as coordinate system)
+- `ulx` = upper left plot corner x coordinate
+- `uly` = upper left plot corner y coordinate
+- `x_width` = width of plot along x axis
+- `y_width` = width of plot along y axis
 
-`clark_evans_R` compute Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
+`clark_evans_R` computes the Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
 
-This implementation does not do edge correction.
+This implementation can use the Donnelly's[^11] edge correction for rectangular plots (`clark_evans_Rdc()`).
 
 $R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
 
@@ -263,6 +272,31 @@ Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree w
 is TRUE, the coordinates will be converted to meters prior to calculations.
 
 `hegyi` returns ratios for each tree in the input vectors (preserving their order).
+
+-------------
+
+### Arney's Competitive Stress Index (`Arney_CSI`)
+
+`Arney_CSI( x, y, dbh, mcw )`
+
+where:
+
+- `x` = x coordinates of trees on a plot (vector)
+- `y` = y coordinates of trees on a plot (vector)
+- `dbh` = diameter at breast height (vector)
+- `mcw` = maximum crown width of open grown tree (vector)
+
+`Arney_CSI` computes Arney's (1973)[^12] Competitve Stress Index (`CSI`). CSI is the sum of the percentage competing trees crown area overlaping
+a subject tree to the subject tree's crown area.
+
+$CSI_i = 100 \sum{\frac{AO_j}{CA_i}}$
+
+where $AO_j$ is the area of overlap of tree j on subject tree i, $CA_i$ is the crown area of the subject tree i, and $CSI_i$ is the
+competitive stress index for tree i.
+
+This version currently does not adjust for edge effects.
+
+`Arney_CSI` returns a vector of CSI values for each tree in the original order.
 
 -------------
 
@@ -314,3 +348,7 @@ The source and binary packages can be found in the repository:
 [^9]: Clark, P. J., & Evans, F. C. 1954. Distance to Nearest Neighbor as a Measure of Spatial Relationships in Populations. Ecology, 35(4), 445–453. <https://doi.org/10.2307/1931034>
 
 [^10]: Hegyi, F. 1974. A simulation model for managing jack-pine stands. J. Fries (Ed.), Growth Models for Tree and Stand Simulation, Royal College of Forestry, Stockholm, Sweden (1974), pp. 74-90.
+
+[^11]: Donnelly, K. 1978. Simulations to determine the variance and edge-effect of total nearest neighbour distance. In I. Hodder (ed.) Simulation studies in archaeology, Cambridge/New York: Cambridge University Press, pp 91–95.
+
+[^12]: Arney, J.D. 1973. Tables for quantifying competitive stress on individual trees. Pacific Forest Research Centre, Canadian Forest Service, Victoria, BC. Information Report BC-X-78. 47p.

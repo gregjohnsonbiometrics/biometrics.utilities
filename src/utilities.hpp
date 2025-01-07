@@ -1,6 +1,8 @@
 #ifndef BIOUTIL
 #define BIOUTIL
 
+// -D_GLIBCXX_ASSERTIONS
+
 #include <vector>
 #include <string>
 #include <numeric>      // std::iota, std::accumulate
@@ -76,12 +78,21 @@ double compute_ccf( const std::vector<double> &crown_width,
 
 double compute_R( const std::vector<double> &x, 
                   const std::vector<double> &y,
-                  const double plot_area ); 
+                  const double plot_area,
+                  const double ulx,
+                  const double uly,
+                  const double x_width,
+                  const double y_width );
 
 std::vector<double> compute_Hegyi( const std::vector<double> &x, 
                                    const std::vector<double> &y,
                                    const std::vector<double> &dbh,
                                    const bool imperial_units );
+
+std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
+                                       const std::vector<double> &y,
+                                       const std::vector<double> &dbh,
+                                       const std::vector<double> &mcw );                                   
 
 std::vector<std::pair<int, std::string>> get_mcw_species();
 
