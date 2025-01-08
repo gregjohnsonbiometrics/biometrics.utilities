@@ -287,7 +287,8 @@ where:
 - `mcw` = maximum crown width of open grown tree (vector)
 
 `Arney_CSI` computes Arney's (1973)[^12] Competitve Stress Index (`CSI`). CSI is the sum of the percentage competing trees crown area overlaping
-a subject tree to the subject tree's crown area.
+a subject tree to the subject tree's crown area. `CSI` is essentially a transformation of Gerrard's (1969)[^13] Competition Quotient using maximum crown area for 
+each tree as its competition circle (Gerrard used an empirically derived circle radius dependent on `dbh`).
 
 $CSI_i = 100 \sum{\frac{AO_j}{CA_i}}$
 
@@ -352,3 +353,5 @@ The source and binary packages can be found in the repository:
 [^11]: Donnelly, K. 1978. Simulations to determine the variance and edge-effect of total nearest neighbour distance. In I. Hodder (ed.) Simulation studies in archaeology, Cambridge/New York: Cambridge University Press, pp 91–95.
 
 [^12]: Arney, J.D. 1973. Tables for quantifying competitive stress on individual trees. Pacific Forest Research Centre, Canadian Forest Service, Victoria, BC. Information Report BC-X-78. 47p.
+
+[^13]: Gerrard, D. J. 1969. Competition Quotient: a new measure of the competition affecting individual forest trees. Michigan State University, Agr. Exp. Sta. Res. Bull. 20. 32pp.

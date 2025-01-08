@@ -227,10 +227,6 @@ std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
             auto s = ( r1 + r2 + distances[j] ) / 2.0;
             auto c = ( 2.0 / distances[j] ) * std::sqrt( s*(s-r1)*(s-r2)*(s-distances[j]) );
             auto x1 = std::sqrt( r1*r1 - c*c );
-
-            /////////// not sure why we have to round here
-            //DIST = round(DIST,0)
-            //x1 = round(x1,0)
             
             // arrangement 1: distance > x1 (Equation 1 Appendix 1 page 5)
             if( distances[j] > x1 )
