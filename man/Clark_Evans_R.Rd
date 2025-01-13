@@ -2,16 +2,20 @@
 % Please edit documentation in R/RcppExports.R
 \name{Clark_Evans_R}
 \alias{Clark_Evans_R}
-\title{Clark_Evans_R() compute Clark Evan's R}
+\title{Clark_Evans_R() compute Clark Evan's R with Donnelly Edge Correction in a Polygonal Plot}
 \usage{
-Clark_Evans_R(x, y, plot_area)
+Clark_Evans_R(x, y, plotarea, poly_x, poly_y)
 }
 \arguments{
 \item{x}{: double | vector of x coordinates of trees on plot}
 
 \item{y}{: double | vector of y coordinates of trees on plot}
 
-\item{plot_area}{: double | area of plot in square units (same units as coordinate system)}
+\item{plotarea}{: double | plot area if polygon not available}
+
+\item{poly_x}{: double | vector of plot polygon x coordinates.}
+
+\item{poly_y}{: double | vector of plot polygon y coordinates.}
 }
 \value{
 Returns the Clark Evans R statistic.
@@ -23,7 +27,9 @@ distance in the trees to that expected for a Poisson point process of the same i
 R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
 proposed as a two-sided, distance-dependent tree competition metric.
 
-This implementation does not perform edge bias correction.
+This implementation uses Donnelly's correction (Donnelly 1978) for polyonal plots if a polygon is supplied.
+If not polygon coordinates are not supplied, the function computes `R` with no edge correction and relies on
+the supplied `plotarea` value.
 
 \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
 
@@ -32,8 +38,12 @@ trees on the plot.
 }
 \examples{
 data(treelistxy)
-x_width <- max(treelistxy$x) - min(treelistxy$x)
-y_width <- max(treelistxy$y) - min(treelistxy$y)
-clark_evans_R( treelistxy$x, treelistxy$y, x_width*y_width )
+min_x <- min(treelistxy$x)
+min_y <- min(treelistxy$y)
+max_x <- max(treelistxy$x)
+max_y <- max(treelistxy$y)
+poly_x <- c(min_x, max_x, max_x, min_x)
+poly_y <- c(min_y, min_y, max_y, max_y)
+Clark_Evans_R( treelistxy$x, treelistxy$y, 0.0, poly_x, poly_y )
 
 }

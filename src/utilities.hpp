@@ -21,6 +21,10 @@ struct MCWPARMS {
     std::string reference;
 };
 
+struct Point {
+    double x, y;
+};
+
 
 // sorting machinery for generated indices to decreasing sorted vector 
 template <typename T>
@@ -78,11 +82,15 @@ double compute_ccf( const std::vector<double> &crown_width,
 
 double compute_R( const std::vector<double> &x, 
                   const std::vector<double> &y,
-                  const double plot_area,
-                  const double ulx,
-                  const double uly,
-                  const double x_width,
-                  const double y_width );
+                  double plotarea,
+                  const std::vector<double> &poly_x,
+                  const std::vector<double> &poly_y );
+
+double compute_R( const std::vector<double> &x, 
+                  const std::vector<double> &y,
+                  double plotarea,                  
+                  const Point &plotCenter,
+                  const double plotRadius );                  
 
 std::vector<double> compute_Hegyi( const std::vector<double> &x, 
                                    const std::vector<double> &y,

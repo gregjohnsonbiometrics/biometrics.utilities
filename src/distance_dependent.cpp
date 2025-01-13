@@ -3,13 +3,28 @@
 #include <cmath>
 #include <limits>
 
-struct Point {
-    double x, y;
-};
-
 // Function to calculate Euclidean distance between two points
 double _distance(const Point& p1, const Point& p2) {
     return std::sqrt((p1.x - p2.x) * (p1.x - p2.x) + (p1.y - p2.y) * (p1.y - p2.y));
+}
+
+// compute area of a polygon using Shoelace algorithm
+double _computePolygonArea( const std::vector<Point>& vertices ) 
+{
+    int n = vertices.size();
+    if (n < 3) 
+       throw( "A polygon must have at least 3 vertices.\n" );
+
+    double area = 0.0;
+
+    // Apply Shoelace formula
+    for (int i = 0; i < n; ++i) 
+    {
+        int next = (i + 1) % n; // Ensure it wraps around to the first vertex
+        area += (vertices[i].x * vertices[next].y) - (vertices[next].x * vertices[i].y);
+    }
+
+    return std::abs(area) / 2.0;
 }
 
 std::vector<double> _findNearestNeighborDistance( const std::vector<double> &x, 
@@ -50,29 +65,85 @@ std::vector<double> _findNearestNeighborDistance( const std::vector<double> &x,
     return nn_distance;
 }
 
-
-// Function to compute the distance to the nearest edge
-double _distanceToEdge( const double x, 
-                        const double y, 
-                        const double width, 
-                        const double height ) 
+// Function to compute the minimum distance from a point to the edges of the plot
+double _minDistanceToPolygonEdge( const Point& p, 
+                           const std::vector<Point>& polygon ) 
 {
-    double dx = std::min(x, width - x);
-    double dy = std::min(y, height - y);
-    return std::min(dx, dy);
+    size_t n = polygon.size();
+    double minDist = std::numeric_limits<double>::max();
+
+    for( size_t i = 0; i < n; ++i ) 
+    {
+        Point p1 = polygon[i];
+        Point p2 = polygon[(i + 1) % n];
+
+        // Compute the distance from point p to the edge (p1, p2)
+        double A = p.y - p1.y;
+        double B = p.x - p1.x;
+        double C = p2.x - p1.x;
+        double D = p2.y - p1.y;
+
+        double dot = A * C + B * D;
+        double len_sq = C * C + D * D;
+        double param = (len_sq != 0) ? (dot / len_sq) : -1;
+
+        Point nearest;
+        if (param < 0) {
+            nearest = p1;
+        } else if (param > 1) {
+            nearest = p2;
+        } else {
+            nearest = {p1.x + param * C, p1.y + param * D};
+        }
+
+        double dist = _distance(p, nearest);
+        minDist = std::min(minDist, dist);
+    }
+
+    return minDist;
 }
 
-// Function to compute Donnelly's edge correction
+
+// Function to compute the distance from a point to the edges of a circular plot
+double _DistanceToCircleEdge( const Point &p, 
+                              const Point &center,
+                              const double radius ) 
+{
+    double Dist = radius - _distance( p, center );
+
+    return Dist;
+}
+
+
+// Function to compute Ripley's edge correction weights
+std::vector<double> _RipleyEdgeCorrection( const std::vector<Point>& points, 
+                                           const std::vector<Point>& plotPolygon ) 
+{
+    size_t n = points.size();
+    std::vector<double> weights(n, 1.0);
+
+    for (size_t i = 0; i < n; ++i) {
+        double distToEdge = _minDistanceToPolygonEdge( points[i], plotPolygon );
+        weights[i] = distToEdge > 0 ? 1.0 / (distToEdge * distToEdge) : 0.0;
+    }
+
+    return weights;
+}
+
+
+// Function to compute Donnelly's edge correction -- polygonal plot version
 std::vector<double> _DonnellyCorrection(const std::vector<double> &x, 
                                         const std::vector<double> &y, 
-                                        double width, double height, double radius ) 
+                                        const std::vector<Point> &plotPolygon,
+                                        double radius ) 
 {
     auto n = x.size();
     std::vector<double> corrections(n, 1.0);
 
     for( size_t i = 0; i < n; ++i ) 
     {
-        double d = _distanceToEdge( x[i], y[i], width, height );
+        double d = _minDistanceToPolygonEdge( Point(x[i],y[i]), plotPolygon );
+        
         if (d < radius) {
             corrections[i] = (PI * radius * radius) / (PI * radius * radius - 2 * radius * (radius - d));
         }
@@ -82,39 +153,93 @@ std::vector<double> _DonnellyCorrection(const std::vector<double> &x,
 }
 
 
+// Function to compute Donnelly's edge correction -- circle plot version
+std::vector<double> _DonnellyCorrection(const std::vector<double> &x, 
+                                        const std::vector<double> &y, 
+                                        const Point &plotCenter,
+                                        const double plotRadius,
+                                        double radius ) 
+{
+    auto n = x.size();
+    std::vector<double> corrections(n, 1.0);
+
+    for( size_t i = 0; i < n; ++i ) 
+    {
+        double d = _DistanceToCircleEdge( Point(x[i],y[i]), plotCenter, plotRadius);
+        
+        if (d < radius) {
+            corrections[i] = (PI * radius * radius) / (PI * radius * radius - 2 * radius * (radius - d));
+        }
+    }
+
+    return corrections;
+}
+
+// polygonal plot version
 double compute_R( const std::vector<double> &x, 
                   const std::vector<double> &y,
-                  const double plot_area,
-                  const double ulx,
-                  const double uly,
-                  const double x_width,
-                  const double y_width )
+                  double plotarea,
+                  const std::vector<double> &poly_x,
+                  const std::vector<double> &poly_y )
+{
+    double n = x.size();
+    auto distances = _findNearestNeighborDistance( x, y );
+    auto average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n;
+    std::vector<Point> plotPolygon( poly_x.size() );
+
+    if( poly_x.size() > 0 && poly_y.size() > 0 )
+    {
+        // build polygon vector
+        for( size_t i = 0; i < poly_x.size(); ++i )
+            plotPolygon[i] = Point( poly_x[i], poly_y[i] );
+
+        // recompute plot area with supplied polygon
+        plotarea = _computePolygonArea( plotPolygon );
+
+        // compute Donnelly bias correction
+        auto corrections = _DonnellyCorrection( x, y, plotPolygon, average_distance );
+
+        // adjust distances for bias correction
+        std::transform( distances.begin(), distances.end(), corrections.begin(), 
+                        distances.begin(), [](double a, double b){ return a*b; } );
+    } 
+
+    // recompute average distance with bias correction
+    average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n; 
+
+    double R = average_distance / (std::sqrt(plotarea/n)/2.0);
+
+    return R;
+}
+
+// circle plot version
+double compute_R( const std::vector<double> &x, 
+                  const std::vector<double> &y,
+                  double plotarea,
+                  const Point &plotCenter,
+                  const double plotRadius )
 {
     double n = x.size();
     auto distances = _findNearestNeighborDistance( x, y );
     auto average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n;
 
-    // if ulx and uly are provided ( ulx and uly != -1 ), then compute area, and point offsets for Donnelly correction
-    if( ulx != -1.0 || uly != -1.0 || x_width > 0.0 || y_width > 0.0 )
+    if( plotRadius > 0 )
     {
-        // compute x,y offets from upper left corner
-        std::vector<double> x_o( n );
-        std::vector<double> y_o( n );
-        std::transform( x.begin(), x.end(), x_o.begin(), [ulx](double p){return p - ulx;} );
-        std::transform( y.begin(), y.end(), y_o.begin(), [uly](double p){return p - uly;} );
+        // recompute plot area with circle dimensions
+        double plotarea = PI * plotRadius*plotRadius;
 
         // compute Donnelly bias correction
-        auto corrections = _DonnellyCorrection( x_o, y_o, x_width, y_width, average_distance );
+        auto corrections = _DonnellyCorrection( x, y, plotCenter, plotRadius, average_distance );
 
         // adjust distances for bias correction
         std::transform( distances.begin(), distances.end(), corrections.begin(), 
                         distances.begin(), [](double a, double b){ return a*b; } );
-
-        // recompute average distance with bias correction
-        average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n; 
     }
 
-     auto R = average_distance / (std::sqrt(plot_area/n)/2.0);
+    // compute average distance 
+    average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n; 
+
+    double R = average_distance / (std::sqrt(plotarea/n)/2.0);
 
     return R;
 }
@@ -253,12 +378,6 @@ std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
                 csi[i] += 100.0*area_overlap[j]/(PI*r1*r1);
                 continue;
             }
-        }
-
-        if( i == 0 )
-        {
-            for( size_t j = 0; j < n; ++j )
-            std::cout << area_overlap[j] << "\t" << csi[j] << "\n";
         }
     }
 

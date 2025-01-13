@@ -357,12 +357,14 @@ double ccf( const std::vector<double> crown_width,
 }
 
 
-//' @title Clark_Evans_R() compute Clark Evan's R
+//' @title Clark_Evans_R() compute Clark Evan's R with Donnelly Edge Correction in a Polygonal Plot
 //' @name Clark_Evans_R
 //'
 //' @param x         : double | vector of x coordinates of trees on plot
 //' @param y         : double | vector of y coordinates of trees on plot
-//' @param plot_area : double | area of plot in square units (same units as coordinate system)
+//' @param plotarea  : double | plot area if polygon not available
+//' @param poly_x    : double | vector of plot polygon x coordinates. 
+//' @param poly_y    : double | vector of plot polygon y coordinates. 
 //'
 //' @description
 //' Compute the Clark and Evans Aggregation Index (R) (1954). The aggregation index R is a measure
@@ -371,7 +373,9 @@ double ccf( const std::vector<double> crown_width,
 //' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
 //' proposed as a two-sided, distance-dependent tree competition metric.
 //'
-//' This implementation does not perform edge bias correction.
+//' This implementation uses Donnelly's correction (Donnelly 1978) for polyonal plots if a polygon is supplied.
+//' If not polygon coordinates are not supplied, the function computes `R` with no edge correction and relies on
+//' the supplied `plotarea` value.
 //'
 //' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
 //'
@@ -383,31 +387,36 @@ double ccf( const std::vector<double> crown_width,
 //'
 //' @examples
 //' data(treelistxy)
-//' x_width <- max(treelistxy$x) - min(treelistxy$x)
-//' y_width <- max(treelistxy$y) - min(treelistxy$y)
-//' clark_evans_R( treelistxy$x, treelistxy$y, x_width*y_width )
+//' min_x <- min(treelistxy$x)
+//' min_y <- min(treelistxy$y)
+//' max_x <- max(treelistxy$x)
+//' max_y <- max(treelistxy$y)
+//' poly_x <- c(min_x, max_x, max_x, min_x)
+//' poly_y <- c(min_y, min_y, max_y, max_y)
+//' Clark_Evans_R( treelistxy$x, treelistxy$y, 0.0, poly_x, poly_y )
 //'
 //' @export
 // [[Rcpp::export]]
 
 double Clark_Evans_R( const std::vector<double> &x, 
                       const std::vector<double> &y,
-                      const double plot_area )
+                      double plotarea,
+                      const std::vector<double> &poly_x,
+                      const std::vector<double> &poly_y )
 {
-    return compute_R( x, y, plot_area, -1.0, -1.0, 0.0, 0.0 );
+    return compute_R( x, y, plotarea, poly_x, poly_y );
 }
 
 
-//' @title Clark_Evans_Rdc() compute Clark Evan's R with Donnelly Edge Correction
-//' @name Clark_Evans_Rdc
+//' @title Clark_Evans_R_circle() compute Clark Evan's R with Donnelly Edge Correction in a circular plot
+//' @name Clark_Evans_R_circle
 //'
-//' @param x         : double | vector of x coordinates of trees on plot
-//' @param y         : double | vector of y coordinates of trees on plot
-//' @param plot_area : double | area of plot in square units (same units as coordinate system)
-//' @param ulx       : double | upper left corner x of plot rectangle if using Donnelly correction. 
-//' @param uly       : double | upper left corner y of plot rectangle if using Donnelly correction.
-//' @param x_width   : double | width of rectangular plot on x axis if using Donnelly correction. 
-//' @param y_width   : double | width of rectangular plot on y axis if using Donnelly correction. 
+//' @param x              : double | vector of x coordinates of trees on plot
+//' @param y              : double | vector of y coordinates of trees on plot
+//' @param plotarea       : double | plot area if polygon not available
+//' @param plot_center_x  : double | x coordinate of plot center. 
+//' @param plot_center_y  : double | y coordinate of plot center. 
+//' @param plot_radius    : double | radius of circular plot. 
 //'
 //' @description
 //' Compute the Clark and Evans Aggregation Index (R) (1954). The aggregation index R is a measure
@@ -416,7 +425,9 @@ double Clark_Evans_R( const std::vector<double> &x,
 //' R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been
 //' proposed as a two-sided, distance-dependent tree competition metric.
 //'
-//' This implementation uses Donnelly's correction (Donnelly 1978) for rectangular plots.
+//' This implementation uses Donnelly's correction (Donnelly 1978) for circular plots if a circle is supplied.
+//' If not circle dimensions are not supplied, the function computes `R` with no edge correction and relies on
+//' the supplied `plotarea` value.
 //'
 //' \eqn{R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}}
 //'
@@ -428,25 +439,19 @@ double Clark_Evans_R( const std::vector<double> &x,
 //'
 //' @examples
 //' data(treelistxy)
-//' ulx <- min(treelistxy$x)
-//' uly <- min(treelistxy$y)
-//' x_width <- max(treelistxy$x) - min(treelistxy$x)
-//' y_width <- max(treelistxy$y) - min(treelistxy$y)
-//' clark_evans_Rdc( treelistxy$x, treelistxy$y, x_width*y_width, ulx, uly, x_width, y_width )
-//' 
+//' # TO DO
 //'
 //' @export
 // [[Rcpp::export]]
 
-double Clark_Evans_Rdc( const std::vector<double> &x, 
-                        const std::vector<double> &y,
-                        const double plot_area,
-                        const double ulx = -1.0,
-                        const double uly = -1.0,
-                        const double x_width = 0.0,
-                        const double y_width = 0.0 )
+double Clark_Evans_R_circle( const std::vector<double> &x, 
+                             const std::vector<double> &y,
+                             double plotarea,
+                             const double plot_center_x,
+                             const double plot_center_y, 
+                             const double plot_radius )
 {
-    return compute_R( x, y, plot_area, ulx, uly, x_width, y_width );
+    return compute_R( x, y, plotarea, Point(plot_center_x, plot_center_y), plot_radius );
 }
 
 //' @title Hegyi() compute Hegyi's distance weighted size ratio.

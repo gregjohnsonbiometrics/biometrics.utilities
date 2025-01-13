@@ -135,32 +135,33 @@ BEGIN_RCPP
 END_RCPP
 }
 // Clark_Evans_R
-double Clark_Evans_R(const std::vector<double>& x, const std::vector<double>& y, const double plot_area);
-RcppExport SEXP _biometrics_utilities_Clark_Evans_R(SEXP xSEXP, SEXP ySEXP, SEXP plot_areaSEXP) {
+double Clark_Evans_R(const std::vector<double>& x, const std::vector<double>& y, double plotarea, const std::vector<double>& poly_x, const std::vector<double>& poly_y);
+RcppExport SEXP _biometrics_utilities_Clark_Evans_R(SEXP xSEXP, SEXP ySEXP, SEXP plotareaSEXP, SEXP poly_xSEXP, SEXP poly_ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const double >::type plot_area(plot_areaSEXP);
-    rcpp_result_gen = Rcpp::wrap(Clark_Evans_R(x, y, plot_area));
+    Rcpp::traits::input_parameter< double >::type plotarea(plotareaSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type poly_x(poly_xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type poly_y(poly_ySEXP);
+    rcpp_result_gen = Rcpp::wrap(Clark_Evans_R(x, y, plotarea, poly_x, poly_y));
     return rcpp_result_gen;
 END_RCPP
 }
-// Clark_Evans_Rdc
-double Clark_Evans_Rdc(const std::vector<double>& x, const std::vector<double>& y, const double plot_area, const double ulx, const double uly, const double x_width, const double y_width);
-RcppExport SEXP _biometrics_utilities_Clark_Evans_Rdc(SEXP xSEXP, SEXP ySEXP, SEXP plot_areaSEXP, SEXP ulxSEXP, SEXP ulySEXP, SEXP x_widthSEXP, SEXP y_widthSEXP) {
+// Clark_Evans_R_circle
+double Clark_Evans_R_circle(const std::vector<double>& x, const std::vector<double>& y, double plotarea, const double plot_center_x, const double plot_center_y, const double plot_radius);
+RcppExport SEXP _biometrics_utilities_Clark_Evans_R_circle(SEXP xSEXP, SEXP ySEXP, SEXP plotareaSEXP, SEXP plot_center_xSEXP, SEXP plot_center_ySEXP, SEXP plot_radiusSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const double >::type plot_area(plot_areaSEXP);
-    Rcpp::traits::input_parameter< const double >::type ulx(ulxSEXP);
-    Rcpp::traits::input_parameter< const double >::type uly(ulySEXP);
-    Rcpp::traits::input_parameter< const double >::type x_width(x_widthSEXP);
-    Rcpp::traits::input_parameter< const double >::type y_width(y_widthSEXP);
-    rcpp_result_gen = Rcpp::wrap(Clark_Evans_Rdc(x, y, plot_area, ulx, uly, x_width, y_width));
+    Rcpp::traits::input_parameter< double >::type plotarea(plotareaSEXP);
+    Rcpp::traits::input_parameter< const double >::type plot_center_x(plot_center_xSEXP);
+    Rcpp::traits::input_parameter< const double >::type plot_center_y(plot_center_ySEXP);
+    Rcpp::traits::input_parameter< const double >::type plot_radius(plot_radiusSEXP);
+    rcpp_result_gen = Rcpp::wrap(Clark_Evans_R_circle(x, y, plotarea, plot_center_x, plot_center_y, plot_radius));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -227,8 +228,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_curtis_rd", (DL_FUNC) &_biometrics_utilities_curtis_rd, 3},
     {"_biometrics_utilities_reineke_sdi", (DL_FUNC) &_biometrics_utilities_reineke_sdi, 3},
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
-    {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 3},
-    {"_biometrics_utilities_Clark_Evans_Rdc", (DL_FUNC) &_biometrics_utilities_Clark_Evans_Rdc, 7},
+    {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 5},
+    {"_biometrics_utilities_Clark_Evans_R_circle", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R_circle, 6},
     {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 4},
     {"_biometrics_utilities_Arney_CSI", (DL_FUNC) &_biometrics_utilities_Arney_CSI, 4},
     {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},

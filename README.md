@@ -223,29 +223,30 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 -------------
 
-### Clark-Evans Aggregation Index (`clark_evans_R`)
+### Clark-Evans Aggregation Index (`Clark_Evans_R`)
 
-`clark_evans_R( x, y, plot_area )`
+`Clark_Evans_R( x, y, plotarea, plot_x, plot_y )`
 
-`clark_evans_Rdc( x, y, plot_area, ulx, uly, x_width, y_width )`
+`Clark_Evans_R_circle( x, y, plot_area, plot_center_x, plot_center_y, plot_radius )`
 
 where:
 
 - `x` = x coordinates of trees on a plot (vector)
 - `y` = y coordinates of trees on a plot (vector)
-- `plot_area` = plot area in square units (same units as coordinate system)
-- `ulx` = upper left plot corner x coordinate
-- `uly` = upper left plot corner y coordinate
-- `x_width` = width of plot along x axis
-- `y_width` = width of plot along y axis
+- `plotarea` = area of the plot polygon or circle to use if polygon or circle coordinates are not supplied
+- `plot_x` = vector of plot vertices x coordinates
+- `plot_y` = vector of plot vertices y coordinates
+- `plot_center_x` = x coordinate of plot center
+- `plot_center_y` = y coordinate of plot center
+- `plot_radius` = radius of plot
 
-`clark_evans_R` computes the Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
+Clark_Cvans_R` computes the Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
 
-This implementation can use the Donnelly's[^11] edge correction for rectangular plots (`clark_evans_Rdc()`).
+This implementation can use the Donnelly's[^11] edge correction if polygon or circle coordinates are supplied; otherwise an uncorrected estimate is returned.
 
 $R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
 
-`clark_evans_R` returns a scalar with the Clark Evans R statistic.
+`Clark_Evans_R` and `Clark_Evans_R_circle` return a scalar with the Clark Evans R statistic.
 
 -------------
 
@@ -270,6 +271,8 @@ where $ba_j$ and $ba_i$ are the basal areas of the jth and ith tree respectively
 
 Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. If `imperial_units`
 is TRUE, the coordinates will be converted to meters prior to calculations.
+
+This version currently does not adjust for edge effects.
 
 `hegyi` returns ratios for each tree in the input vectors (preserving their order).
 
