@@ -90,11 +90,16 @@ double compute_R( const std::vector<double> &x,
                   const std::vector<double> &y,
                   double plotarea,                  
                   const Point &plotCenter,
-                  const double plotRadius );                  
+                  const double plotRadius );   
+
+std::vector<double> Ripley_Edge_Correction( const std::vector<Point> &trees, 
+                                            const double radius,
+                                            const std::vector<Point> &plot );                                 
 
 std::vector<double> compute_Hegyi( const std::vector<double> &x, 
                                    const std::vector<double> &y,
                                    const std::vector<double> &dbh,
+                                   const std::vector<Point> &plot,
                                    const bool imperial_units );
 
 std::vector<double> compute_Arney_CSI( const std::vector<double> &x,

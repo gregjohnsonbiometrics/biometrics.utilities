@@ -166,16 +166,18 @@ BEGIN_RCPP
 END_RCPP
 }
 // Hegyi
-std::vector<double> Hegyi(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double> dbh, const bool imperial_units);
-RcppExport SEXP _biometrics_utilities_Hegyi(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP) {
+std::vector<double> Hegyi(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double> dbh, const std::vector<double>& poly_x, const std::vector<double>& poly_y, const bool imperial_units);
+RcppExport SEXP _biometrics_utilities_Hegyi(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP poly_xSEXP, SEXP poly_ySEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
     Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type poly_x(poly_xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type poly_y(poly_ySEXP);
     Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
-    rcpp_result_gen = Rcpp::wrap(Hegyi(x, y, dbh, imperial_units));
+    rcpp_result_gen = Rcpp::wrap(Hegyi(x, y, dbh, poly_x, poly_y, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -230,7 +232,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_ccf", (DL_FUNC) &_biometrics_utilities_ccf, 3},
     {"_biometrics_utilities_Clark_Evans_R", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R, 5},
     {"_biometrics_utilities_Clark_Evans_R_circle", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R_circle, 6},
-    {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 4},
+    {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 6},
     {"_biometrics_utilities_Arney_CSI", (DL_FUNC) &_biometrics_utilities_Arney_CSI, 4},
     {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},
     {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},

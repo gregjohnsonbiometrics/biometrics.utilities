@@ -380,6 +380,8 @@ Clark_Evans_R_circle <- function(x, y, plotarea, plot_center_x, plot_center_y, p
 #' @param x              : double | vector of x coordinates of trees on plot
 #' @param y              : double | vector of y coordinates of trees on plot
 #' @param dbh            : double | vector of diameter at breast height 
+#' @param poly_x         : double | vector of plot polygon x coordinates (use 0 if no plot boundaries available). 
+#' @param poly_y         : double | vector of plot polygon y coordinates (use 0 if no plot boundaries available). 
 #' @param imperial_units : bool   | TRUE = imperial, FALSE = metric (default)
 #'
 #' @description
@@ -393,16 +395,24 @@ Clark_Evans_R_circle <- function(x, y, plotarea, plot_center_x, plot_center_y, p
 #' Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. 
 #' If \code{imperial_units} is TRUE, the coordinates will be converted to meters prior to calculations.
 #'
+#' `Hegyi` adjusts for edge effects using Ripley's (1977) edge correction if plot boundaries are supplied, otherwise edge effects are ignored.
+#'
 #' @return
 #' Returns the Hegyi's distance weighted size ratio for each tree. A `NaN` is returned if a tree has a `dbh` of 0.0.
 #'
 #' @examples
 #' data(treelistxy)
-#' Hegyi( treelistxy$x, treelistxy$y, treelist$dbh, imperial_units=T )
+#' min_x <- min(treelistxy$x)
+#' min_y <- min(treelistxy$y)
+#' max_x <- max(treelistxy$x)
+#' max_y <- max(treelistxy$y)
+#' poly_x <- c(min_x, max_x, max_x, min_x)
+#' poly_y <- c(min_y, min_y, max_y, max_y)
+#' Hegyi( treelistxy$x, treelistxy$y, treelist$dbh, ploy_x, poly_y, imperial_units=T )
 #'
 #' @export
-Hegyi <- function(x, y, dbh, imperial_units = FALSE) {
-    .Call(`_biometrics_utilities_Hegyi`, x, y, dbh, imperial_units)
+Hegyi <- function(x, y, dbh, poly_x, poly_y, imperial_units = FALSE) {
+    .Call(`_biometrics_utilities_Hegyi`, x, y, dbh, poly_x, poly_y, imperial_units)
 }
 
 #' @title Arney_CSI() compute Arney's competitive stress index.

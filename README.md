@@ -242,7 +242,7 @@ where:
 
 Clark_Cvans_R` computes the Clark and Evans (1954)[^9] aggregation index. The aggregation index R is a measure of clustering or ordering of trees on a plot. It is the ratio of the observed mean nearest neighbor distance in the trees to that expected for a Poisson point process of the same intensity. A value R > 1 suggests ordering, while R < 1 suggests clustering (unequal inter-tree competition). R has been proposed as a two-sided, distance-dependent tree competition metric.
 
-This implementation can use the Donnelly's[^11] edge correction if polygon or circle coordinates are supplied; otherwise an uncorrected estimate is returned.
+This implementation can use Donnelly's[^11] edge correction if polygon or circle coordinates are supplied; otherwise an uncorrected estimate is returned.
 
 $R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
 
@@ -252,13 +252,15 @@ $R = \frac{\frac{\sum{ d_i }}{N}}{(\frac{A}{N})^{0.5}/2}$
 
 ### Hegyi Competition Index (`Hegyi`)
 
-`hegyi( x, y, dbh, imperial_units )`
+`hegyi( x, y, dbh, plot_x, plot_y, imperial_units )`
 
 where:
 
 - `x` = x coordinates of trees on a plot (vector)
 - `y` = y coordinates of trees on a plot (vector)
 - `dbh` = diameter at breast height (vector)
+- `plot_x` = vector of plot vertices x coordinates
+- `plot_y` = vector of plot vertices y coordinates
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
 `hegyi` computes the distance-weighted size ratio (a two-sided competition index) based on Hegyi (1974)[^10] for trees within a 6-meter fixed radius plot.
@@ -272,7 +274,7 @@ where $ba_j$ and $ba_i$ are the basal areas of the jth and ith tree respectively
 Trees from a plot of arbitrary size can be used. The Hegyi ratio for each tree will be computed based on its neighbors within the 6-meter boundary. If `imperial_units`
 is TRUE, the coordinates will be converted to meters prior to calculations.
 
-This version currently does not adjust for edge effects.
+This version adjusts for edge effects using Ripley's[^14] edge correction if plot coordinates are supplied. If no plot corners are available, the index is unadjusted.
 
 `hegyi` returns ratios for each tree in the input vectors (preserving their order).
 
@@ -358,3 +360,5 @@ The source and binary packages can be found in the repository:
 [^12]: Arney, J.D. 1973. Tables for quantifying competitive stress on individual trees. Pacific Forest Research Centre, Canadian Forest Service, Victoria, BC. Information Report BC-X-78. 47p.
 
 [^13]: Gerrard, D. J. 1969. Competition Quotient: a new measure of the competition affecting individual forest trees. Michigan State University, Agr. Exp. Sta. Res. Bull. 20. 32pp.
+
+[^14]: Ripley, B.D. (1977) Modelling spatial patterns (with discussion). Journal of the Royal Statistical Society, Series B, 39, 172 -- 212.

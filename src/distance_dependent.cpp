@@ -67,7 +67,7 @@ std::vector<double> _findNearestNeighborDistance( const std::vector<double> &x,
 
 // Function to compute the minimum distance from a point to the edges of the plot
 double _minDistanceToPolygonEdge( const Point& p, 
-                           const std::vector<Point>& polygon ) 
+                                  const std::vector<Point>& polygon ) 
 {
     size_t n = polygon.size();
     double minDist = std::numeric_limits<double>::max();
@@ -109,25 +109,9 @@ double _DistanceToCircleEdge( const Point &p,
                               const Point &center,
                               const double radius ) 
 {
-    double Dist = radius - _distance( p, center );
+    double dist = radius - _distance( p, center );
 
-    return Dist;
-}
-
-
-// Function to compute Ripley's edge correction weights
-std::vector<double> _RipleyEdgeCorrection( const std::vector<Point>& points, 
-                                           const std::vector<Point>& plotPolygon ) 
-{
-    size_t n = points.size();
-    std::vector<double> weights(n, 1.0);
-
-    for (size_t i = 0; i < n; ++i) {
-        double distToEdge = _minDistanceToPolygonEdge( points[i], plotPolygon );
-        weights[i] = distToEdge > 0 ? 1.0 / (distToEdge * distToEdge) : 0.0;
-    }
-
-    return weights;
+    return dist;
 }
 
 
@@ -226,7 +210,7 @@ double compute_R( const std::vector<double> &x,
     if( plotRadius > 0 )
     {
         // recompute plot area with circle dimensions
-        double plotarea = PI * plotRadius*plotRadius;
+        plotarea = PI * plotRadius*plotRadius;
 
         // compute Donnelly bias correction
         auto corrections = _DonnellyCorrection( x, y, plotCenter, plotRadius, average_distance );
@@ -244,14 +228,26 @@ double compute_R( const std::vector<double> &x,
     return R;
 }
 
+
 std::vector<double> compute_Hegyi( const std::vector<double> &x, 
                                    const std::vector<double> &y,
                                    const std::vector<double> &dbh,
+                                   const std::vector<Point> &plot,
                                    const bool imperial_units )
 {
-    size_t n = x.size();
+    constexpr double radius = 6.0;
 
+    size_t n = x.size();
     std::vector<double> h( n, 0.0 );
+    std::vector<Point> trees( n );
+    std::vector<double> weights( n, 1.0 );
+
+    for( size_t i = 0; i < n; ++i )
+        trees[i] = Point( x[i], y[i] );
+
+    // compute Ripley edge correction weights if a plot boundary polygon is present
+    if( plot.size() > 0 )
+        weights = Ripley_Edge_Correction( trees, radius, plot );
 
     for( size_t i = 0; i < n; ++i )
     {
@@ -267,8 +263,8 @@ std::vector<double> compute_Hegyi( const std::vector<double> &x,
                 {
                     auto d = _distance( xyi, Point( x[j], y[j] ) );
                     if( imperial_units ) d *= 0.3048;
-                    if( d <= 6.0 && d > 0.0 )
-                        h[i] += ( (dbh[j]*dbh[j]) / di2 ) / d;
+                    if( d <= radius && d > 0.0 )
+                        h[i] += weights[i] * ( (dbh[j]*dbh[j]) / di2 ) / d;
                 }
             }
         } else {
