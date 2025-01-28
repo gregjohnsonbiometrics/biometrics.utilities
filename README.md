@@ -350,9 +350,9 @@ where:
 - `bh`     = height to breast height (scalar)
 - `fit`    = a height-dbh model fit returned by the `hd_fit` function.
 
-`hd_fit` is a function to fit height-dbh curves of the form:
+`hd_fit` is a function to fit height-dbh curves of one of the forms found in Curtis (1967)[^15]:
 
-$ height = bh + e^{(\beta_0 + \beta_1 dbh^{\beta_2})}$
+$height = bh + e^{(\beta_0 + \beta_1 dbh^{\beta_2})}$
 
 where $\beta$ s are parameters to be estimated.
 
@@ -397,3 +397,5 @@ The source and binary packages can be found in the repository:
 [^13]: Gerrard, D. J. 1969. Competition Quotient: a new measure of the competition affecting individual forest trees. Michigan State University, Agr. Exp. Sta. Res. Bull. 20. 32pp.
 
 [^14]: Ripley, B.D. (1977) Modelling spatial patterns (with discussion). Journal of the Royal Statistical Society, Series B, 39, 172 -- 212.
+
+[^15]: Curtis, R. 0. 1967. Height-diameter, and height-diameter-age equations for second growth Douglas-fir. For. Sci. 365-375.
