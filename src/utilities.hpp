@@ -114,4 +114,12 @@ std::vector<double> compute_mcw( const std::vector<int> &fia,
                                  const bool imperial_units,
                                  const int default_fia );
 
+std::vector<double> height_dbh_fit( const std::vector<double> &dbh,
+                                    const std::vector<double> &height,
+                                    const double bh );
+
+std::vector<double> height_dbh_predict( const std::vector<double> &parameters,
+                                        const std::vector<double> &dbh,
+                                        const double bh );
+
 #endif

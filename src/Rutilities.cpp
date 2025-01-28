@@ -625,3 +625,70 @@ Rcpp::DataFrame mcw_species()
 
     return sp_list;
 }
+
+
+//' @title hd_fit() Fit height-dbh curve
+//' @name hd_fit
+//'
+//' @param dbh            : double | vector of diameter at breast height
+//' @param height         : double | vector of total heights
+//' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+//'
+//' @description
+//' Fits a height-diameter curve to provided \code{height} and \code{dbh} vectors. The functional form is:
+//'
+//' \eqn{\widehat{height} = BH + e^{(\beta_0 + \beta_1 dbh^{-\beta_2})}}
+//'
+//' where BH = height to breast height (e.g., 4.5 feet for imperial measurements, 1.37 meters for metric), and \eqn{\beta} s are
+//' parameters to be estimated. Fitting height-dbh curves is often difficult due to limited measurement data (either in observation
+//' count or in range, or both). We are using David Marshall's technique of fitting a linearized form of the equation while iterating
+//' over a range of \eqn{\beta_2} values (-0.1 to -1.0). The \eqn{\beta_2} value yielding the lowest sum of squared errors (SSE) is chosen.
+//'
+//' @return
+//' A vector of estimated parameters suitable for use in \code{hd_predict()}.
+//'
+//' @examples
+//' data(treelist )
+//' hd.model <- hd_fit( treelist$dbh, treelist$height )
+//' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+//' points( treelist$dbh, treelist$height )
+//' 
+//' @export
+// [[Rcpp::export]]
+
+std::vector<double> hd_fit( const std::vector<double> &dbh,
+                            const std::vector<double> &height,
+                            const double bh = 4.5 )
+{
+    return height_dbh_fit( dbh, height, bh );
+}
+
+//' @title hd_predict() Use parameter estimates from \code{hd_fit(0)} to predict heights for a vector of \code{dbh}.
+//' @name hd_predict
+//'
+//' @param parms          : double | vector of height-dbh equation parameters
+//' @param dbh            : double | vector of diameter at breast height
+//' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+//'
+//' @description
+//' Predicts heights for a \code{dbh} vector. See \link{hd_fit} for details on the parameter estimates used in the prediction.
+//'
+//' @return
+//' A vector of predicted heights for each \code{dbh} supplied.
+//'
+//' @examples
+//' data(treelist )
+//' hd.model <- hd_fit( treelist$dbh, treelist$height )
+//' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+//' points( treelist$dbh, treelist$height )
+//' 
+//' @export
+// [[Rcpp::export]]
+
+std::vector<double> hd_predict( const std::vector<double> &hd_parameters,
+                                const std::vector<double> &dbh,
+                                const double bh = 4.5 )
+{
+    return height_dbh_predict( hd_parameters, dbh, bh );
+}
+

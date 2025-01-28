@@ -24,12 +24,19 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
-* Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
+
 
 ### Distance Dependent
+
 * Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 * Hegyi's Disance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
 * Arney's Competitive Stress Index ([Arney_CSI](#arneys-competitive-stress-index-arney_csi))
+
+### Utilities
+
+* Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
+* Fit Height-DBH Curves ([hd_fit](#fit-height---dbh-curves-hd_fit))
+* Predict Height from DBH ([hd_predict](#fit-height---dbh-curves-hd_fit))
 
 -------------
 
@@ -327,6 +334,34 @@ equations of the following forms:
 `mcw` returns the maximum crown width for each tree in the input vectors in feet or meters depending on `imperial_units`.
 
 A helper function: `mcw_species()` is available to produce a `data.frame` of FIA species codes and species names with parameter estimates available.
+
+-------------
+
+### Fit Height - DBH Curves (`hd_fit`)
+
+`hd_fit( dbh, height, bh )`
+
+`hd_predict( fit, dbh, bh )`
+
+where:
+
+- `dbh`    = diameter at breast height (vector)
+- `height` = total height (vector)
+- `bh`     = height to breast height (scalar)
+- `fit`    = a height-dbh model fit returned by the `hd_fit` function.
+
+`hd_fit` is a function to fit height-dbh curves of the form:
+
+$ height = bh + e^{(\beta_0 + \beta_1 dbh^{\beta_2})}$
+
+where $\beta$ s are parameters to be estimated.
+
+Fitting height-dbh curves is often difficult due to limited measurement data (either in observation count or in range, or both). We are using David Marshall's 
+technique of fitting a linearized form of the equation while iterating over a range of $\beta_2$ values (-0.1 to -1.0). The $\beta_2$ value yielding the lowest sum of squared errors
+(SSE) is chosen.
+
+`hd_predict` is used to predict `height` for a vector of `dbh` values given parameter estimates from `hd_fit`.
+
 
 ## R Packages
 

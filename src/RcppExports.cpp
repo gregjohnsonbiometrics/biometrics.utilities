@@ -219,6 +219,32 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// hd_fit
+std::vector<double> hd_fit(const std::vector<double>& dbh, const std::vector<double>& height, const double bh);
+RcppExport SEXP _biometrics_utilities_hd_fit(SEXP dbhSEXP, SEXP heightSEXP, SEXP bhSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< const double >::type bh(bhSEXP);
+    rcpp_result_gen = Rcpp::wrap(hd_fit(dbh, height, bh));
+    return rcpp_result_gen;
+END_RCPP
+}
+// hd_predict
+std::vector<double> hd_predict(const std::vector<double>& hd_parameters, const std::vector<double>& dbh, const double bh);
+RcppExport SEXP _biometrics_utilities_hd_predict(SEXP hd_parametersSEXP, SEXP dbhSEXP, SEXP bhSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type hd_parameters(hd_parametersSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const double >::type bh(bhSEXP);
+    rcpp_result_gen = Rcpp::wrap(hd_predict(hd_parameters, dbh, bh));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -236,6 +262,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_Arney_CSI", (DL_FUNC) &_biometrics_utilities_Arney_CSI, 4},
     {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},
     {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},
+    {"_biometrics_utilities_hd_fit", (DL_FUNC) &_biometrics_utilities_hd_fit, 3},
+    {"_biometrics_utilities_hd_predict", (DL_FUNC) &_biometrics_utilities_hd_predict, 3},
     {NULL, NULL, 0}
 };
 
