@@ -25,6 +25,11 @@ struct Point {
     double x, y;
 };
 
+struct TREE {
+    double dbh;
+    double height;
+};
+
 
 // sorting machinery for generated indices to decreasing sorted vector 
 template <typename T>

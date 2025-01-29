@@ -2,27 +2,30 @@
 % Please edit documentation in R/RcppExports.R
 \name{hd_predict}
 \alias{hd_predict}
-\title{hd_predict() Use parameter estimates from \code{hd_fit(0)} to predict heights for a vector of \code{dbh}.}
+\title{hd_predict() Use parameter estimates from \code{hd_fit} to predict heights for a vector of \code{dbh}.}
 \usage{
-hd_predict(hd_parameters, dbh, bh = 4.5)
+hd_predict(hd_parameters, fia, dbh, bh = 4.5)
 }
 \arguments{
+\item{fia}{: int    | vector of FIA species codes}
+
 \item{dbh}{: double | vector of diameter at breast height}
 
 \item{bh}{: double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)}
 
-\item{parms}{: double | vector of height-dbh equation parameters}
+\item{parms}{: double | data.frame returned by \code{\link{hd_fit}}}
 }
 \value{
-A vector of predicted heights for each \code{dbh} supplied.
+A vector of predicted heights for each tree supplied in the original order. Note: species without sufficient observations
+will have a height of 0.0 returned.
 }
 \description{
 Predicts heights for a \code{dbh} vector. See \link{hd_fit} for details on the parameter estimates used in the prediction.
 }
 \examples{
 data(treelist )
-hd.model <- hd_fit( treelist$dbh, treelist$height )
-plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 points( treelist$dbh, treelist$height )
 
 }

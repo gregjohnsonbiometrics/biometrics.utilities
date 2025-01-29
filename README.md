@@ -339,12 +339,13 @@ A helper function: `mcw_species()` is available to produce a `data.frame` of FIA
 
 ### Fit Height - DBH Curves (`hd_fit`)
 
-`hd_fit( dbh, height, bh )`
+`hd_fit( fia, dbh, height, bh )`
 
-`hd_predict( fit, dbh, bh )`
+`hd_predict( fit, fia, dbh, bh )`
 
 where:
 
+- `fia`    = FIA numeric species code (vector)
 - `dbh`    = diameter at breast height (vector)
 - `height` = total height (vector)
 - `bh`     = height to breast height (scalar)
@@ -356,9 +357,13 @@ $height = bh + e^{(\beta_0 + \beta_1 dbh^{\beta_2})}$
 
 where $\beta$ s are parameters to be estimated.
 
+Separate curves are fit to each species. If a species has less than 3 observations, a parameter set of 0.0 is generated.
+
 Fitting height-dbh curves is often difficult due to limited measurement data (either in observation count or in range, or both). We are using David Marshall's 
 technique of fitting a linearized form of the equation while iterating over a range of $\beta_2$ values (-0.1 to -1.0). The $\beta_2$ value yielding the lowest sum of squared errors
 (SSE) is chosen.
+
+`hd_fit` returns a `data.frame` of parameter estimates by FIA species code.
 
 `hd_predict` is used to predict `height` for a vector of `dbh` values given parameter estimates from `hd_fit`.
 

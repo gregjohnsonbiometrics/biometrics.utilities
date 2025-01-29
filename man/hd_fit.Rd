@@ -4,9 +4,11 @@
 \alias{hd_fit}
 \title{hd_fit() Fit height-dbh curve}
 \usage{
-hd_fit(dbh, height, bh = 4.5)
+hd_fit(fia, dbh, height, bh = 4.5)
 }
 \arguments{
+\item{fia}{: int    | vector of FIA species codes}
+
 \item{dbh}{: double | vector of diameter at breast height}
 
 \item{height}{: double | vector of total heights}
@@ -14,10 +16,16 @@ hd_fit(dbh, height, bh = 4.5)
 \item{bh}{: double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)}
 }
 \value{
-A vector of estimated parameters suitable for use in \code{hd_predict()}.
+A \code{data.frame} for use in \code{hd_predict()} with the following members:
+\itemize{
+   \item fia     : FIA species code.
+   \item beta_0  : \eqn{\beta_0} parameter estimate.
+   \item beta_1  : \eqn{\beta_1} parameter estimate.
+   \item beta_2  : \eqn{\beta_2} parameter estimate.
+}
 }
 \description{
-Fits a height-diameter curve to provided \code{height} and \code{dbh} vectors. The functional form is:
+Fits a height-diameter curve to each species using provided \code{height} and \code{dbh} vectors. The functional form is:
 
 \eqn{\widehat{height} = BH + e^{(\beta_0 + \beta_1 dbh^{-\beta_2})}}
 
@@ -25,11 +33,13 @@ where BH = height to breast height (e.g., 4.5 feet for imperial measurements, 1.
 parameters to be estimated. Fitting height-dbh curves is often difficult due to limited measurement data (either in observation
 count or in range, or both). We are using David Marshall's technique of fitting a linearized form of the equation while iterating
 over a range of \eqn{\beta_2} values (-0.1 to -1.0). The \eqn{\beta_2} value yielding the lowest sum of squared errors (SSE) is chosen.
+
+If a species has less than 3 observations, no parameters are estimated and a vector of 0.0 is returned.
 }
 \examples{
 data(treelist )
-hd.model <- hd_fit( treelist$dbh, treelist$height )
-plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 points( treelist$dbh, treelist$height )
 
 }

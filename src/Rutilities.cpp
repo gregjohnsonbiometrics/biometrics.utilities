@@ -1,5 +1,7 @@
 #include <Rcpp.h>
 #include "utilities.hpp"
+#include <unordered_map>
+#include <set>
 
 //' @title bal() compute basal area in larger trees.
 //' @name bal
@@ -630,12 +632,13 @@ Rcpp::DataFrame mcw_species()
 //' @title hd_fit() Fit height-dbh curve
 //' @name hd_fit
 //'
-//' @param dbh            : double | vector of diameter at breast height
-//' @param height         : double | vector of total heights
-//' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+//' @param fia    : int    | vector of FIA species codes
+//' @param dbh    : double | vector of diameter at breast height
+//' @param height : double | vector of total heights
+//' @param bh     : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
 //'
 //' @description
-//' Fits a height-diameter curve to provided \code{height} and \code{dbh} vectors. The functional form is:
+//' Fits a height-diameter curve to each species using provided \code{height} and \code{dbh} vectors. The functional form is:
 //'
 //' \eqn{\widehat{height} = BH + e^{(\beta_0 + \beta_1 dbh^{-\beta_2})}}
 //'
@@ -644,51 +647,140 @@ Rcpp::DataFrame mcw_species()
 //' count or in range, or both). We are using David Marshall's technique of fitting a linearized form of the equation while iterating
 //' over a range of \eqn{\beta_2} values (-0.1 to -1.0). The \eqn{\beta_2} value yielding the lowest sum of squared errors (SSE) is chosen.
 //'
+//' If a species has less than 3 observations, no parameters are estimated and a vector of 0.0 is returned.
+//'
 //' @return
-//' A vector of estimated parameters suitable for use in \code{hd_predict()}.
+//' A \code{data.frame} for use in \code{hd_predict()} with the following members:
+//' \itemize{
+//'    \item fia     : FIA species code.
+//'    \item beta_0  : \eqn{\beta_0} parameter estimate.
+//'    \item beta_1  : \eqn{\beta_1} parameter estimate.
+//'    \item beta_2  : \eqn{\beta_2} parameter estimate.
+//' }
+//'
 //'
 //' @examples
 //' data(treelist )
-//' hd.model <- hd_fit( treelist$dbh, treelist$height )
-//' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+//' hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+//' plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 //' points( treelist$dbh, treelist$height )
 //' 
 //' @export
 // [[Rcpp::export]]
 
-std::vector<double> hd_fit( const std::vector<double> &dbh,
-                            const std::vector<double> &height,
-                            const double bh = 4.5 )
+Rcpp::DataFrame hd_fit( const std::vector<int>    &fia,
+                        const std::vector<double> &dbh,
+                        const std::vector<double> &height,
+                        const double bh = 4.5 )
 {
-    return height_dbh_fit( dbh, height, bh );
+    std::unordered_map<int,std::vector<double>> parms;
+
+    // build set of fia species codes
+    std::set<int> fia_codes;
+    for( size_t i = 0; i < fia.size(); ++i )
+        fia_codes.insert( fia[i] );
+
+    for( auto &spp : fia_codes )
+    {
+        std::vector<double> t_dbh;
+        std::vector<double> t_ht;
+        for( size_t j = 0; j < dbh.size(); ++j )
+        {
+            // build species-specific vectors
+            if( fia[j] == spp )
+            {
+                t_dbh.emplace_back( dbh[j] );
+                t_ht.emplace_back( height[j] );
+            }
+
+            // fit regression
+            if( t_dbh.size() >= 3 )
+                parms[spp] = height_dbh_fit( t_dbh, t_ht, bh );
+            else
+                parms[spp] = {0.0, 0.0, 0.0};
+        }
+    }
+
+     std::vector<int> fia_out( fia_codes.begin(), fia_codes.end() );
+     size_t n = fia_out.size();
+     std::vector<double> beta_0( n, 0.0 );
+     std::vector<double> beta_1( n, 0.0 );
+     std::vector<double> beta_2( n, 0.0 );
+     for( size_t i = 0; i < n; ++i )
+     {
+        beta_0[i] = parms[fia_out[i]][0]; 
+        beta_1[i] = parms[fia_out[i]][1]; 
+        beta_2[i] = parms[fia_out[i]][2];  
+     }
+
+     return Rcpp::DataFrame::create (
+        Rcpp::Named("fia")    = fia_out,
+        Rcpp::Named("beta_0") = beta_0,
+        Rcpp::Named("beta_1") = beta_1,
+        Rcpp::Named("beta_2") = beta_2 );
 }
 
-//' @title hd_predict() Use parameter estimates from \code{hd_fit(0)} to predict heights for a vector of \code{dbh}.
+//' @title hd_predict() Use parameter estimates from \code{hd_fit} to predict heights for a vector of \code{dbh}.
 //' @name hd_predict
 //'
-//' @param parms          : double | vector of height-dbh equation parameters
-//' @param dbh            : double | vector of diameter at breast height
-//' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+//' @param parms : double | data.frame returned by \code{\link{hd_fit}}
+//' @param fia   : int    | vector of FIA species codes
+//' @param dbh   : double | vector of diameter at breast height
+//' @param bh    : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
 //'
 //' @description
 //' Predicts heights for a \code{dbh} vector. See \link{hd_fit} for details on the parameter estimates used in the prediction.
 //'
 //' @return
-//' A vector of predicted heights for each \code{dbh} supplied.
+//' A vector of predicted heights for each tree supplied in the original order. Note: species without sufficient observations
+//' will have a height of 0.0 returned.
 //'
 //' @examples
 //' data(treelist )
-//' hd.model <- hd_fit( treelist$dbh, treelist$height )
-//' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+//' hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+//' plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 //' points( treelist$dbh, treelist$height )
 //' 
 //' @export
 // [[Rcpp::export]]
 
-std::vector<double> hd_predict( const std::vector<double> &hd_parameters,
+std::vector<double> hd_predict( Rcpp::DataFrame &hd_parameters,
+                                const std::vector<int>    &fia,
                                 const std::vector<double> &dbh,
                                 const double bh = 4.5 )
 {
-    return height_dbh_predict( hd_parameters, dbh, bh );
+    std::vector<double> ht_out;
+    std::vector<int> id_out;
+    std::vector<int> data_order( fia.size() );
+    std::iota( data_order.begin(), data_order.end(), 0 );
+
+    std::vector<int> spp = hd_parameters[0];
+    std::vector<double> beta_0 = hd_parameters[1];
+    std::vector<double> beta_1 = hd_parameters[2];
+    std::vector<double> beta_2 = hd_parameters[3];
+
+    for( size_t i = 0; i < spp.size(); ++i )
+    {
+        std::vector<double> t_dbh;
+        for( size_t j = 0; j < dbh.size(); ++j )
+        {
+            // build species-specific vectors
+            if( fia[j] == spp[i] )
+            {
+                t_dbh.emplace_back( dbh[j] );
+                id_out.emplace_back( data_order[j] );
+            }
+        }
+
+        auto t_ht = height_dbh_predict( {beta_0[i],beta_1[i],beta_2[i]}, t_dbh, bh );
+
+        ht_out.insert(std::end(ht_out), std::begin(t_ht), std::end(t_ht));
+    }
+
+    std::vector<double> ht_out_sorted;
+    for( auto i : sort_indices( id_out, true ) )
+        ht_out_sorted.emplace_back( ht_out[i] );
+
+    return ht_out_sorted;
 }
 

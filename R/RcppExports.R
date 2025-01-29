@@ -497,12 +497,13 @@ mcw_species <- function() {
 #' @title hd_fit() Fit height-dbh curve
 #' @name hd_fit
 #'
-#' @param dbh            : double | vector of diameter at breast height
-#' @param height         : double | vector of total heights
-#' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+#' @param fia    : int    | vector of FIA species codes
+#' @param dbh    : double | vector of diameter at breast height
+#' @param height : double | vector of total heights
+#' @param bh     : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
 #'
 #' @description
-#' Fits a height-diameter curve to provided \code{height} and \code{dbh} vectors. The functional form is:
+#' Fits a height-diameter curve to each species using provided \code{height} and \code{dbh} vectors. The functional form is:
 #'
 #' \eqn{\widehat{height} = BH + e^{(\beta_0 + \beta_1 dbh^{-\beta_2})}}
 #'
@@ -511,41 +512,52 @@ mcw_species <- function() {
 #' count or in range, or both). We are using David Marshall's technique of fitting a linearized form of the equation while iterating
 #' over a range of \eqn{\beta_2} values (-0.1 to -1.0). The \eqn{\beta_2} value yielding the lowest sum of squared errors (SSE) is chosen.
 #'
+#' If a species has less than 3 observations, no parameters are estimated and a vector of 0.0 is returned.
+#'
 #' @return
-#' A vector of estimated parameters suitable for use in \code{hd_predict()}.
+#' A \code{data.frame} for use in \code{hd_predict()} with the following members:
+#' \itemize{
+#'    \item fia     : FIA species code.
+#'    \item beta_0  : \eqn{\beta_0} parameter estimate.
+#'    \item beta_1  : \eqn{\beta_1} parameter estimate.
+#'    \item beta_2  : \eqn{\beta_2} parameter estimate.
+#' }
+#'
 #'
 #' @examples
 #' data(treelist )
-#' hd.model <- hd_fit( treelist$dbh, treelist$height )
-#' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+#' hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+#' plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 #' points( treelist$dbh, treelist$height )
 #' 
 #' @export
-hd_fit <- function(dbh, height, bh = 4.5) {
-    .Call(`_biometrics_utilities_hd_fit`, dbh, height, bh)
+hd_fit <- function(fia, dbh, height, bh = 4.5) {
+    .Call(`_biometrics_utilities_hd_fit`, fia, dbh, height, bh)
 }
 
-#' @title hd_predict() Use parameter estimates from \code{hd_fit(0)} to predict heights for a vector of \code{dbh}.
+#' @title hd_predict() Use parameter estimates from \code{hd_fit} to predict heights for a vector of \code{dbh}.
 #' @name hd_predict
 #'
-#' @param parms          : double | vector of height-dbh equation parameters
-#' @param dbh            : double | vector of diameter at breast height
-#' @param bh             : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
+#' @param parms : double | data.frame returned by \code{\link{hd_fit}}
+#' @param fia   : int    | vector of FIA species codes
+#' @param dbh   : double | vector of diameter at breast height
+#' @param bh    : double | height to breast height (default is 4.5 feet; use 1.37 for metric measurements)
 #'
 #' @description
 #' Predicts heights for a \code{dbh} vector. See \link{hd_fit} for details on the parameter estimates used in the prediction.
 #'
 #' @return
-#' A vector of predicted heights for each \code{dbh} supplied.
+#' A vector of predicted heights for each tree supplied in the original order. Note: species without sufficient observations
+#' will have a height of 0.0 returned.
 #'
 #' @examples
 #' data(treelist )
-#' hd.model <- hd_fit( treelist$dbh, treelist$height )
-#' plot( treelist$dbh, hd_predict( hd.model, treelist$dbh ), col="green" )
+#' hd.model <- hd_fit( treelist$species, treelist$dbh, treelist$height )
+#' plot( treelist$dbh, hd_predict( hd.model, treelist$species, treelist$dbh ), col="green" )
 #' points( treelist$dbh, treelist$height )
 #' 
 #' @export
-hd_predict <- function(hd_parameters, dbh, bh = 4.5) {
-    .Call(`_biometrics_utilities_hd_predict`, hd_parameters, dbh, bh)
+hd_predict <- function(hd_parameters, fia, dbh, bh = 4.5) {
+    .Call(`_biometrics_utilities_hd_predict`, hd_parameters, fia, dbh, bh)
 }
 
