@@ -4,6 +4,7 @@
 // -D_GLIBCXX_ASSERTIONS
 
 #include <vector>
+#include <unordered_map>
 #include <string>
 #include <numeric>      // std::iota, std::accumulate
 #include <algorithm>    // std::sort, std::stable_sort
@@ -50,14 +51,15 @@ std::vector<double> compute_bal( const std::vector<double> &dbh, const std::vect
 
 std::vector<double> compute_ccfl( const std::vector<double> &dbh, const std::vector<double> &mcw, const std::vector<double> &expansion, const bool imperial );
 
-double compute_cch( const double ht,
+double compute_cch( const std::vector<int>    &species,
+                    const double ht,
                     const std::vector<double> &dbh,
                     const std::vector<double> &height,
                     const std::vector<double> &crown_length,
                     const std::vector<double> &dacb,        
                     const std::vector<double> &lcw,
                     const std::vector<double> &expansion,
-                    const std::vector<double> &parameters,
+                    const std::unordered_map<int,std::vector<double>> &parameters,
                     const bool imperial );
 
 double compute_dominant_height( const std::vector<double> &height,

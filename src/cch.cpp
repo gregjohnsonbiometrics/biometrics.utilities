@@ -2,7 +2,6 @@
 
 #include "utilities.hpp"
 #include <cmath>
-#include <vector>
 
 // Predict crown width at a relative position up the tree using the functional form:
 //    adjustment = rp^(b0 + b1*rp^0.5 + b2*height/dbh)
@@ -26,7 +25,8 @@ double _cwa( const double rp,
 
 
 // compute crown closure at tree tip (cch) for a tree
-double compute_cch( const double ht, // height of tree to compute cch for
+double compute_cch( const std::vector<int>    &species,
+                    const double ht, // height of tree to compute cch for
                     // attributes of trees in the stand
                     const std::vector<double> &dbh,
                     const std::vector<double> &height,
@@ -34,7 +34,7 @@ double compute_cch( const double ht, // height of tree to compute cch for
                     const std::vector<double> &dacb,         // distance above crown base to largest crown width (lcw)
                     const std::vector<double> &lcw,          // largest crown width of each tree
                     const std::vector<double> &expansion,
-                    const std::vector<double> &parameters,   // three parameters of equation describing crown shape from base to tip
+                    const std::unordered_map<int,std::vector<double>> &parameters,   // three parameters of equation describing crown shape from base to tip by species
                     const bool imperial )                    // (see _cwa() function for details.)
 {
 
@@ -45,6 +45,8 @@ double compute_cch( const double ht, // height of tree to compute cch for
     double last_dbh = -999.0;
     double last_height = -999.0;
     double last_crown_length = -999.0;
+
+    std::vector<double> default_parameters = {1.0,0.0,0.0};
 
     // crown area to percentage of acre constant
     const double area_conversion = 0.25 * PI / ( imperial ? 43560.0 : 10000.0 );
@@ -89,7 +91,11 @@ double compute_cch( const double ht, // height of tree to compute cch for
             rp = (height[i] - ht) / (height[i] - hlcw);
 
             // compute adjusted crown width (cwa is a function to compute crown width at a relative position in the crown)
-            cw = _cwa( rp, lcw[i], dbh[i], height[i], parameters );
+            try {
+                cw = _cwa( rp, lcw[i], dbh[i], height[i], parameters.at(species[i]) );
+            } catch( ... ) {
+                    cw = _cwa( rp, lcw[i], dbh[i], height[i], default_parameters );
+            }
         }
         else
         {

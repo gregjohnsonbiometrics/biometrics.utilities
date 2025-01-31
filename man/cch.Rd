@@ -5,6 +5,7 @@
 \title{cch() compute closure at tree tip without using interpolation.}
 \usage{
 cch(
+  species,
   dbh,
   height,
   crown_length,
@@ -16,6 +17,8 @@ cch(
 )
 }
 \arguments{
+\item{species}{: int    | vector of species codes}
+
 \item{dbh}{: double | vector of diameter at breast height}
 
 \item{height}{: double | vector of total height}
@@ -28,7 +31,7 @@ cch(
 
 \item{expansion}{: double | vector of expansion factors}
 
-\item{parameters}{: double | vector of parameters (see below)}
+\item{parameters}{: data.frame | data.frame of parameters by species (see below)}
 
 \item{imperial_units}{: bool   | TRUE = imperial (default), FALSE = metric}
 }
@@ -41,11 +44,20 @@ plane tangential to the tip of the tree.
 
 cch() depends on \code{dacb} and \code{lcw} which must be estimated for each tree independently (normally species and size dependent).
 
-The \code{parameters} vector contains coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
+The \code{parameters} \code{data.frame} contains species-specific coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
+
 \eqn{adjustment = rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}}
+
 where \code{rp} is the relative position in the crown, and \code{adjustment} is the estimated percentage of the \code{lcw} at that point
 in the crown. The \code{parameters} are the \eqn{\beta} values in the equation. A simple cone can be created by a \code{parameters} 
-vector of c(1.0,0.0,0.0).
+vector of c(1.0,0.0,0.0) and is the default if species-specific parameters are not found. The \code{data.frame} has the following members:
+
+\itemize{
+   \item species : species code
+   \item b0      : \eqn{\beta_0} parameter
+   \item b1      : \eqn{\beta_1} parameter
+   \item b2      : \eqn{\beta_2} parameter
+}
 }
 \examples{
 data(treelist)
@@ -63,7 +75,7 @@ dacb.parms <- data.frame( species=c(202,263,312,351),
                          d0=c(0.06200, 0.355270, 0.0, 0.0 ) )
 
 # use crown profile parameters for Douglas-fir
-cch.parms <- c( 0.929973, -0.1352120, -0.0157579 )
+cch.parms <- data.frame( species=202, b0=0.929973, b1=-0.1352120, b2=-0.0157579 )
 
 temp <- treelist \%>\% mutate( mcw.hat=mcw( species, dbh ) ) \%>\%
             inner_join( lcw.parms, by="species" ) \%>\%
@@ -73,6 +85,6 @@ temp <- treelist \%>\% mutate( mcw.hat=mcw( species, dbh ) ) \%>\%
                     lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)),
                     dacb = d0 * crown_length )
                     
-cch( temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
+cch( temp$species, temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
 
 }

@@ -74,13 +74,14 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //' @title cch() compute closure at tree tip without using interpolation.
 //' @name cch
 //' 
+//' @param species         : int    | vector of species codes
 //' @param dbh             : double | vector of diameter at breast height
 //' @param height          : double | vector of total height
 //' @param crown_length    : double | vector of crown lengths
 //' @param dacb            : double | vector of distance above crown base to largest width for each tree
 //' @param lcw             : double | vector of largest crown width for each tree
 //' @param expansion       : double | vector of expansion factors 
-//' @param parameters      : double | vector of parameters (see below)
+//' @param parameters      : data.frame | data.frame of parameters by species (see below)
 //' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 //'
 //' @description 
@@ -89,12 +90,21 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //' 
 //' cch() depends on \code{dacb} and \code{lcw} which must be estimated for each tree independently (normally species and size dependent).
 //' 
-//' The \code{parameters} vector contains coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
+//' The \code{parameters} \code{data.frame} contains species-specific coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
+//'
 //' \eqn{adjustment = rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}}
+//'
 //' where \code{rp} is the relative position in the crown, and \code{adjustment} is the estimated percentage of the \code{lcw} at that point
 //' in the crown. The \code{parameters} are the \eqn{\beta} values in the equation. A simple cone can be created by a \code{parameters} 
-//' vector of c(1.0,0.0,0.0).
-//' 
+//' vector of c(1.0,0.0,0.0) and is the default if species-specific parameters are not found. The \code{data.frame} has the following members:
+//'
+//' \itemize{
+//'    \item species : species code
+//'    \item b0      : \eqn{\beta_0} parameter
+//'    \item b1      : \eqn{\beta_1} parameter
+//'    \item b2      : \eqn{\beta_2} parameter
+//' }
+//'
 //' @return
 //' A vector of \code{cch} values for each tree.
 //' 
@@ -114,7 +124,7 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //'                          d0=c(0.06200, 0.355270, 0.0, 0.0 ) )
 //'
 //' # use crown profile parameters for Douglas-fir
-//' cch.parms <- c( 0.929973, -0.1352120, -0.0157579 )
+//' cch.parms <- data.frame( species=202, b0=0.929973, b1=-0.1352120, b2=-0.0157579 )
 //'
 //' temp <- treelist %>% mutate( mcw.hat=mcw( species, dbh ) ) %>%
 //'             inner_join( lcw.parms, by="species" ) %>%
@@ -124,24 +134,35 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //'                     lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)),
 //'                     dacb = d0 * crown_length )
 //'                     
-//' cch( temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
+//' cch( temp$species, temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
 //'
 //' @export
 // [[Rcpp::export]]
-std::vector<double> cch( const std::vector<double> dbh,
-                         const std::vector<double> height, 
-                         const std::vector<double> crown_length,
-                         const std::vector<double> dacb,
-                         const std::vector<double> lcw,
-                         const std::vector<double> expansion,
-                         const std::vector<double> parameters,
+std::vector<double> cch( const std::vector<int>    &species,
+                         const std::vector<double> &dbh,
+                         const std::vector<double> &height, 
+                         const std::vector<double> &crown_length,
+                         const std::vector<double> &dacb,
+                         const std::vector<double> &lcw,
+                         const std::vector<double> &expansion,
+                         Rcpp::DataFrame &parameters,
                          const bool imperial_units = true )
 {
     std::vector<double> cch_vector;
+    std::unordered_map<int, std::vector<double>> cch_parms;
+    std::vector<int> pspecies = parameters[0];
+    std::vector<double > b0 = parameters[1];
+    std::vector<double > b1 = parameters[2];
+    std::vector<double > b2 = parameters[3];
 
-    for( auto &ht : height )
-    {
-        cch_vector.push_back( compute_cch( ht, dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units ) );
+    for( size_t i = 0; i < parameters.nrow(); ++i )
+        cch_parms[pspecies[i]] = {b0[i],b1[i],b2[i]};
+
+    try {
+        for( auto &ht : height )
+            cch_vector.push_back( compute_cch( species, ht, dbh, height, crown_length, dacb, lcw, expansion, cch_parms, imperial_units ) );
+    } catch( ... ) {
+        throw;
     }
 
     return cch_vector;

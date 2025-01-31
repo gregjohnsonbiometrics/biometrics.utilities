@@ -42,28 +42,37 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 ### Crown closure at tree tip (`cch`)
 
-`cch( dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units )`
+`cch( species, dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units )`
 
 where:
+- `species` = species code (vector)
 - `dbh` = diameter at breast height (vector)
 - `height` = total height (vector)
 - `dacb` = distance above crown base (vector)
 - `lcw` = largest crown width (vector)
 - `expansion` = tree factor to expand to per area basis (vector)
-- `parameters` = vector of 3 parameters used in the `cwa` (crown width above) equation
+- `parameters` = `data.frame` of 3 parameters for each species used in the `cwa` (crown width above) equation
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
 
 `cch`[^2] has been used in growth models to quantify crown competition (typically in conifers). `cch` is the crown area as a fraction of an acre or hectare (depending on units of measure) that lies in a horizontal plane tangential to the tip of the tree. A value of 1.0 for a tree would indicate that the other trees in the stand or plot have crown area at the tip of the subject tree that completely covers the area. In contrast to other existing implementations, this function *does not* use an interpolation table scheme.
 
 `dacb` estimates the distance between the crown base to the largest crown width point in the tree. Hann (1999)[^3] found that this distance was proportional to crown length (`cl`).
 
-`lcw` is an estimate for each tree of the largest crown width. This is usually estimated from species-specific prediction equations{^3].
+`lcw` is an estimate for each tree of the largest crown width. This is usually estimated from species-specific prediction equations[^3].
 
 The `cwa` equation is used to compute the crown width at a point above the largest crown width. The point is usually described by its relative position (i.e. 0 = tip of the tree, 1 = at the largest crown width point). The form of the equation is:
 
 $cwa =  rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}$
 
-where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` vector.
+where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` `data.frame`. The `data.frame` has the
+following members:
+
+- species : species code
+- b0 : $\beta_0$ parameter
+- b1 : $\beta_1$ parameter
+- b2 : $\beta_2$ parameter
+
+If a species is missing from the `data.frame`, a cone is used (1.0, 0.0, 0.0).
 
 `cch` returns a vector of crown closures for each tree.
 

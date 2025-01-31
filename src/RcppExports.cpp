@@ -38,20 +38,21 @@ BEGIN_RCPP
 END_RCPP
 }
 // cch
-std::vector<double> cch(const std::vector<double> dbh, const std::vector<double> height, const std::vector<double> crown_length, const std::vector<double> dacb, const std::vector<double> lcw, const std::vector<double> expansion, const std::vector<double> parameters, const bool imperial_units);
-RcppExport SEXP _biometrics_utilities_cch(SEXP dbhSEXP, SEXP heightSEXP, SEXP crown_lengthSEXP, SEXP dacbSEXP, SEXP lcwSEXP, SEXP expansionSEXP, SEXP parametersSEXP, SEXP imperial_unitsSEXP) {
+std::vector<double> cch(const std::vector<int>& species, const std::vector<double>& dbh, const std::vector<double>& height, const std::vector<double>& crown_length, const std::vector<double>& dacb, const std::vector<double>& lcw, const std::vector<double>& expansion, Rcpp::DataFrame& parameters, const bool imperial_units);
+RcppExport SEXP _biometrics_utilities_cch(SEXP speciesSEXP, SEXP dbhSEXP, SEXP heightSEXP, SEXP crown_lengthSEXP, SEXP dacbSEXP, SEXP lcwSEXP, SEXP expansionSEXP, SEXP parametersSEXP, SEXP imperial_unitsSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type height(heightSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type crown_length(crown_lengthSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type dacb(dacbSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type lcw(lcwSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
-    Rcpp::traits::input_parameter< const std::vector<double> >::type parameters(parametersSEXP);
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type species(speciesSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type crown_length(crown_lengthSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dacb(dacbSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type lcw(lcwSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< Rcpp::DataFrame& >::type parameters(parametersSEXP);
     Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
-    rcpp_result_gen = Rcpp::wrap(cch(dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units));
+    rcpp_result_gen = Rcpp::wrap(cch(species, dbh, height, crown_length, dacb, lcw, expansion, parameters, imperial_units));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -251,7 +252,7 @@ END_RCPP
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
     {"_biometrics_utilities_ccfl", (DL_FUNC) &_biometrics_utilities_ccfl, 4},
-    {"_biometrics_utilities_cch", (DL_FUNC) &_biometrics_utilities_cch, 8},
+    {"_biometrics_utilities_cch", (DL_FUNC) &_biometrics_utilities_cch, 9},
     {"_biometrics_utilities_dominant_height", (DL_FUNC) &_biometrics_utilities_dominant_height, 5},
     {"_biometrics_utilities_qmd", (DL_FUNC) &_biometrics_utilities_qmd, 2},
     {"_biometrics_utilities_relative_spacing", (DL_FUNC) &_biometrics_utilities_relative_spacing, 3},
