@@ -37,6 +37,11 @@ double compute_cch( const std::vector<int>    &species,
                     const std::unordered_map<int,std::vector<double>> &parameters,   // three parameters of equation describing crown shape from base to tip by species
                     const bool imperial )                    // (see _cwa() function for details.)
 {
+    size_t n = species.size();
+
+    if( n == 0 || dbh.size() != n || height.size() != n || crown_length.size() != n || dacb.size() != n || lcw.size() != n ||
+        expansion.size() != n || parameters.size() == 0 )
+        return NAN;
 
     double cch = 0.0;
     double cw;

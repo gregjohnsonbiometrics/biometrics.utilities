@@ -418,7 +418,7 @@ Clark_Evans_R_circle <- function(x, y, plotarea, plot_center_x, plot_center_y, p
 #' max_y <- max(treelistxy$y)
 #' poly_x <- c(min_x, max_x, max_x, min_x)
 #' poly_y <- c(min_y, min_y, max_y, max_y)
-#' Hegyi( treelistxy$x, treelistxy$y, treelist$dbh, ploy_x, poly_y, imperial_units=T )
+#' Hegyi( treelistxy$x, treelistxy$y, treelistxy$dbh, poly_x, poly_y, imperial_units=T )
 #'
 #' @export
 Hegyi <- function(x, y, dbh, poly_x, poly_y, imperial_units = FALSE) {

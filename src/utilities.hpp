@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <cmath>
 #include <numeric>      // std::iota, std::accumulate
 #include <algorithm>    // std::sort, std::stable_sort
 

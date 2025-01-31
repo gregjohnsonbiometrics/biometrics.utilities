@@ -12,6 +12,9 @@
 
 std::vector<double> compute_bal( const std::vector<double> &dbh, const std::vector<double> &expansion_factor, const bool imperial )
 {
+    if( dbh.size() == 0 || dbh.size() != expansion_factor.size() )
+        return std::vector<double>{};
+
     double _bal = 0.0;
     double pending = 0.0;
     std::vector<double>bal(dbh.size(),0.0);
@@ -43,6 +46,9 @@ std::vector<double> compute_bal( const std::vector<double> &dbh, const std::vect
 
 std::vector<double> compute_ccfl( const std::vector<double> &dbh, const std::vector<double> &mcw, const std::vector<double> &expansion, const bool imperial=true )
 {
+    if( dbh.size() == 0 || dbh.size() != mcw.size() || dbh.size() != expansion.size() )
+        return std::vector<double>{};
+
     double _ccfl = 0.0;
     double pending = 0.0;
     std::vector<double>ccfl(dbh.size(),0.0);
@@ -81,6 +87,9 @@ double compute_dominant_height( const std::vector<double> &height,
                                 const int dominant_cohort_size,
                                 const int method )
 {
+    if( height.size() == 0 || dbh.size() != expansion.size() || dbh.size() != height.size() || dominant_cohort_size <= 0 )
+        return NAN;
+
     double dominant_height = 0.0;
 
     if( method == 2 )
@@ -125,6 +134,9 @@ double compute_dominant_height( const std::vector<double> &height,
 double compute_qmd( const std::vector<double> &dbh,
                     const std::vector<double> &expansion )
 {
+    if( dbh.size() == 0 || dbh.size() != expansion.size() )
+        return NAN;
+
     // compute quadratic mean diameter
     double stocking = 0.0;
     double qmd = 0.0;
@@ -148,6 +160,9 @@ double compute_relative_spacing( const std::vector<double> &expansion,
                                  const double dominant_height,
                                  const bool imperial )
 {
+    if( expansion.size() == 0 || dominant_height <= 0.0 )
+        return NAN;
+
     double area = (imperial ? 43560.0 : 10000.0 );
     auto stocking = std::accumulate( expansion.begin(), expansion.end(), 0.0 );
 
@@ -163,6 +178,9 @@ double compute_curtis_rd( const std::vector<double> &dbh,
                           const std::vector<double> &expansion,
                           const bool imperial )
 {
+    if( expansion.size() == 0 || dbh.size() != expansion.size() )
+        return NAN;
+
     double k = imperial ? 0.005454154 : 0.00007853975;
 
     // compute stocking and quadratic mean diameter
@@ -189,6 +207,9 @@ double compute_reineke_sdi( const std::vector<double> &dbh,
                             const std::vector<double> &expansion,
                             const bool imperial )
 {
+    if( expansion.size() == 0 || dbh.size() != expansion.size() )
+        return NAN;
+
     double k = imperial ? 10.0 : 25.4;
 
     // compute stocking and quadratic mean diameter
@@ -214,6 +235,9 @@ double compute_ccf( const std::vector<double> &crown_width,
                     const std::vector<double> &expansion,
                     const bool imperial )
 {
+    if( expansion.size() == 0 || crown_width.size() != expansion.size() )
+        return NAN;
+
     const double area = imperial ? 43560.0 : 10000.0;
 
     double ca = 0.0;

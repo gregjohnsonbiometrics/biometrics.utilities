@@ -1,6 +1,5 @@
 #include "utilities.hpp"
 #include <iostream>
-#include <cmath>
 #include <limits>
 
 // Function to calculate Euclidean distance between two points
@@ -167,6 +166,15 @@ double compute_R( const std::vector<double> &x,
                   const std::vector<double> &poly_y )
 {
     double n = x.size();
+
+    // if no area and no polygon information, cannot compute R
+    if( plotarea <= 0.0 && (poly_x.size() == 0 || poly_y.size() == 0 ) )
+        return NAN;
+
+    // if mismatch on vector sizes, return NAN
+    if( n == 0 || y.size() == 0 || n != y.size() )
+        return NAN;
+
     auto distances = _findNearestNeighborDistance( x, y );
     auto average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n;
     std::vector<Point> plotPolygon( poly_x.size() );
@@ -204,6 +212,11 @@ double compute_R( const std::vector<double> &x,
                   const double plotRadius )
 {
     double n = x.size();
+
+    // if mismatch on vector sizes, return NAN
+    if( n == 0 || y.size() == 0 || n != y.size() )
+        return NAN;
+
     auto distances = _findNearestNeighborDistance( x, y );
     auto average_distance = std::accumulate(distances.begin(), distances.end(), 0.0) / n;
 
@@ -235,9 +248,13 @@ std::vector<double> compute_Hegyi( const std::vector<double> &x,
                                    const std::vector<Point> &plot,
                                    const bool imperial_units )
 {
-    constexpr double radius = 6.0;
-
     size_t n = x.size();
+
+    // if no tree location data or if mismatch on vector sizes, return empty vector
+    if( n == 0 || y.size() == 0  || n != y.size() || dbh.size() != n )
+        return std::vector<double>{};
+
+    constexpr double radius = 6.0;
     std::vector<double> h( n, 0.0 );
     std::vector<Point> trees( n );
     std::vector<double> weights( n, 1.0 );
@@ -276,15 +293,18 @@ std::vector<double> compute_Hegyi( const std::vector<double> &x,
 }
 
 
-
 std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
                                        const std::vector<double> &y,
                                        const std::vector<double> &dbh,
                                        const std::vector<double> &mcw )
 {
-    auto n = dbh.size();
-    std::vector<double> csi( n, 0.0 );
+    // if no tree location data or if mismatch on vector sizes, return empty vector
+    auto n = x.size();
+    if( n == 0 || y.size() == 0 || y.size() != n || dbh.size() != n || mcw.size() != n )
+        return std::vector<double>{};
+
     std::vector<double> crown_area( n, 0.0 );
+    std::vector<double> csi( n, 0.0 );  
 
     // compute maximum crown area for each tree
     std::transform( mcw.begin(), mcw.end(), crown_area.begin(), [](double mcw_t){ return PI*mcw_t*mcw_t/4.0; } );

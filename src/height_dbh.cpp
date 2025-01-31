@@ -66,6 +66,9 @@ std::vector<double> height_dbh_fit( const std::vector<double> &dbh,
                                     const std::vector<double> &height,
                                     const double bh )
 {
+    if( dbh.size() != height.size() )
+        return std::vector<double>{};
+
     std::vector<double> htadbh( height.size(), 0.0 );
     std::vector<double> dbhc( dbh.size(), 0.0 );
     std::vector<double> parameters(3,0.0);
@@ -96,6 +99,9 @@ std::vector<double> height_dbh_predict( const std::vector<double> &parameters,
                                         const std::vector<double> &dbh,
                                         const double bh )
 {
+    if( parameters.size() == 0 || dbh.size() == 0 || parameters.size() != 3 )
+        return std::vector<double>{};
+
     std::vector<double> height_hat;
 
     for( auto &d : dbh )
