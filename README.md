@@ -24,6 +24,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
+* Glover and Hool Index ([])
 
 
 ### Distance Dependent
@@ -239,6 +240,33 @@ where `sdi`= Reineke’s stand density index, N = trees per acre, Dq = quadratic
 
 -------------
 
+### Glover and Hool Competition Index (`Glover_Hool`)
+
+`Glover_Hool( dbh, expansion, use_arithmetic, imperial_units )`
+
+where:
+
+- `dbh` = diameter at breast height (vector)
+- `expansion` = tree factor to expand to per area basis (vector)
+- `use_arithmetic` = boolean where TRUE = use arithmetic mean diameter, FALSE = use quadratic mean diameter
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+
+`Glover_Hool` computes the Glover and Hool (1979)[^16] competition index. The index is interpreted as the ratio
+of a tree's basal area to the basal area of the tree of mean diameter. Glover and Hool used
+the arithmetic mean and a common variation is to use the quadratic mean (use the `use_arithmetic` flag to select 
+the desired method).
+
+The index $G_i$ is:
+
+$G_i = dbh_i^2 / \overline{dbh}^2$
+
+where: $dbh_i$ is the diameter of tree `i` and $\overline{dbh}$ is the mean diameter (either arithmetic or quadratic).
+
+
+`Glover_Hool` returns a vector of competition indicies for each tree in their original order.
+
+-------------
+
 ### Clark-Evans Aggregation Index (`Clark_Evans_R`)
 
 `Clark_Evans_R( x, y, plotarea, plot_x, plot_y )`
@@ -413,3 +441,5 @@ The source and binary packages can be found in the repository:
 [^14]: Ripley, B.D. (1977) Modelling spatial patterns (with discussion). Journal of the Royal Statistical Society, Series B, 39, 172 -- 212.
 
 [^15]: Curtis, R. 0. 1967. Height-diameter, and height-diameter-age equations for second growth Douglas-fir. For. Sci. 365-375.
+
+[^16]: Glover G.R. and Hool, J.N. 1979. A basal area ratio predictor of loblolly pine plantation mortality. For. Sci. 25:275-282.

@@ -155,7 +155,7 @@ std::vector<double> cch( const std::vector<int>    &species,
     std::vector<double > b1 = parameters[2];
     std::vector<double > b2 = parameters[3];
 
-    for( size_t i = 0; i < parameters.nrow(); ++i )
+    for( int i = 0; i < parameters.nrow(); ++i )
         cch_parms[pspecies[i]] = {b0[i],b1[i],b2[i]};
 
     try {
@@ -805,3 +805,42 @@ std::vector<double> hd_predict( Rcpp::DataFrame &hd_parameters,
     return ht_out_sorted;
 }
 
+//' @title Glover_Hool() compute the Glover and Hool competition index for each tree.
+//' @name Glover_Hool
+//'
+//' @param dbh            : double | vector of diameter at breast height
+//' @param expansion      : double | vector of expansion factors 
+//' @param use_arithmetic : bool   | TRUE = use arithmetic mean (default), FALSE = use quadratic mean
+//' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+//'
+//' @description
+//' Compute the Glover and Hool (1979) competition index. The index is interpreted as the ratio
+//' of a tree's basal area to the basal area of the tree of mean diameter. Glover and Hool used
+//' the arithmetic mean and a common variation is to use the quadratic mean (use \code{use_arithmetic}
+//' flag to select the desired method).
+//'
+//' The index \eqn{G_i} is:
+//'
+//' \eqn{G_i = dbh_i^2 / \overline{dbh}^2}
+//'
+//' where: \eqn{dbh_i} is the diameter of tree \code{i} and \eqn{\overline{dbh}} is the mean diameter (either arithmetic or quadratic).
+//'
+//' @return
+//' Returns a vector of competition indicies for each tree in their original order.
+//'
+//' @examples
+//' data(treelist)
+//' # compute the Glover and Hool index with each mean
+//' Glover_Hool( treelist$dbh, treelist$tpa, use_arithmetic=T )
+//' Glover_Hool( treelist$dbh, treelist$tpa, use_arithmetic=F )
+//'
+//' @export
+// [[Rcpp::export]]
+
+std::vector<double> Glover_Hool( const std::vector<double> &dbh,
+                                 const std::vector<double> &expansion,
+                                 const bool use_arithmetic = true,
+                                 const bool imperial_units = true )
+{
+    return compute_glover_hool( dbh, expansion, use_arithmetic, imperial_units );
+}                                         

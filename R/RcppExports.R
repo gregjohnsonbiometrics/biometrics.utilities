@@ -571,3 +571,37 @@ hd_predict <- function(hd_parameters, fia, dbh, bh = 4.5) {
     .Call(`_biometrics_utilities_hd_predict`, hd_parameters, fia, dbh, bh)
 }
 
+#' @title Glover_Hool() compute the Glover and Hool competition index for each tree.
+#' @name Glover_Hool
+#'
+#' @param dbh            : double | vector of diameter at breast height
+#' @param expansion      : double | vector of expansion factors 
+#' @param use_arithmetic : bool   | TRUE = use arithmetic mean (default), FALSE = use quadratic mean
+#' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+#'
+#' @description
+#' Compute the Glover and Hool (1979) competition index. The index is interpreted as the ratio
+#' of a tree's basal area to the basal area of the tree of mean diameter. Glover and Hool used
+#' the arithmetic mean and a common variation is to use the quadratic mean (use \code{use_arithmetic}
+#' flag to select the desired method).
+#'
+#' The index \eqn{G_i} is:
+#'
+#' \eqn{G_i = dbh_i^2 / \overline{dbh}^2}
+#'
+#' where: \eqn{dbh_i} is the diameter of tree \code{i} and \eqn{\overline{dbh}} is the mean diameter (either arithmetic or quadratic).
+#'
+#' @return
+#' Returns a vector of competition indicies for each tree in their original order.
+#'
+#' @examples
+#' data(treelist)
+#' # compute the Glover and Hool index with each mean
+#' Glover_Hool( treelist$dbh, treelist$tpa, use_arithmetic=T )
+#' Glover_Hool( treelist$dbh, treelist$tpa, use_arithmetic=F )
+#'
+#' @export
+Glover_Hool <- function(dbh, expansion, use_arithmetic = TRUE, imperial_units = TRUE) {
+    .Call(`_biometrics_utilities_Glover_Hool`, dbh, expansion, use_arithmetic, imperial_units)
+}
+

@@ -248,6 +248,20 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// Glover_Hool
+std::vector<double> Glover_Hool(const std::vector<double>& dbh, const std::vector<double>& expansion, const bool use_arithmetic, const bool imperial_units);
+RcppExport SEXP _biometrics_utilities_Glover_Hool(SEXP dbhSEXP, SEXP expansionSEXP, SEXP use_arithmeticSEXP, SEXP imperial_unitsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< const bool >::type use_arithmetic(use_arithmeticSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
+    rcpp_result_gen = Rcpp::wrap(Glover_Hool(dbh, expansion, use_arithmetic, imperial_units));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -267,6 +281,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},
     {"_biometrics_utilities_hd_fit", (DL_FUNC) &_biometrics_utilities_hd_fit, 4},
     {"_biometrics_utilities_hd_predict", (DL_FUNC) &_biometrics_utilities_hd_predict, 4},
+    {"_biometrics_utilities_Glover_Hool", (DL_FUNC) &_biometrics_utilities_Glover_Hool, 4},
     {NULL, NULL, 0}
 };
 

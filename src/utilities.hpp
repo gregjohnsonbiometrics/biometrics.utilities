@@ -130,4 +130,9 @@ std::vector<double> height_dbh_predict( const std::vector<double> &parameters,
                                         const std::vector<double> &dbh,
                                         const double bh );
 
+std::vector<double> compute_glover_hool( const std::vector<double> &dbh,
+                                         const std::vector<double> &expansion,
+                                         const bool use_arithmetic,
+                                         const bool imperial );                                        
+
 #endif

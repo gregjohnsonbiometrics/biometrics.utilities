@@ -248,3 +248,43 @@ double compute_ccf( const std::vector<double> &crown_width,
 
     return ccf;
 }
+
+
+std::vector<double> compute_glover_hool( const std::vector<double> &dbh,
+                                         const std::vector<double> &expansion,
+                                         const bool use_arithmetic, 
+                                         const bool imperial )
+{
+    auto k = imperial ? 0.005454154 : 0.000025*PI;
+    std::vector<double> G;
+
+    if( expansion.size() == 0 || dbh.size() != expansion.size() )
+        return std::vector<double>{};
+
+    double mean = 0.0;
+    if( use_arithmetic )
+    {
+        double n = 0.0;
+        for( size_t i = 0; i < dbh.size(); ++i )
+        {
+            mean += dbh[i] * expansion[i];
+            n += expansion[i];
+        }
+
+        if( n > 0.0 )
+            mean /= n;
+        else
+            return std::vector<double>{};
+
+    } else {
+        mean = compute_qmd( dbh, expansion );
+    }
+    
+    if( mean == 0.0 )
+        return std::vector<double>{};
+
+    for( auto &d : dbh )
+        G.push_back( d*d*k / mean );
+
+    return G;
+}
