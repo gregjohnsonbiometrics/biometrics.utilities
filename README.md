@@ -24,7 +24,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
 * Curtis' Relative Density ([curtis_rd](#curtis-relative-density-curtis_rd))
 * Reineke's Stand Density Index ([reineke_sdi](#reinekes-stand-density-index-reineke_sdi))
-* Glover and Hool Index ([])
+* Glover and Hool Index ([Glover_Hool](#glover-and-hool-competition-index-glover_hool))
 
 
 ### Distance Dependent
