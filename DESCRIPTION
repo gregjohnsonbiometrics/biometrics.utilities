@@ -10,4 +10,4 @@ License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.12)
 LinkingTo: Rcpp
 Encoding: UTF-8
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2

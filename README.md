@@ -29,7 +29,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 ### Distance Dependent
 
 * Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
-* Hegyi's Disance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
+* Hegyi's Distance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
 * Arney's Competitive Stress Index ([Arney_CSI](#arneys-competitive-stress-index-arney_csi))
 
 ### Utilities

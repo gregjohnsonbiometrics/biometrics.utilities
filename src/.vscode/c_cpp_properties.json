@@ -4,7 +4,7 @@
             "name": "Win32",
             "includePath": [
                 "${default}",
-                "C:/R/R-4.4.0/include",
+                "C:/R/R-4.4.2/include",
                 "C:/R/myLibrary/Rcpp/include"
             ],
             "defines": [
