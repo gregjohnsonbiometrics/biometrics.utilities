@@ -3,4 +3,5 @@
 ^.*zip$
 ^.*gz$
 ^.Rxx
-test.r
+test.*
+

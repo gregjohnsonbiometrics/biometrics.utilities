@@ -32,6 +32,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Clark-Evans R Aggregation Index ([Clark_Evans_R](#clark-evans-aggregation-index-clark_evans_r))
 * Hegyi's Distance-weighted size ratio ([Hegyi](#hegyi-competition-index-hegyi))
 * Arney's Competitive Stress Index ([Arney_CSI](#arneys-competitive-stress-index-arney_csi))
+* Area Potentially Available ([APA](#area-potentially-available-apa))
 
 ### Utilities
 
@@ -404,6 +405,37 @@ technique of fitting a linearized form of the equation while iterating over a ra
 
 `hd_predict` is used to predict `height` for a vector of `dbh` values given parameter estimates from `hd_fit`.
 
+-------------
+
+### Area Potentially Available (`APA`)
+
+`APA( x, y, dbh, poly_x, poly_y, weighted )`
+
+`APA_Polygons( tree_id, x, y, dbh, poly_x, poly_y, weighted )`
+
+where:
+
+- `tree_id` = unique identification number for each tree (vector)
+- `x` = x coordinates of trees on a plot (vector)
+- `y` = y coordinates of trees on a plot (vector)
+- `dbh` = diameter at breast height (vector)
+- `poly_x` = x coordinates of the plot bottom left and top right corners
+- `poly_y` = y coordinates of the plot bottom left and top right corners
+- `weighted` = boolean flag to select unweighted (`false`) for a standard Voronoi polygon area, or weighted (`true`) for a Voronoi polygon constructed by using `dbh` as a weight.
+
+`APA` computes the Area Potentially Available (APA) using Brown's (1965)[^17] method. Polygons are constructed around the subject tree
+by the intersection of the perpendicular bisectors of the distance between the subject tree and competitors (creating a 
+Voronoi tesselation of the plot).
+
+`APA_Polygons` builds the APA polygons are returns a `data.frame` with the polygon coordinates.
+
+This version currently does not adjust for edge effects.
+
+This version currently does not implement the `weighted` option.
+
+The Voronoi tesselation is computing using Fortune's algorithm[^18] from code derived from Pierre Vigier Copyright (C) 2018, and is provided under GNU Lesser General Public License (see <http://www.gnu.org/licenses/>).
+
+`APA` a vector of APA values (in square units of measure used for the coordinates) for each tree in their original order.
 
 ## R Packages
 
@@ -443,3 +475,7 @@ The source and binary packages can be found in the repository:
 [^15]: Curtis, R. 0. 1967. Height-diameter, and height-diameter-age equations for second growth Douglas-fir. For. Sci. 365-375.
 
 [^16]: Glover G.R. and Hool, J.N. 1979. A basal area ratio predictor of loblolly pine plantation mortality. For. Sci. 25:275-282.
+
+[^17]: Brown, G.S. 1965. Point density in stems per acre. N.Z. Forest Res. Notes No. 38.
+
+[^18]: Fortune, S. (1987). A sweepline algorithm for Voronoi diagrams. Algorithmica, 2(1), 153–174. https://doi.org/10.1007/BF01840357

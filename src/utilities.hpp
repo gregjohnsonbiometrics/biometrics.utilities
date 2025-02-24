@@ -5,6 +5,7 @@
 
 #include <vector>
 #include <unordered_map>
+#include <array>
 #include <string>
 #include <cmath>
 #include <numeric>      // std::iota, std::accumulate
@@ -133,6 +134,19 @@ std::vector<double> height_dbh_predict( const std::vector<double> &parameters,
 std::vector<double> compute_glover_hool( const std::vector<double> &dbh,
                                          const std::vector<double> &expansion,
                                          const bool use_arithmetic,
-                                         const bool imperial );                                        
+                                         const bool imperial ); 
+
+std::vector<double> compute_apa( const std::vector<double> &x,
+                                 const std::vector<double> &y,
+                                 const std::vector<double> &dbh,
+                                 const std::array<Point,2> &plot_corners,
+                                 const bool weighted ); 
+
+std::vector<std::vector<Point>> get_voronoi_polygons( 
+                                    const std::vector<double> &x,
+                                    const std::vector<double> &y,
+                                    const std::vector<double> &dbh,
+                                    const std::array<Point,2> &plot_corners,
+                                    const bool weighted );
 
 #endif

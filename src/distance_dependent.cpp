@@ -1,6 +1,9 @@
 #include "utilities.hpp"
+#include "FortuneAlgorithm.h"
 #include <iostream>
 #include <limits>
+
+constexpr double OFFSET = 1.0f;
 
 // Function to calculate Euclidean distance between two points
 double _distance(const Point& p1, const Point& p2) {
@@ -45,7 +48,7 @@ std::vector<double> _findNearestNeighborDistance( const std::vector<double> &x,
         // Only compare with nearby points in sorted order to reduce checks
         for( int j = i + 1; j < n && (x[indices[j]] - x[k]) < minDist; ++j ) 
         {
-            double dist = _distance( Point(x[k],y[k]), Point(x[indices[j]],y[indices[j]]) );
+            double dist = _distance( {x[k],y[k]}, {x[indices[j]],y[indices[j]]} );
             if (dist < minDist) 
                 minDist = dist;
         }
@@ -53,7 +56,7 @@ std::vector<double> _findNearestNeighborDistance( const std::vector<double> &x,
         // Check points on the left side in sorted order
         for( int j = i - 1; j >= 0 && (x[k] - x[indices[j]]) < minDist; --j ) 
         {
-            double dist = _distance( Point(x[k],y[k]), Point(x[indices[j]],y[indices[j]]) );
+            double dist = _distance( {x[k],y[k]}, {x[indices[j]],y[indices[j]]} );
             if (dist < minDist) 
                 minDist = dist;
         }
@@ -125,7 +128,7 @@ std::vector<double> _DonnellyCorrection(const std::vector<double> &x,
 
     for( size_t i = 0; i < n; ++i ) 
     {
-        double d = _minDistanceToPolygonEdge( Point(x[i],y[i]), plotPolygon );
+        double d = _minDistanceToPolygonEdge( {x[i],y[i]}, plotPolygon );
         
         if (d < radius) {
             corrections[i] = (PI * radius * radius) / (PI * radius * radius - 2 * radius * (radius - d));
@@ -148,7 +151,7 @@ std::vector<double> _DonnellyCorrection(const std::vector<double> &x,
 
     for( size_t i = 0; i < n; ++i ) 
     {
-        double d = _DistanceToCircleEdge( Point(x[i],y[i]), plotCenter, plotRadius);
+        double d = _DistanceToCircleEdge( {x[i],y[i]}, plotCenter, plotRadius);
         
         if (d < radius) {
             corrections[i] = (PI * radius * radius) / (PI * radius * radius - 2 * radius * (radius - d));
@@ -183,7 +186,7 @@ double compute_R( const std::vector<double> &x,
     {
         // build polygon vector
         for( size_t i = 0; i < poly_x.size(); ++i )
-            plotPolygon[i] = Point( poly_x[i], poly_y[i] );
+            plotPolygon[i] = { poly_x[i], poly_y[i] };
 
         // recompute plot area with supplied polygon
         plotarea = _computePolygonArea( plotPolygon );
@@ -260,7 +263,7 @@ std::vector<double> compute_Hegyi( const std::vector<double> &x,
     std::vector<double> weights( n, 1.0 );
 
     for( size_t i = 0; i < n; ++i )
-        trees[i] = Point( x[i], y[i] );
+        trees[i] = { x[i], y[i] };
 
     // compute Ripley edge correction weights if a plot boundary polygon is present
     if( plot.size() > 0 )
@@ -398,4 +401,115 @@ std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
     }
 
     return csi;
+}
+
+
+std::vector<std::vector<Point>> _get_voronoi( const std::vector<double> &x,
+                                              const std::vector<double> &y,
+                                              std::vector<double> weights,
+                                              const std::array<Point,2> &plot )
+{
+    size_t n = x.size();
+    std::vector<std::vector<Point>> vresult(n);
+    std::vector<Vector2> points(n);
+
+    for( size_t i = 0; i < x.size(); ++i )
+        points[i] = { x[i], y[i] };
+
+   // Construct diagram
+    FortuneAlgorithm algorithm(points, weights );
+    algorithm.construct();
+
+    // Bound the diagram
+    algorithm.bound(Box{plot[0].x-0.05, plot[0].y-0.05, plot[1].x+0.05, plot[1].y+0.05}); // Make the bounding box slightly bigger than the intersection box
+    VoronoiDiagram diagram = algorithm.getDiagram();
+
+   // Intersect the diagram with a box
+    bool valid = diagram.intersect(Box{plot[0].x, plot[0].y, plot[1].x, plot[1].y});
+    if (!valid)
+        throw std::runtime_error("An error occured in the box intersection algorithm");
+
+    for( std::size_t i = 0; i < diagram.getNbSites(); ++i )
+    {
+        const VoronoiDiagram::Site* site = diagram.getSite(i);
+        Vector2 center = site->point;
+        VoronoiDiagram::Face* face = site->face;
+        VoronoiDiagram::HalfEdge* halfEdge = face->outerComponent;
+        if (halfEdge == nullptr)
+            continue;
+        while (halfEdge->prev != nullptr)
+        {
+            halfEdge = halfEdge->prev;
+            if (halfEdge == face->outerComponent)
+                break;
+        }
+        VoronoiDiagram::HalfEdge* start = halfEdge;
+        while (halfEdge != nullptr)
+        {
+            if (halfEdge->origin != nullptr && halfEdge->destination != nullptr)
+            {
+                Vector2 origin = (halfEdge->origin->point - center) * OFFSET + center;
+                vresult[i].emplace_back( Point{origin.x, origin.y} );
+            }
+            halfEdge = halfEdge->next;
+            if (halfEdge == start)
+            {
+                Vector2 origin = (halfEdge->origin->point - center) * OFFSET + center;
+                vresult[i].emplace_back( Point{origin.x, origin.y} );
+                break;
+            }
+               
+        }
+    }
+
+    return vresult;
+}
+
+std::vector<double> compute_apa( const std::vector<double> &x,
+                                 const std::vector<double> &y,
+                                 const std::vector<double> &dbh,
+                                 const std::array<Point,2> &plot_corners,
+                                 const bool weighted )
+{
+    size_t n = x.size();
+    if( n == 0 || y.size() == 0 || y.size() != n || dbh.size() != n || plot_corners.size() != 2 )
+        return std::vector<double>{};
+
+    std::vector<double> weights( n, 1.0 );
+    if( weighted )
+        for( size_t i = 0; i < n; ++i )
+            weights[i] = dbh[i];
+
+    // get Voronoi polygons for each tree
+    std::vector<std::vector<Point>> apa_poly = _get_voronoi( x, y, weights, plot_corners );
+
+    // compute area of each Voronoi polygon
+    std::vector<double> voronoi_area( n, 0.0 );
+    for( size_t i = 0; i < n; ++i )
+        voronoi_area[i] = _computePolygonArea( apa_poly[i] );
+
+    return voronoi_area;
+}
+
+
+std::vector<std::vector<Point>> get_voronoi_polygons( 
+                                    const std::vector<double> &x,
+                                    const std::vector<double> &y,
+                                    const std::vector<double> &dbh,
+                                    const std::array<Point,2> &plot_corners,
+                                    const bool weighted )
+{
+    size_t n = x.size();
+    if( n == 0 || y.size() == 0 || y.size() != n || dbh.size() != n || plot_corners.size() != 2 )
+        return std::vector<std::vector<Point>>{};
+
+    std::vector<double> weights( n, 1.0 );
+    if( weighted )
+        for( size_t i = 0; i < n; ++i )
+            weights[i] = dbh[i];
+
+    // get Voronoi polygons for each tree
+    std::vector<std::vector<Point>> apa_poly = _get_voronoi( x, y, weights, plot_corners );
+
+    return apa_poly;
 }

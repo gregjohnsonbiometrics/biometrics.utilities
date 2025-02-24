@@ -262,6 +262,39 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// APA
+std::vector<double> APA(const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& dbh, const std::vector<double>& plot_x, const std::vector<double>& plot_y, const bool weighted);
+RcppExport SEXP _biometrics_utilities_APA(SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP plot_xSEXP, SEXP plot_ySEXP, SEXP weightedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type plot_x(plot_xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type plot_y(plot_ySEXP);
+    Rcpp::traits::input_parameter< const bool >::type weighted(weightedSEXP);
+    rcpp_result_gen = Rcpp::wrap(APA(x, y, dbh, plot_x, plot_y, weighted));
+    return rcpp_result_gen;
+END_RCPP
+}
+// APA_Polygons
+Rcpp::DataFrame APA_Polygons(const std::vector<int>& tree_id, const std::vector<double>& x, const std::vector<double>& y, const std::vector<double>& dbh, const std::vector<double>& plot_x, const std::vector<double>& plot_y, const bool weighted);
+RcppExport SEXP _biometrics_utilities_APA_Polygons(SEXP tree_idSEXP, SEXP xSEXP, SEXP ySEXP, SEXP dbhSEXP, SEXP plot_xSEXP, SEXP plot_ySEXP, SEXP weightedSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type tree_id(tree_idSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type y(ySEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type plot_x(plot_xSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type plot_y(plot_ySEXP);
+    Rcpp::traits::input_parameter< const bool >::type weighted(weightedSEXP);
+    rcpp_result_gen = Rcpp::wrap(APA_Polygons(tree_id, x, y, dbh, plot_x, plot_y, weighted));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
@@ -282,6 +315,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_hd_fit", (DL_FUNC) &_biometrics_utilities_hd_fit, 4},
     {"_biometrics_utilities_hd_predict", (DL_FUNC) &_biometrics_utilities_hd_predict, 4},
     {"_biometrics_utilities_Glover_Hool", (DL_FUNC) &_biometrics_utilities_Glover_Hool, 4},
+    {"_biometrics_utilities_APA", (DL_FUNC) &_biometrics_utilities_APA, 6},
+    {"_biometrics_utilities_APA_Polygons", (DL_FUNC) &_biometrics_utilities_APA_Polygons, 7},
     {NULL, NULL, 0}
 };
 

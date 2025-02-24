@@ -605,3 +605,82 @@ Glover_Hool <- function(dbh, expansion, use_arithmetic = TRUE, imperial_units = 
     .Call(`_biometrics_utilities_Glover_Hool`, dbh, expansion, use_arithmetic, imperial_units)
 }
 
+#' @title APA() compute Area Potentially Available (APA)
+#' @name APA
+#'
+#' @param x        : double | vector of x coordinates for each tree
+#' @param y        : double | vector of y coordinates for each tree
+#' @param dbh      : double | vector of dbh for each tree
+#' @param plot_x   : double | vector of plot corners' x coordinates (bottom left, top right)
+#' @param plot_y   : double | vector of plot corners' y coordinates (bottom left, top right)
+#' @param weighted : bool   | TRUE = use dbh^2 as weighting factor for polygon construction, FALSE = unweighted (default)
+#'
+#' @description
+#' Computes Area Potentially Available (APA) using Brown's (1965) method. Polygons are constructed 
+#' around the subject tree by the intersection of the perpendicular bisectors of the distance between 
+#' the subject tree and competitors (creating a Voronoi tesselation of the plot).
+#'
+#' NOTE: the \code{weighted} option currently does not work.
+#'
+#' @return
+#' Returns a vector of APA values (in square units of measure used for the coordinates) for each tree in their original order.
+#'
+#' @examples
+#' data(treelistxy)
+#' min_x <- min(treelistxy$x)
+#' min_y <- min(treelistxy$y)
+#' max_x <- max(treelistxy$x)
+#' max_y <- max(treelistxy$y)
+#' poly_x <- c(min_x, max_x)
+#' poly_y <- c(min_y, max_y)
+#' APA( treelistxy$x, treelistxy$y, treelistxy$dbh, poly_x, poly_y, F )
+#'
+#' @export
+APA <- function(x, y, dbh, plot_x, plot_y, weighted = TRUE) {
+    .Call(`_biometrics_utilities_APA`, x, y, dbh, plot_x, plot_y, weighted)
+}
+
+#' @title APA_Polygons() compute Area Potentially Available (APA) polygons
+#' @name APA_Polygons
+#'
+#' @param tree_id  : int    | vector of tree identification numbers
+#' @param x        : double | vector of x coordinates for each tree
+#' @param y        : double | vector of y coordinates for each tree
+#' @param dbh      : double | vector of dbh for each tree
+#' @param plot_x   : double | vector of plot corners' x coordinates (bottom left, top right)
+#' @param plot_y   : double | vector of plot corners' y coordinates (bottom left, top right)
+#' @param weighted : bool   | TRUE = use dbh^2 as weighting factor for polygon construction, FALSE = unweighted (default)
+#'
+#' @description
+#' Computes Area Potentially Available (APA) using Brown's (1965) method. Polygons are constructed 
+#' around the subject tree by the intersection of the perpendicular bisectors of the distance between 
+#' the subject tree and competitors (creating a Voronoi tesselation of the plot).
+#'
+#' NOTE: the \code{weighted} option currently does not work.
+#'
+#' @return
+#' Returns a \code{data.frame} of APA polygons with the following members:
+#' \itemize{
+#'    \item tree_id
+#'    \item v_x : x coordinate of the tree's APA polygon
+#'    \item v_y : y coordinate of the tree's APA polygon
+#' }
+#'
+#' @examples
+#' library( ggplot2 )
+#' library( dplyr )
+#' data(treelistxy)
+#' min_x <- min(treelistxy$x)
+#' min_y <- min(treelistxy$y)
+#' max_x <- max(treelistxy$x)
+#' max_y <- max(treelistxy$y)
+#' poly_x <- c(min_x, max_x)
+#' poly_y <- c(min_y, max_y)
+#' p <- APA_Polygons( treelistxy$tree, treelistxy$x, treelistxy$y, treelistxy$dbh, poly_x, poly_y, F )
+#' p %>% ggplot( aes( v_x, v_y, group=tree_id )) + geom_path()
+#'
+#' @export
+APA_Polygons <- function(tree_id, x, y, dbh, plot_x, plot_y, weighted = FALSE) {
+    .Call(`_biometrics_utilities_APA_Polygons`, tree_id, x, y, dbh, plot_x, plot_y, weighted)
+}
+
