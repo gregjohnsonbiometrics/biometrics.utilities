@@ -433,7 +433,7 @@ This version currently does not adjust for edge effects.
 
 This version currently does not implement the `weighted` option.
 
-The Voronoi tesselation is computing using Fortune's algorithm[^18] from code derived from Pierre Vigier Copyright (C) 2018, and is provided under GNU Lesser General Public License (see <http://www.gnu.org/licenses/>).
+The Voronoi tesselation is computed using Fortune's algorithm[^18] from code derived from Pierre Vigier Copyright (C) 2018, and is provided under GNU Lesser General Public License (see <http://www.gnu.org/licenses/>).
 
 `APA` a vector of APA values (in square units of measure used for the coordinates) for each tree in their original order.
 
