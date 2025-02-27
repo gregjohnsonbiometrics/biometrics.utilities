@@ -3,9 +3,7 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**",
-                "C:/R/R-4.4.2/include",
-                "C:/R/myLibrary/Rcpp/include"
+                "${workspaceFolder}/**"
             ],
             "defines": [
                 "_DEBUG",
@@ -13,9 +11,8 @@
                 "_UNICODE"
             ],
             "cStandard": "c17",
-            "cppStandard": "gnu++23",
-            "intelliSenseMode": "windows-gcc-x64",
-            "compilerPath": "C:/rtools44/x86_64-w64-mingw32.static.posix/bin/g++.exe"
+            "cppStandard": "gnu++17",
+            "intelliSenseMode": "windows-gcc-x64"
         }
     ],
     "version": 4
