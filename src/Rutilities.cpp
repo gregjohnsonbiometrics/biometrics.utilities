@@ -187,6 +187,8 @@ std::vector<double> cch( const std::vector<int>    &species,
 //'    \item 2 : Lorey height (height of the tree of average basal area)
 //' }
 //'
+//' The cohort size is ignored and should be 0.0 for Lorey height (option 2).
+//'
 //' @return
 //' Returns the specified dominant height.
 //'
@@ -196,6 +198,8 @@ std::vector<double> cch( const std::vector<int>    &species,
 //' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
 //' # compute the height of the 100 largest trees by height
 //' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 100, 1 )
+//' # compute the Lorey height 
+//' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 0, 2 )
 //'
 //' @export
 // [[Rcpp::export]]

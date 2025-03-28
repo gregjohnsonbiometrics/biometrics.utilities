@@ -142,6 +142,8 @@ cch <- function(species, dbh, height, crown_length, dacb, lcw, expansion, parame
 #'    \item 2 : Lorey height (height of the tree of average basal area)
 #' }
 #'
+#' The cohort size is ignored and should be 0.0 for Lorey height (option 2).
+#'
 #' @return
 #' Returns the specified dominant height.
 #'
@@ -151,6 +153,8 @@ cch <- function(species, dbh, height, crown_length, dacb, lcw, expansion, parame
 #' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
 #' # compute the height of the 100 largest trees by height
 #' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 100, 1 )
+#' # compute the Lorey height 
+#' dominant_height( treelist$height, treelist$dbh, treelist$tpa, 0, 2 )
 #'
 #' @export
 dominant_height <- function(height, dbh, expansion, dominant_cohort_size, method = 0L) {

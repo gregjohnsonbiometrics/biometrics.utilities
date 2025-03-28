@@ -397,6 +397,11 @@ void Beachline::rightRotate(Arc* y)
     y->parent = x;
 }
 
+double computeWeightedBisector(double Di, double Dj, double Lij) 
+{
+    return (Di * Di) / (Di * Di + Dj * Dj) * Lij;
+}
+
 double Beachline::computeBreakpoint(const Vector2& point1, double weight1, const Vector2& point2, double weight2, double l) const 
 {
     double x1 = point1.x, y1 = point1.y, x2 = point2.x, y2 = point2.y;

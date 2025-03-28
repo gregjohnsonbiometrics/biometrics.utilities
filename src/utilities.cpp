@@ -87,7 +87,7 @@ double compute_dominant_height( const std::vector<double> &height,
                                 const int dominant_cohort_size,
                                 const int method )
 {
-    if( height.size() == 0 || dbh.size() != expansion.size() || dbh.size() != height.size() || dominant_cohort_size <= 0 )
+    if( height.size() == 0 || dbh.size() != expansion.size() || dbh.size() != height.size() )
         return NAN;
 
     double dominant_height = 0.0;
@@ -105,6 +105,10 @@ double compute_dominant_height( const std::vector<double> &height,
 
         dominant_height = (sum_ba > 0.0) ? sum_ht / sum_ba : 0.0;
     } else if( method < 2 ) {
+
+        if( dominant_cohort_size <= 0.0 )
+            return NAN;
+            
         double accumulated_expansion = 0.0;
         double sum_height = 0.0;
 

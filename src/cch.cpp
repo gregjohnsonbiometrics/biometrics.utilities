@@ -99,7 +99,7 @@ double compute_cch( const std::vector<int>    &species,
             try {
                 cw = _cwa( rp, lcw[i], dbh[i], height[i], parameters.at(species[i]) );
             } catch( ... ) {
-                    cw = _cwa( rp, lcw[i], dbh[i], height[i], default_parameters );
+                cw = _cwa( rp, lcw[i], dbh[i], height[i], default_parameters );
             }
         }
         else

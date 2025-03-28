@@ -141,7 +141,7 @@ where:
 - 1 = average height of the `dominant_cohort_size` trees by decreasing `height`
 - 2 = Lorey height (height of the tree of average basal area)
 
-Common values for `dominant_cohort_size` are 100 and 40 trees.
+Common values for `dominant_cohort_size` are 100 and 40 trees. The cohort size is ignored and should be 0.0 for Lorey height (option 2).
 
 `dominant_cohort_size` returns a scalar with the specified dominant height for the stand or plot.
 
