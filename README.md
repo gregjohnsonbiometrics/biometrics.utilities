@@ -15,7 +15,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 ### Distance Independent
 
-* Basal Area ([ba]())
+* Basal Area ([ba](#basal-area-ba))
 * Crown Closure at Tree Tip ([cch](#crown-closure-at-tree-tip-cch))
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
