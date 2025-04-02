@@ -14,7 +14,7 @@ bal(dbh, expansion, imperial_units = TRUE)
 \item{imperial_units}{: bool   | TRUE = imperial (default), FALSE = metric}
 }
 \value{
-Returns numeric vector with the basal area in larger trees in the original tree order (unsorted):
+Returns numeric vector with the basal area in larger trees in the original tree order (unsorted).
 }
 \description{
 Sorts the dbh and expansion vectors in decreasing order of dbh and computes cumulative basal area in larger trees. Ties in dbh are

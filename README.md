@@ -15,6 +15,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 ### Distance Independent
 
+* Basal Area ([ba]())
 * Crown Closure at Tree Tip ([cch](#crown-closure-at-tree-tip-cch))
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
@@ -39,6 +40,26 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
 * Fit Height-DBH Curves ([hd_fit](#fit-height---dbh-curves-hd_fit))
 * Predict Height from DBH ([hd_predict](#fit-height---dbh-curves-hd_fit))
+
+-------------
+
+### Basal Area (`ba`)
+
+`ba( dbh, expansion, imperial_units )`
+
+where:
+- `dbh` = diameter at breast height (vector)
+- `expansion` = tree factor to expand to per area basis (vector)
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+
+`ba()` is a convenience function to compute basal area per unit area (square feet per acre or square meters per hectare depending
+on the value of `imperial_units`).
+
+$ba = \sum( dbh_i^2 \times expansion_i \times k)$
+
+where k converts squared diameters to square feet per acre or meters per hectare depending on `imperial_units`.
+
+`ba` returns a double containing the basal area.
 
 -------------
 

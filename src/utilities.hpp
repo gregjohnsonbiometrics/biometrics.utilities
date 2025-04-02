@@ -49,6 +49,8 @@ std::vector<size_t> sort_indices(const std::vector<T> &v, bool increasing = fals
 }
 
 
+double compute_ba( const std::vector<double> &dbh, const std::vector<double> &expansion_factor, const bool imperial );
+
 std::vector<double> compute_bal( const std::vector<double> &dbh, const std::vector<double> &expansion_factor, const bool imperial );
 
 std::vector<double> compute_ccfl( const std::vector<double> &dbh, const std::vector<double> &mcw, const std::vector<double> &expansion, const bool imperial );

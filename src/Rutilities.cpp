@@ -3,6 +3,39 @@
 #include <unordered_map>
 #include <set>
 
+//' @title ba() compute basal area per unit area.
+//' @name ba
+//'
+//' @param dbh            : double | vector of diameter at breast height
+//' @param expansion      : double | vector of expansion factors 
+//' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+//'
+//' @description
+//' Computes the basal area per unit area of the trees in the tree list. 
+//'
+//' \eqn{ba = \sum{dbh_i^2 expansion_i k}}
+//'
+//' where k converts squared diameters to square feet or meters depending on \code{imperial_units}.
+//'
+//' @return
+//' Returns the basal area per unit area or NAN if there are improper arguments.
+//'
+//' @examples
+//' data(treelist)
+//' ba( treelist$dbh, treelist$tpa )
+//'
+//' @export
+// [[Rcpp::export]]
+
+double ba( const std::vector<double> dbh, 
+    const std::vector<double> expansion, 
+    const bool imperial_units = true )
+{
+    auto ba = compute_ba( dbh, expansion, imperial_units );
+
+    return ba;
+}
+
 //' @title bal() compute basal area in larger trees.
 //' @name bal
 //'
@@ -15,7 +48,7 @@
 //' handled appropriately (each tree has the same bal).
 //'
 //' @return
-//' Returns numeric vector with the basal area in larger trees in the original tree order (unsorted):
+//' Returns numeric vector with the basal area in larger trees in the original tree order (unsorted).
 //'
 //' @examples
 //' data(treelist)

@@ -10,6 +10,22 @@
 #include "utilities.hpp"
 
 
+double compute_ba( const std::vector<double> &dbh, const std::vector<double> &expansion_factor, const bool imperial )
+{
+    if( dbh.size() == 0 || dbh.size() != expansion_factor.size() )
+        return NAN;
+
+    double _ba = 0.0;
+    auto k = imperial ? 0.005454154 : 0.000025*PI;
+
+    // traverse the vector computing and storing bal
+    for( auto i : sort_indices(dbh ) )
+        _ba += dbh[i] * dbh[i] * expansion_factor[i] * k;
+
+    return _ba;
+}
+
+
 std::vector<double> compute_bal( const std::vector<double> &dbh, const std::vector<double> &expansion_factor, const bool imperial )
 {
     if( dbh.size() == 0 || dbh.size() != expansion_factor.size() )

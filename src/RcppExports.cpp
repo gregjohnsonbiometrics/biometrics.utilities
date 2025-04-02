@@ -10,6 +10,19 @@ Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
 Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
 #endif
 
+// ba
+double ba(const std::vector<double> dbh, const std::vector<double> expansion, const bool imperial_units);
+RcppExport SEXP _biometrics_utilities_ba(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
+    rcpp_result_gen = Rcpp::wrap(ba(dbh, expansion, imperial_units));
+    return rcpp_result_gen;
+END_RCPP
+}
 // bal
 std::vector<double> bal(const std::vector<double> dbh, const std::vector<double> expansion, const bool imperial_units);
 RcppExport SEXP _biometrics_utilities_bal(SEXP dbhSEXP, SEXP expansionSEXP, SEXP imperial_unitsSEXP) {
@@ -297,6 +310,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_biometrics_utilities_ba", (DL_FUNC) &_biometrics_utilities_ba, 3},
     {"_biometrics_utilities_bal", (DL_FUNC) &_biometrics_utilities_bal, 3},
     {"_biometrics_utilities_ccfl", (DL_FUNC) &_biometrics_utilities_ccfl, 4},
     {"_biometrics_utilities_cch", (DL_FUNC) &_biometrics_utilities_cch, 9},
