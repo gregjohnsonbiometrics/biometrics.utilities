@@ -246,6 +246,51 @@ double dominant_height( const std::vector<double> height,
     return compute_dominant_height( height, dbh, expansion, dominant_cohort_size, method );
 }
 
+//' @title dominant_dbh() compute the average dbh of trees in the dominant cohort.
+//' @name dominant_dbh
+//'
+//' @param height               : double | vector of total height
+//' @param dbh                  : double | vector of diameter at breast height
+//' @param expansion            : double | vector of expansion factors 
+//' @param dominant_cohort_size : int    | number of trees in the dominant height cohort
+//' @param method               : int    | 0 (default), 1, or 2 (see below for definitions)
+//'
+//' @description
+//' Compute the expansion factor weighted average dbh of trees in the defined dominant tree cohort. Each method
+//' defines the cohort differently:
+//' 
+//' \itemize{
+//'    \item 0 : average dbh of the dominant_cohort_size trees by decreasing dbh
+//'    \item 1 : average dbh of the dominant_cohort_size trees by decreasing height
+//'    \item 2 : Lorey dbh (quadratic mean diameter)
+//' }
+//'
+//' The cohort size is ignored and should be 0.0 for Lorey dbh (option 2).
+//'
+//' @return
+//' Returns the specified dominant dbh.
+//'
+//' @examples
+//' data(treelist)
+//' # compute the dbh of the 40 largest trees by dbh
+//' dominant_dbh( treelist$height, treelist$dbh, treelist$tpa, 40, 0 )
+//' # compute the dbh of the 100 largest trees by height
+//' dominant_dbh( treelist$height, treelist$dbh, treelist$tpa, 100, 1 )
+//' # compute the Lorey dbh 
+//' dominant_dbh( treelist$height, treelist$dbh, treelist$tpa, 0, 2 )
+//'
+//' @export
+// [[Rcpp::export]]
+
+double dominant_dbh( const std::vector<double> height,
+                     const std::vector<double> dbh,
+                     const std::vector<double> expansion,
+                     const int dominant_cohort_size,
+                     const int method  = 0 )
+{
+    return compute_dominant_dbh( height, dbh, expansion, dominant_cohort_size, method );
+}
+
 //' @title qmd() compute the quadratic mean diameter of a stand or plot.
 //' @name qmd
 //'

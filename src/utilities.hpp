@@ -66,11 +66,17 @@ double compute_cch( const std::vector<int>    &species,
                     const std::unordered_map<int,std::vector<double>> &parameters,
                     const bool imperial );
 
+double compute_dominant_dbh( const std::vector<double> &height,
+                             const std::vector<double> &dbh,
+                             const std::vector<double> &expansion,
+                             const int dominant_cohort_size,
+                             const int method );  
+
 double compute_dominant_height( const std::vector<double> &height,
                                 const std::vector<double> &dbh,
                                 const std::vector<double> &expansion,
                                 const int dominant_cohort_size,
-                                const int method );  
+                                const int method );                                  
 
 double compute_qmd( const std::vector<double> &dbh,
                     const std::vector<double> &expansion );

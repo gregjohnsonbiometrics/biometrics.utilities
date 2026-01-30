@@ -150,6 +150,64 @@ double compute_dominant_height( const std::vector<double> &height,
     return dominant_height;
 }
 
+// compute dbh of dominant height cohort
+// method 0: average dbh of the dominant_cohort_size trees by decreasing dbh
+//        1: average dbh of the dominant_cohort_size trees by decreasing height
+//        2: Lorey dbh (quadratic mean diameter)
+double compute_dominant_dbh( const std::vector<double> &height,
+                             const std::vector<double> &dbh,
+                             const std::vector<double> &expansion,
+                             const int dominant_cohort_size,
+                             const int method )
+{
+    if( height.size() == 0 || dbh.size() != expansion.size() || dbh.size() != height.size() )
+        return NAN;
+
+    double dominant_dbh = 0.0;
+
+    if( method == 2 )
+    {
+        // compute lorey height
+        double sum_expansion = 0.0;
+        double sum_ba = 0.0;
+        for( size_t i = 0; i < height.size(); i++ )
+        {
+            sum_expansion += expansion[i];
+            sum_ba += dbh[i] * dbh[i] * expansion[i];
+        }
+
+        dominant_dbh = (sum_expansion > 0.0) ? std::sqrt( sum_ba / sum_expansion ) : 0.0;
+
+    } else if( method < 2 ) {
+
+        if( dominant_cohort_size <= 0.0 )
+            return NAN;
+            
+        double accumulated_expansion = 0.0;
+        double sum_dbh = 0.0;
+
+        for( auto i : sort_indices( method == 0 ? dbh : height ) )
+        {  
+            if( accumulated_expansion + expansion[i] <= dominant_cohort_size )
+            {
+                sum_dbh += dbh[i] * expansion[i];
+                accumulated_expansion += expansion[i];
+            } else if( accumulated_expansion + expansion[i] > dominant_cohort_size ) {
+                double n_trees = (double)dominant_cohort_size - accumulated_expansion;
+                sum_dbh += dbh[i] * n_trees;
+                accumulated_expansion = dominant_cohort_size;
+                break;
+            }
+        }
+
+        dominant_dbh = (accumulated_expansion > 0.0) ? sum_dbh / accumulated_expansion : 0.0;        
+    } else {
+        throw std::invalid_argument("invalid method in compute_dominant_dbh\n");
+    }
+
+    return dominant_dbh;
+}
+
 
 double compute_qmd( const std::vector<double> &dbh,
                     const std::vector<double> &expansion )

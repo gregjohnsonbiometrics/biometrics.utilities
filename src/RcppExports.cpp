@@ -84,6 +84,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// dominant_dbh
+double dominant_dbh(const std::vector<double> height, const std::vector<double> dbh, const std::vector<double> expansion, const int dominant_cohort_size, const int method);
+RcppExport SEXP _biometrics_utilities_dominant_dbh(SEXP heightSEXP, SEXP dbhSEXP, SEXP expansionSEXP, SEXP dominant_cohort_sizeSEXP, SEXP methodSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< const std::vector<double> >::type height(heightSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double> >::type expansion(expansionSEXP);
+    Rcpp::traits::input_parameter< const int >::type dominant_cohort_size(dominant_cohort_sizeSEXP);
+    Rcpp::traits::input_parameter< const int >::type method(methodSEXP);
+    rcpp_result_gen = Rcpp::wrap(dominant_dbh(height, dbh, expansion, dominant_cohort_size, method));
+    return rcpp_result_gen;
+END_RCPP
+}
 // qmd
 double qmd(const std::vector<double> dbh, const std::vector<double> expansion);
 RcppExport SEXP _biometrics_utilities_qmd(SEXP dbhSEXP, SEXP expansionSEXP) {
@@ -315,6 +330,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_ccfl", (DL_FUNC) &_biometrics_utilities_ccfl, 4},
     {"_biometrics_utilities_cch", (DL_FUNC) &_biometrics_utilities_cch, 9},
     {"_biometrics_utilities_dominant_height", (DL_FUNC) &_biometrics_utilities_dominant_height, 5},
+    {"_biometrics_utilities_dominant_dbh", (DL_FUNC) &_biometrics_utilities_dominant_dbh, 5},
     {"_biometrics_utilities_qmd", (DL_FUNC) &_biometrics_utilities_qmd, 2},
     {"_biometrics_utilities_relative_spacing", (DL_FUNC) &_biometrics_utilities_relative_spacing, 3},
     {"_biometrics_utilities_curtis_rd", (DL_FUNC) &_biometrics_utilities_curtis_rd, 3},

@@ -3,7 +3,8 @@
         {
             "name": "Win32",
             "includePath": [
-                "${workspaceFolder}/**"
+                "${workspaceFolder}/**",
+                "C:/R/myLibrary/Rcpp/include/**"
             ],
             "defines": [
                 "_DEBUG",

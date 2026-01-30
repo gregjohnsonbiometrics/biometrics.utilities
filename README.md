@@ -20,6 +20,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 * Basal Area in Larger Trees ([bal](#basal-area-in-larger-trees-bal))
 * Crown Competition Factor in Larger Trees ([ccfl](#crown-competition-factor-in-larger-trees-ccfl))
 * Dominant Height ([dominant_height](#dominant-height))
+* Dominant DBH ([dominant_dbh](#dominant-dbh))
 * Quadratic Mean Diameter ([qmd](#quadratic-mean-diameter-qmd))
 * Wilson's Relative Spacing ([relative_spacing](#wilsons-relative-spacing-relative_spacing))
 * Crown Competition Factor ([ccf](#crown-competition-factor-ccf))
@@ -164,7 +165,31 @@ where:
 
 Common values for `dominant_cohort_size` are 100 and 40 trees. The cohort size is ignored and should be 0.0 for Lorey height (option 2).
 
-`dominant_cohort_size` returns a scalar with the specified dominant height for the stand or plot.
+`dominant_height` returns a scalar with the specified dominant height for the stand or plot.
+
+-------------
+
+### Dominant DBH
+
+`dominant_dbh( height, dbh, expansion, dominant_cohort_size, method )`
+
+where:
+
+- `height` = total height (vector)
+- `dbh` = diameter at breast height (vector)
+- `expansion` = expansion factors (vector) 
+- `dominant_cohort_size` = number of trees in the dominant height cohort
+- `method` = 0 (default), 1, or 2 (see below for definitions)
+
+`dominant_dbh` computes the expansion factor weighted average dbh of trees in the defined dominant tree cohort. Each method defines the cohort differently:
+
+- 0 = average dbh of the `dominant_cohort_size` trees by decreasing `dbh`
+- 1 = average dbh of the `dominant_cohort_size` trees by decreasing `height`
+- 2 = Lorey dbh (quadratic mean diameter) 
+
+Common values for `dominant_cohort_size` are 100 and 40 trees. The cohort size is ignored and should be 0.0 for Lorey dbh (option 2).
+
+`dominant_dbh` returns a scalar with the specified dominant dbh for the stand or plot.
 
 -------------
 
