@@ -1,13 +1,13 @@
 Package: biometrics.utilities
 Type: Package
 Title: Efficient biometric calculations for R.
-Version: 1.1
-Date: 2026-01-30
-Author: Greg Johnson, David Marshall
+Version: 1.2
+Date: 2026-10-20
+Author: Greg Johnson, David Marshall, Aaron Weiskittel
 Maintainer: Greg Johnson <greg@nosnhoj.org>
 Description: Provides access to computationally efficient biometric calculations for R.
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.12)
 LinkingTo: Rcpp
 Encoding: UTF-8
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3

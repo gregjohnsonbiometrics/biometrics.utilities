@@ -662,17 +662,24 @@ std::vector<double> Arney_CSI( const std::vector<double> &x,
 //' @param fia            : int    | vector of FIA species code
 //' @param dbh            : double | vector of diameter at breast height
 //' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
-//' @param default_fia    : int    | FIA species code to use if supplied FIA code does not have parameters (default = 202 (Douglas-fir))
+//' @param allow_donor    : bool   | TRUE (default) allows donor species fits; FALSE restricts the resolution to the 220 direct fits. 
+//' @param allow_none     : bool   | TRUE (default) returns them with a warning naming them; FALSE refuses the 11 no_donor codes, whose numbers are the clade population equation carried for want of any defensible model. 
+//' @param hold_domain    : bool   | TRUE (default) restricts diameters to the domain; FALSE allows estimates for diameters outside the data domain. 
+//' @param apply_ceiling  : bool   | TRUE (default) restricts `mcw` estimates to define maximums; FALSE accepts `mcw` estimates as-is.
 //'
 //' @description
-//' Estimate the maximum (open-grown) crown width for trees using publically available equation parameters. A list of available species
-//' can be found using \code{mcw_species()}. If an FIA species code does not have a parameter set, the \code{default_fia} species is used.
+//' Estimate the maximum (open-grown) crown width for trees using new FVS equations (Weiskittel, Johnson, Marshall 2026). 
+//' If an FIA species code does not have a parameter set or a donor species, the conifer or hardwood default is used.
+//' 
+//' The equation form used to estimate mcw is:
+//' 
+//' \eqn{mcw = \beta_0 dbh^{\beta_1}}
 //'
 //' @return
 //' Returns numeric vector with maximum crown width in the original tree order (unsorted).
 //'
 //' @examples
-//' # compute maximum crown width for a 10 inch Douglas-fir, red alder, and Atlantic White-cedar (parameters not available, will default to Douglas-fir)
+//' # compute maximum crown width for a 10 inch Douglas-fir, red alder, and Atlantic White-cedar (parameters not available, will default to conifer)
 //' mcw( c(202,351,43), c(10,10,10) )
 //'
 //' @export
@@ -681,55 +688,67 @@ std::vector<double> Arney_CSI( const std::vector<double> &x,
 std::vector<double> mcw( const std::vector<int> &fia,
                          const std::vector<double> &dbh,
                          const bool imperial_units = true,
-                         const int default_fia = 202 )
+                         const bool allow_donor = true,
+                         const bool allow_none = true,
+                         const bool hold_domain = true,
+                         const bool apply_ceiling = true )
 {
-    auto mcw_vector = compute_mcw( fia, dbh, imperial_units, default_fia );
+    auto mcw_vector = compute_mcw( fia, dbh, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling );
 
     return mcw_vector;
 }
 
 
-//' @title mcw_species() List species with available Maximum Crown Width equation parameters
-//' @name mcw_species
+//' @title lcw() Estimate largest crown width (`lcw`), the stand grown crown width for a species
+//' @name lcw
+//'
+//' @param fia            : int    | vector of FIA species code
+//' @param dbh            : double | vector of diameter at breast height
+//' @param cr             : double | crown ratio (fraction of total height)
+//' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+//' @param allow_donor    : bool   | TRUE (default) allows donor species fits; FALSE restricts the estimates to the 220 direct species estimates. 
+//' @param allow_none     : bool   | TRUE (default) returns estimates for all species with a warning naming species with borrowed parameters; FALSE refuses the species with `no_donor` codes (the softwood/hardwood population equation is used).
+//' @param hold_domain    : bool   | TRUE (default) restricts diameters to the fitting dataset domain; FALSE allows estimates for diameters outside the data domain. 
+//' @param apply_ceiling  : bool   | TRUE (default) restricts `mcw` estimates to defined maximums; FALSE accepts `mcw` estimates as-is.
 //'
 //' @description
-//' Builds a data.frame with the FIA species codes and common names of species with maximum crown
-//' width equation parameters available for use.
+//' Estimates the largest stand grown crown width for trees using new FVS equations (Weiskittel, Marshall, Johnson 2026). 
+//' If an FIA species code does not have a parameter set or a donor species, the conifer or hardwood default is used.
+//' 
+//' lcw, the stand grown crown width is not fit as its own allometry. It is a bounded fraction of the maximum crown width envelope,
+//'
+//' \eqn{lcw = mcw * ratio}
+//' 
+//'  with
+//'  
+//'  \eqn{logit(ratio) = \beta_0 + \beta_1 cr + \beta_2 dbh }
+//'  
+//'  ratio is a Beta regression at \eqn{\tau = 0.50} fit against the conifer/hardwood split mcw envelope. Since the ratio lies strictly in (0, 1), 
+//'  lcw is below mcw for every species at every diameter.
 //'
 //' @return
-//' A data.frame with:
-//' \itemize{
-//'    \item fia : FIA species code
-//'    \item name : common name
-//' }
+//' Returns numeric vector with largest crown width in the original tree order (unsorted).
 //'
 //' @examples
-//' # list available maximum crown width species
-//' mcw_species()
+//' # compute largest crown width for a 10 inch and crown ratio of 0.5 Douglas-fir, red alder, and Atlantic White-cedar 
+//' lcw( c(202,351,43), c(10,10,10), c(0.5, 0.5, 0.5) )
 //'
 //' @export
 // [[Rcpp::export]]
-
-Rcpp::DataFrame mcw_species()
-{
-    auto species_list = get_mcw_species();
-
-    std::vector<int> fia;
-    std::vector<std::string> names;
-
-    for( auto &[fia_code, sp_name ] : species_list )
-    {
-        fia.emplace_back( fia_code );
-        names.emplace_back( sp_name );
-    }
-
-
-    Rcpp::DataFrame sp_list = Rcpp::DataFrame::create( 
-        Rcpp::Named("fia") = fia,
-        Rcpp::Named("name") = names );
-
-    return sp_list;
-}
+ 
+ std::vector<double> lcw( const std::vector<int> &fia,
+                          const std::vector<double> &dbh,
+                          const std::vector<double> &cr,
+                          const bool imperial_units = true,
+                          const bool allow_donor = true,
+                          const bool allow_none = true,
+                          const bool hold_domain = true,
+                          const bool apply_ceiling = true )
+ {
+     auto lcw_vector = compute_lcw( fia, dbh, cr, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling );
+     
+     return lcw_vector;
+ }
 
 
 //' @title hd_fit() Fit height-dbh curve

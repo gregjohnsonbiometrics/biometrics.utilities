@@ -4,7 +4,15 @@
 \alias{mcw}
 \title{mcw() Estimate maximum crown width for a species}
 \usage{
-mcw(fia, dbh, imperial_units = TRUE, default_fia = 202L)
+mcw(
+  fia,
+  dbh,
+  imperial_units = TRUE,
+  allow_donor = TRUE,
+  allow_none = TRUE,
+  hold_domain = TRUE,
+  apply_ceiling = TRUE
+)
 }
 \arguments{
 \item{fia}{: int    | vector of FIA species code}
@@ -13,17 +21,27 @@ mcw(fia, dbh, imperial_units = TRUE, default_fia = 202L)
 
 \item{imperial_units}{: bool   | TRUE = imperial (default), FALSE = metric}
 
-\item{default_fia}{: int    | FIA species code to use if supplied FIA code does not have parameters (default = 202 (Douglas-fir))}
+\item{allow_donor}{: bool   | TRUE (default) allows donor species fits; FALSE restricts the resolution to the 220 direct fits.}
+
+\item{allow_none}{: bool   | TRUE (default) returns them with a warning naming them; FALSE refuses the 11 no_donor codes, whose numbers are the clade population equation carried for want of any defensible model.}
+
+\item{hold_domain}{: bool   | TRUE (default) restricts diameters to the domain; FALSE allows estimates for diameters outside the data domain.}
+
+\item{apply_ceiling}{: bool   | TRUE (default) restricts `mcw` estimates to define maximums; FALSE accepts `mcw` estimates as-is.}
 }
 \value{
 Returns numeric vector with maximum crown width in the original tree order (unsorted).
 }
 \description{
-Estimate the maximum (open-grown) crown width for trees using publically available equation parameters. A list of available species
-can be found using \code{mcw_species()}. If an FIA species code does not have a parameter set, the \code{default_fia} species is used.
+Estimate the maximum (open-grown) crown width for trees using new FVS equations (Weiskittel, Johnson, Marshall 2026). 
+If an FIA species code does not have a parameter set or a donor species, the conifer or hardwood default is used.
+
+The equation form used to estimate mcw is:
+
+\eqn{mcw = \beta_0 dbh^{\beta_1}}
 }
 \examples{
-# compute maximum crown width for a 10 inch Douglas-fir, red alder, and Atlantic White-cedar (parameters not available, will default to Douglas-fir)
+# compute maximum crown width for a 10 inch Douglas-fir, red alder, and Atlantic White-cedar (parameters not available, will default to conifer)
 mcw( c(202,351,43), c(10,10,10) )
 
 }

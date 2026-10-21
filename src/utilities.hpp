@@ -14,14 +14,19 @@
 constexpr auto PI = 3.14159265358979323846;
 
 struct MCWPARMS {
-    std::string name;
-    std::string genus;
-    int EQ_type; // 1 = A + (B * DBH) + (C * dbh^2), 2 = A * dbh^B
-    bool imperial_units; // true = imperial, false = metric
-    double A;
-    double B;
-    double C;
-    std::string reference;
+  std::string common_name;
+  std::string extension_route;
+  std::string confidence;
+  std::string clade;
+  double a1;      
+  double a2;                    
+  double ratio_intercept;   
+  double ratio_cr;                
+  double ratio_dbh; 
+  double ratio_phi;
+  double dbh_max_fit;
+  double dbh_min_fit; 
+  double cw_ceiling;
 };
 
 struct Point {
@@ -124,12 +129,26 @@ std::vector<double> compute_Arney_CSI( const std::vector<double> &x,
                                        const std::vector<double> &dbh,
                                        const std::vector<double> &mcw );                                   
 
-std::vector<std::pair<int, std::string>> get_mcw_species();
+MCWPARMS &get_mcw_parms( int  spcd, 
+                         bool allow_donor, 
+                         bool allow_none );
 
 std::vector<double> compute_mcw( const std::vector<int> &fia,
                                  const std::vector<double> &dbh,
                                  const bool imperial_units,
-                                 const int default_fia );
+                                 const bool allow_donor,
+                                 const bool allow_none,
+                                 const bool hold_domain,
+                                 const bool apply_ceiling );
+
+std::vector<double> compute_lcw( const std::vector<int> &fia,
+                                 const std::vector<double> &dbh,
+                                 const std::vector<double> &cr,
+                                 const bool imperial_units,
+                                 const bool allow_donor,
+                                 const bool allow_none,
+                                 const bool hold_domain,
+                                 const bool apply_ceiling );
 
 std::vector<double> height_dbh_fit( const std::vector<double> &dbh,
                                     const std::vector<double> &height,

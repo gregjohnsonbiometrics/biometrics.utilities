@@ -225,26 +225,37 @@ BEGIN_RCPP
 END_RCPP
 }
 // mcw
-std::vector<double> mcw(const std::vector<int>& fia, const std::vector<double>& dbh, const bool imperial_units, const int default_fia);
-RcppExport SEXP _biometrics_utilities_mcw(SEXP fiaSEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP, SEXP default_fiaSEXP) {
+std::vector<double> mcw(const std::vector<int>& fia, const std::vector<double>& dbh, const bool imperial_units, const bool allow_donor, const bool allow_none, const bool hold_domain, const bool apply_ceiling);
+RcppExport SEXP _biometrics_utilities_mcw(SEXP fiaSEXP, SEXP dbhSEXP, SEXP imperial_unitsSEXP, SEXP allow_donorSEXP, SEXP allow_noneSEXP, SEXP hold_domainSEXP, SEXP apply_ceilingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const std::vector<int>& >::type fia(fiaSEXP);
     Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
     Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
-    Rcpp::traits::input_parameter< const int >::type default_fia(default_fiaSEXP);
-    rcpp_result_gen = Rcpp::wrap(mcw(fia, dbh, imperial_units, default_fia));
+    Rcpp::traits::input_parameter< const bool >::type allow_donor(allow_donorSEXP);
+    Rcpp::traits::input_parameter< const bool >::type allow_none(allow_noneSEXP);
+    Rcpp::traits::input_parameter< const bool >::type hold_domain(hold_domainSEXP);
+    Rcpp::traits::input_parameter< const bool >::type apply_ceiling(apply_ceilingSEXP);
+    rcpp_result_gen = Rcpp::wrap(mcw(fia, dbh, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling));
     return rcpp_result_gen;
 END_RCPP
 }
-// mcw_species
-Rcpp::DataFrame mcw_species();
-RcppExport SEXP _biometrics_utilities_mcw_species() {
+// lcw
+std::vector<double> lcw(const std::vector<int>& fia, const std::vector<double>& dbh, const std::vector<double>& cr, const bool imperial_units, const bool allow_donor, const bool allow_none, const bool hold_domain, const bool apply_ceiling);
+RcppExport SEXP _biometrics_utilities_lcw(SEXP fiaSEXP, SEXP dbhSEXP, SEXP crSEXP, SEXP imperial_unitsSEXP, SEXP allow_donorSEXP, SEXP allow_noneSEXP, SEXP hold_domainSEXP, SEXP apply_ceilingSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
-    rcpp_result_gen = Rcpp::wrap(mcw_species());
+    Rcpp::traits::input_parameter< const std::vector<int>& >::type fia(fiaSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type dbh(dbhSEXP);
+    Rcpp::traits::input_parameter< const std::vector<double>& >::type cr(crSEXP);
+    Rcpp::traits::input_parameter< const bool >::type imperial_units(imperial_unitsSEXP);
+    Rcpp::traits::input_parameter< const bool >::type allow_donor(allow_donorSEXP);
+    Rcpp::traits::input_parameter< const bool >::type allow_none(allow_noneSEXP);
+    Rcpp::traits::input_parameter< const bool >::type hold_domain(hold_domainSEXP);
+    Rcpp::traits::input_parameter< const bool >::type apply_ceiling(apply_ceilingSEXP);
+    rcpp_result_gen = Rcpp::wrap(lcw(fia, dbh, cr, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -340,8 +351,8 @@ static const R_CallMethodDef CallEntries[] = {
     {"_biometrics_utilities_Clark_Evans_R_circle", (DL_FUNC) &_biometrics_utilities_Clark_Evans_R_circle, 6},
     {"_biometrics_utilities_Hegyi", (DL_FUNC) &_biometrics_utilities_Hegyi, 6},
     {"_biometrics_utilities_Arney_CSI", (DL_FUNC) &_biometrics_utilities_Arney_CSI, 4},
-    {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 4},
-    {"_biometrics_utilities_mcw_species", (DL_FUNC) &_biometrics_utilities_mcw_species, 0},
+    {"_biometrics_utilities_mcw", (DL_FUNC) &_biometrics_utilities_mcw, 7},
+    {"_biometrics_utilities_lcw", (DL_FUNC) &_biometrics_utilities_lcw, 8},
     {"_biometrics_utilities_hd_fit", (DL_FUNC) &_biometrics_utilities_hd_fit, 4},
     {"_biometrics_utilities_hd_predict", (DL_FUNC) &_biometrics_utilities_hd_predict, 4},
     {"_biometrics_utilities_Glover_Hool", (DL_FUNC) &_biometrics_utilities_Glover_Hool, 4},

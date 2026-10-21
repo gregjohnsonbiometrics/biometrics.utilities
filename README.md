@@ -39,6 +39,7 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 ### Utilities
 
 * Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
+* Largest Crown Width Estimate ([lcw](#largest-crown-width-lcw))
 * Fit Height-DBH Curves ([hd_fit](#fit-height---dbh-curves-hd_fit))
 * Predict Height from DBH ([hd_predict](#fit-height---dbh-curves-hd_fit))
 
@@ -399,25 +400,55 @@ This version currently does not adjust for edge effects.
 
 ### Maximum Crown Width (`mcw`)
 
-`mcw( fia, dbh, imperial_units, default_fia )`
+`mcw( fia, dbh, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling )`
 
 where:
 
 - `fia` = FIA numeric species code (vector)
 - `dbh` = diameter at breast height (vector)
 - `imperial_units` = boolean where TRUE is imperial, FALSE is metric
-- `default_fia` = FIA species code to use if supplied `fia` code is not in parameter table.
+- `allow_donor` = boolean where TRUE (default) allows donor species fits; FALSE restricts the estimates to the 220 direct species estimates. 
+- `allow_none` = boolean where TRUE (default) returns estimates for all species with a warning naming species with borrowed parameters; FALSE refuses the species with `no_donor` codes (the softwood/hardwood population equation is used).
+- `hold_domain` = boolean where TRUE (default) restricts diameters to the fitting dataset domain; FALSE allows estimates for diameters outside the data domain. 
+- `apply_ceiling` = boolean where TRUE (default) restricts `mcw` estimates to defined maximums; FALSE accepts `mcw` estimates as-is.
 
-`mcw` uses publicly available parameter estimates for one of two maximum crown width estimatation functions. The equations are either two or three parameter
-equations of the following forms:
+`mcw` uses the following equation form:
 
-1: $\widehat{mcw} = A + B dbh + C dbh^2$, or
-
-2: $\widehat{mcw} = A dbh^B$
+$\widehat{mcw} = A dbh^B$
 
 `mcw` returns the maximum crown width for each tree in the input vectors in feet or meters depending on `imperial_units`.
 
-A helper function: `mcw_species()` is available to produce a `data.frame` of FIA species codes and species names with parameter estimates available.
+-------------
+
+### Largest Crown Width (`lcw`)
+
+`lcw( fia, dbh, cr, imperial_units, allow_donor, allow_none, hold_domain, apply_ceiling )`
+
+where:
+
+- `fia` = FIA numeric species code (vector)
+- `dbh` = diameter at breast height (vector)
+- `cr` = crown ratio (fraction of total height) (vector)
+- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+- `allow_donor` = boolean where TRUE (default) allows donor species fits; FALSE restricts the estimates to the 220 direct species estimates. 
+- `allow_none` = boolean where TRUE (default) returns estimates for all species with a warning naming species with borrowed parameters; FALSE refuses the species with `no_donor` codes (the softwood/hardwood population equation is used).
+- `hold_domain` = boolean where TRUE (default) restricts diameters to the fitting dataset domain; FALSE allows estimates for diameters outside the data domain. 
+- `apply_ceiling` = boolean where TRUE (default) restricts `mcw` estimates to defined maximums; FALSE accepts `mcw` estimates as-is.
+
+Estimates the largest stand grown crown width for trees using new FVS equations (Weiskittel, Marshall, Johnson 2026). 
+
+`lcw`, the stand grown crown width is not fit as its own allometry. It is a bounded fraction of the maximum crown width envelope,
+$lcw = mcw ratio$ 
+
+with
+
+$logit(ratio) = \beta_0 + \beta_1 cr + \beta_2 dbh$
+
+`ratio` is a Beta regression at $\tau = 0.50$ fit against the conifer/hardwood split `mcw` envelope. Since the `ratio` lies strictly in (0, 1), 
+`lcw` is below`mcw` for every species at every diameter.
+
+
+`lcw` returns the maximum crown width for each tree in the input vectors in feet or meters depending on `imperial_units`.
 
 -------------
 
