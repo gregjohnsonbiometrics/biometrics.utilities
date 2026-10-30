@@ -34,24 +34,20 @@ double compute_cch( const std::vector<int>    &species,
                     const std::vector<double> &dacb,         // distance above crown base to largest crown width (lcw)
                     const std::vector<double> &lcw,          // largest crown width of each tree
                     const std::vector<double> &expansion,
-                    const std::unordered_map<int,std::vector<double>> &parameters,   // three parameters of equation describing crown shape from base to tip by species
-                    const bool imperial )                    // (see _cwa() function for details.)
+                    const bool imperial )                    
 {
     size_t n = species.size();
 
     if( n == 0 || dbh.size() != n || height.size() != n || crown_length.size() != n || dacb.size() != n || lcw.size() != n ||
-        expansion.size() != n || parameters.size() == 0 )
+        expansion.size() != n )
         return NAN;
 
     double cch = 0.0;
     double cw;
-    double rp;
     double last_cw = -999.0 ;
     double last_dbh = -999.0;
     double last_height = -999.0;
     double last_crown_length = -999.0;
-
-    std::vector<double> default_parameters = {1.0,0.0,0.0};
 
     // crown area to percentage of acre constant
     const double area_conversion = 0.25 * PI / ( imperial ? 43560.0 : 10000.0 );
@@ -90,17 +86,8 @@ double compute_cch( const std::vector<int>    &species,
         }
         else if( ht > hlcw && ht < height[i] )
         {
-            // search height is above hlcw. Compute crown width above lcw
-
-            // compute relative position in crown
-            rp = (height[i] - ht) / (height[i] - hlcw);
-
-            // compute adjusted crown width (cwa is a function to compute crown width at a relative position in the crown)
-            try {
-                cw = _cwa( rp, lcw[i], dbh[i], height[i], parameters.at(species[i]) );
-            } catch( ... ) {
-                cw = _cwa( rp, lcw[i], dbh[i], height[i], default_parameters );
-            }
+            // compute adjusted crown width 
+            cw = compute_crown_profile( species[i], dbh[i], height[i], htlc, lcw[i], ht, imperial );
         }
         else
         {

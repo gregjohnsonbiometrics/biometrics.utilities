@@ -40,6 +40,8 @@ If you have suggestions for additional metrics, let me know ([Greg Johnson](mail
 
 * Maximum Crown Width Estimate ([mcw](#maximum-crown-width-mcw))
 * Largest Crown Width Estimate ([lcw](#largest-crown-width-lcw))
+* Crown Profile ([crown_profile](#crown-profile-crown_profile))
+* Crown Profile Vector ([crown_profile_v](#crown-profile-vector-crown_profile_v))
 * Fit Height-DBH Curves ([hd_fit](#fit-height---dbh-curves-hd_fit))
 * Predict Height from DBH ([hd_predict](#fit-height---dbh-curves-hd_fit))
 
@@ -76,8 +78,7 @@ where:
 - `dacb` = distance above crown base (vector)
 - `lcw` = largest crown width (vector)
 - `expansion` = tree factor to expand to per area basis (vector)
-- `parameters` = `data.frame` of 3 parameters for each species used in the `cwa` (crown width above) equation
-- `imperial_units` = boolean where TRUE is imperial, FALSE is metric
+- `imperial_units` = boolean where TRUE is imperial (default), FALSE is metric
 
 `cch`[^2] has been used in growth models to quantify crown competition (typically in conifers). `cch` is the crown area as a fraction of an acre or hectare (depending on units of measure) that lies in a horizontal plane tangential to the tip of the tree. A value of 1.0 for a tree would indicate that the other trees in the stand or plot have crown area at the tip of the subject tree that completely covers the area. In contrast to other existing implementations, this function *does not* use an interpolation table scheme.
 
@@ -85,19 +86,7 @@ where:
 
 `lcw` is an estimate for each tree of the largest crown width. This is usually estimated from species-specific prediction equations[^3].
 
-The `cwa` equation is used to compute the crown width at a point above the largest crown width. The point is usually described by its relative position (i.e. 0 = tip of the tree, 1 = at the largest crown width point). The form of the equation is:
-
-$cwa =  rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}$
-
-where: rp = relative position, and $\beta_0$ - $\beta_2$ are parameters to be supplied by the user in the `parameters` `data.frame`. The `data.frame` has the
-following members:
-
-- species : species code
-- b0 : $\beta_0$ parameter
-- b1 : $\beta_1$ parameter
-- b2 : $\beta_2$ parameter
-
-If a species is missing from the `data.frame`, a cone is used (1.0, 0.0, 0.0).
+Crown widths within the crown profile are estimated using `crown_profile()`.
 
 `cch` returns a vector of crown closures for each tree.
 
@@ -438,6 +427,7 @@ where:
 Estimates the largest stand grown crown width for trees using new FVS equations (Weiskittel, Marshall, Johnson 2026). 
 
 `lcw`, the stand grown crown width is not fit as its own allometry. It is a bounded fraction of the maximum crown width envelope,
+
 $lcw = mcw ratio$ 
 
 with
@@ -449,6 +439,58 @@ $logit(ratio) = \beta_0 + \beta_1 cr + \beta_2 dbh$
 
 
 `lcw` returns the maximum crown width for each tree in the input vectors in feet or meters depending on `imperial_units`.
+
+-------------
+
+### Crown Profile (`crown_profile`)
+
+`crown_profile( fia, dbh, height, hcb, lcw, h, imperial_units )`
+
+where:
+
+- `fia` = FIA numeric species code (vector)
+- `dbh` = diameter at breast height (vector)
+- `height` = total height (vector)
+- `hcb` = height to crown base (vector)
+- `lcw` = largest crown width (vector)
+- `h` = height above ground to compute crown width
+- `imperial_units` = boolean where TRUE is imperial (default), FALSE is metric
+
+Estimates the crown width at a specified height above ground (`h`). The function uses an equation for relative crown shape:
+ 
+$cw_h = lcw (1 - z^x)^(1/y)$
+ 
+with z running from 0 at the widest point in the crown scaled by `lcw` to 1 at the tip, x and y are species-specific parameters, 
+and a per species rule for where the widest point sits. Any specie without its own profile parameters (currently only Douglas-fir, 
+western hemlock, and red alder have parameters) falls back to a softwood or hardwood default.
+
+`crown_profile` returns a vector of crown widths at height `h` for each tree. Zero is returned if `h` is below `hcb`.
+
+-------------
+
+### Crown Profile Vector (`crown_profile_v`)
+
+`crown_profile( fia, dbh, height, hcb, lcw, h, imperial_units )`
+
+where:
+
+- `fia` = FIA numeric species code 
+- `dbh` = diameter at breast height 
+- `height` = total height 
+- `hcb` = height to crown base 
+- `lcw` = largest crown width 
+- `h` = height above ground to compute crown width (vector)
+- `imperial_units` = boolean where TRUE is imperial (default), FALSE is metric
+
+Estimates the crown width at a specified heights above ground (`h`). The function uses the equation for relative crown shape:
+ 
+$cw_h = lcw (1 - z^x)^(1/y)$
+ 
+with z running from 0 at the widest point in the crown scaled by `lcw` to 1 at the tip, x and y are species-specific parameters, 
+and a per species rule for where the widest point sits. Any specie without its own profile parameters (currently only Douglas-fir, 
+western hemlock, and red alder have parameters) falls back to a softwood or hardwood default.
+
+`crown_profile_v` returns a vector of crown widths for each height `h` for the tree. Zero is returned if `h` is below `hcb`.
 
 -------------
 

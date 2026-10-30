@@ -366,3 +366,100 @@ std::vector<double> compute_glover_hool( const std::vector<double> &dbh,
 
     return G;
 }
+
+
+// upper-crown exponents (x, y). ORGANON rows are the refit; SW and HW are the
+// shipped forestCI defaults (gothic and ellipsoid).
+
+const std::unordered_map<int, std::pair<double, double>> known_shape = {{
+    { 202, { 1.099, 1.258 } },
+    { 263, { 0.710, 1.678 } },
+    { 352, { 0.854, 1.957 } }
+    }};
+
+const std::unordered_map<int, std::pair<double, double>> default_shape = {{
+    {   0, { 3.000, 1.000 } }, // softwood
+    {   1, { 3.000, 3.000 } }  // hardwood
+    }};
+
+std::pair<double, double> get_shape( int fia ) 
+{
+    std::pair<double, double> s;
+    
+    try {
+        s =  known_shape.at( fia );
+    } catch( std::exception &e ) {
+        s = default_shape.at( fia < 300 ? 0 : 1 );
+    }
+    
+    return s;
+}
+
+// widest-point rule: proportion of crown length above crown base at which
+// the crown is widest (0 = at crown base). 
+
+double widest_point( int fia,
+                     double dbh,
+                     double height,
+                     double crown_length,
+                     bool imperial_units )
+{
+    double lcl_rel = 0.0;
+    
+    double to_ft = imperial_units ? 1.0 : 3.280840;
+    double to_in = imperial_units ? 1.0 : 0.3937008;
+    
+    switch( fia ) {
+    case 202: //  Douglas-fir: Hann and Mainwaring 2026, Eq 20
+        lcl_rel = 1.0 - std::exp( -0.699472314 - 0.548622967 * std::sqrt( dbh * to_in ) +
+            0.00962202678 * height * to_ft );
+        
+        lcl_rel = std::min( std::max( 1.0 - lcl_rel, 0.0 ), 0.999 );
+        break;
+        
+    case 263: // Western Hemlock: Marshall et al. 2003, Eq 6
+        lcl_rel = 0.355270;
+        break;
+        
+    case 352: // red alder Hann et al. 2011, Table 6.2
+        lcl_rel = 0.63619616 * std::exp( -1.2180562 * std::pow( (1.0 - height * to_ft / 140.0 ), 3.0 ) );
+        lcl_rel = std::min( std::max( lcl_rel, 0.0 ), 0.999 );
+        break;
+        
+    default: 
+        if( fia < 300 )
+            lcl_rel = 0.20; // forestCI softwood default
+    else
+        lcl_rel = 0.40; // forestCI hardwood default
+    }
+    
+    return lcl_rel;
+}
+
+
+double compute_crown_profile( 
+                      const int fia, 
+                      const double dbh, 
+                      const double height,
+                      const double hcb, 
+                      const double lcw,
+                      const double h, 
+                      const bool imperial_units ) 
+{
+    // compute crown length
+    double cl = height - hcb;
+    
+    // get widest point (relative) in crown ( 0 is base, 1 is tip )
+    double w = widest_point( fia, dbh, height, cl, imperial_units );
+    
+    // height of largest crown width
+    double hlcw = hcb + w * cl;
+    
+    double z = std::min( std::max( (h - hlcw) / (height - hlcw), 0.0 ), 1.0 );
+    auto [x, y] = get_shape( fia );
+    
+    // compute crown width at h
+    double cwa = (h < hlcw) ? 0.0 : lcw * std::pow( std::max( 1.0 - std::pow( z, x ), 0.0 ), ( 1.0 / y ) );
+    
+    return cwa;
+}

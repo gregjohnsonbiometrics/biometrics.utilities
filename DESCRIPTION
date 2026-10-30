@@ -1,7 +1,7 @@
 Package: biometrics.utilities
 Type: Package
 Title: Efficient biometric calculations for R.
-Version: 1.2
+Version: 1.21
 Date: 2026-10-20
 Author: Greg Johnson, David Marshall, Aaron Weiskittel
 Maintainer: Greg Johnson <greg@nosnhoj.org>

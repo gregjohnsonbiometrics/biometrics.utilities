@@ -114,7 +114,6 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //' @param dacb            : double | vector of distance above crown base to largest width for each tree
 //' @param lcw             : double | vector of largest crown width for each tree
 //' @param expansion       : double | vector of expansion factors 
-//' @param parameters      : data.frame | data.frame of parameters by species (see below)
 //' @param imperial_units  : bool   | TRUE = imperial (default), FALSE = metric
 //'
 //' @description 
@@ -122,21 +121,6 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //' plane tangential to the tip of the tree.
 //' 
 //' cch() depends on \code{dacb} and \code{lcw} which must be estimated for each tree independently (normally species and size dependent).
-//' 
-//' The \code{parameters} \code{data.frame} contains species-specific coefficients for an equation that adjusts \code{lcw} for the position within the crown of the form:
-//'
-//' \eqn{adjustment = rp^{(\beta_0 + \beta_1 rp^{0.5} + \beta_2 height / dbh)}}
-//'
-//' where \code{rp} is the relative position in the crown, and \code{adjustment} is the estimated percentage of the \code{lcw} at that point
-//' in the crown. The \code{parameters} are the \eqn{\beta} values in the equation. A simple cone can be created by a \code{parameters} 
-//' vector of c(1.0,0.0,0.0) and is the default if species-specific parameters are not found. The \code{data.frame} has the following members:
-//'
-//' \itemize{
-//'    \item species : species code
-//'    \item b0      : \eqn{\beta_0} parameter
-//'    \item b1      : \eqn{\beta_1} parameter
-//'    \item b2      : \eqn{\beta_2} parameter
-//' }
 //'
 //' @return
 //' A vector of \code{cch} values for each tree.
@@ -145,29 +129,19 @@ std::vector<double> ccfl( const std::vector<double> dbh,
 //' data(treelist)
 //' library( dplyr )
 //'
-//' # use Hann's (1998) largest crown width equations Douglas-fir, western hemlock, bigleaf maple, and red alder
-//' lcw.parms <- data.frame( species=c(202,263,312,351), 
-//'                          b0=c(0.0,         0.0, 0.0,      0.3227140 ),
-//'                          b1=c(0.004363240, 0.0, 0.0,      0.0       ),
-//'                          b2=c(0.6020020,   0.0, 1.470180, 0.0       ))
-//'
 //' # estimate distance above crown base: use Hann 1999 for Douglas-fir, Marshall et al. 2003 for western hemlock, and assuming 0.0 for 
 //' # bigleaf maple and red alder
 //' dacb.parms <- data.frame( species=c(202,263,312,351), 
 //'                          d0=c(0.06200, 0.355270, 0.0, 0.0 ) )
 //'
-//' # use crown profile parameters for Douglas-fir
-//' cch.parms <- data.frame( species=202, b0=0.929973, b1=-0.1352120, b2=-0.0157579 )
-//'
-//' temp <- treelist %>% mutate( mcw.hat=mcw( species, dbh ) ) %>%
-//'             inner_join( lcw.parms, by="species" ) %>%
+//' temp <- treelist %>% mutate( crown_length = height - htlc,
+//'                              cr = crown_length/height, 
+//'                              mcw.hat=mcw( species, dbh ), 
+//'                              lcw.hat = lcw( species, dbh, cr ) ) %>%
 //'             inner_join( dacb.parms, by="species" ) %>%
-//'             mutate( crown_length = height - htlc,
-//'                     cr = crown_length/height,
-//'                     lcw = mcw.hat * cr^(b0+b1*crown_length+b2*(dbh/height)),
-//'                     dacb = d0 * crown_length )
+//'             mutate( dacb = d0 * crown_length )
 //'                     
-//' cch( temp$species, temp$dbh, temp$height,  temp$crown_length, temp$dacb, temp$lcw, temp$tpa, cch.parms )
+//' cch( temp$species, temp$dbh, temp$height, temp$crown_length, temp$dacb, temp$lcw.hat, temp$tpa )
 //'
 //' @export
 // [[Rcpp::export]]
@@ -178,22 +152,13 @@ std::vector<double> cch( const std::vector<int>    &species,
                          const std::vector<double> &dacb,
                          const std::vector<double> &lcw,
                          const std::vector<double> &expansion,
-                         Rcpp::DataFrame &parameters,
                          const bool imperial_units = true )
 {
     std::vector<double> cch_vector;
-    std::unordered_map<int, std::vector<double>> cch_parms;
-    std::vector<int> pspecies = parameters[0];
-    std::vector<double > b0 = parameters[1];
-    std::vector<double > b1 = parameters[2];
-    std::vector<double > b2 = parameters[3];
-
-    for( int i = 0; i < parameters.nrow(); ++i )
-        cch_parms[pspecies[i]] = {b0[i],b1[i],b2[i]};
 
     try {
         for( auto &ht : height )
-            cch_vector.push_back( compute_cch( species, ht, dbh, height, crown_length, dacb, lcw, expansion, cch_parms, imperial_units ) );
+            cch_vector.push_back( compute_cch( species, ht, dbh, height, crown_length, dacb, lcw, expansion, imperial_units ) );
     } catch( ... ) {
         throw;
     }
@@ -1068,4 +1033,122 @@ Rcpp::DataFrame APA_Polygons(
         Rcpp::Named("tree_id") = id,
         Rcpp::Named("v_x")  = v_poly_x,
         Rcpp::Named("v_y")  = v_poly_y );
-}                                         
+}
+
+
+//' @title crown_profile() Estimates the crown width for each tree for a specified height above ground.
+//' @name crown_profile
+//'
+//' @param fia            : int    | vector of FIA species code
+//' @param dbh            : double | vector of diameter at breast height
+//' @param height         : double | vector of total height
+//' @param hcb            : double | vector of height to crown base
+//' @param lcw            : double | vector of largest crown width
+//' @param h              : double | height compute crown width
+//' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+//'
+//' @description
+//' Estimates the crown width at a specified height above ground. The function uses the equation for relative crown shape:
+//'  
+//' \eqn{cw_h = lcw (1 - z^x)^(1/y)}
+//' 
+//' with z running from 0 at the widest point in the crown scaled by lcw to 1 at the tip, x and y are species-specific parameters, 
+//' and a per species rule for where the widest point sits. Any specie without its own profile parameters (currently only Douglas-fir, 
+//' western hemlock, and red alder have parameters) falls back to a softwood or hardwood default.
+//'
+//' @return
+//' Returns a numeric vector with crown width at height h for each tree in the original tree order (unsorted). Zero is returned for values of h
+//' that are below a tree's height to crown base.
+//'
+//' @examples
+//' # compute crown width at 
+//' fia <- c(202,251,43)
+//' dbh <- c(10,10,10)
+//' height <- c(60,60,60)
+//' hcb <- c(20,20,20) 
+//' cr <- (1-hcb)/height
+//' lcw <- lcw( fia, dbh, cr )
+//' h <- 40
+//' 
+//' crown_profile( fia, dbh, height, hcb, lcw, h )
+//'
+//' @export
+// [[Rcpp::export]]
+std::vector<double> crown_profile( 
+                      const std::vector<int>    &fia, 
+                      const std::vector<double> &dbh, 
+                      const std::vector<double> &height,
+                      const std::vector<double> &hcb, 
+                      const std::vector<double> &lcw,
+                      const double &h, 
+                      const bool imperial_units = true )
+{
+    std::vector<double> cwa( fia.size(), 0.0 );
+    
+    for( size_t i = 0; i < fia.size(); ++i )
+    {
+        cwa[i] = compute_crown_profile( fia[i], dbh[i], height[i], hcb[i], lcw[i], h, imperial_units );
+    }
+    
+    return cwa;
+}
+ 
+ 
+//' @title crown_profile_v() Estimates the crown width for a tree for a vector of heights above grown
+//' @name crown_profile_v
+//'
+//' @param fia            : int    | FIA species code
+//' @param dbh            : double | diameter at breast height
+//' @param height         : double | total height
+//' @param hcb            : double | height to crown base
+//' @param lcw            : double | largest crown width
+//' @param h              : double | vector of height compute crown width
+//' @param imperial_units : bool   | TRUE = imperial (default), FALSE = metric
+//'
+//' @description
+//' Estimates the crown width for a vector of heights above ground. The function uses the equation for relative crown shape:
+//'  
+//' \eqn{cw_h = lcw (1 - z^x)^(1/y)}
+//' 
+//' with z running from 0 at the widest point in the crown scaled by lcw to 1 at the tip, x and y are species-specific parameters, 
+//' and a per species rule for where the widest point sits. Any specie without its own profile parameters (currently only Douglas-fir, 
+//' western hemlock, and red alder have parameters) falls back to a softwood or hardwood default.
+//'
+//' @return
+//' Returns a numeric vector with crown width at each height h in the original order (unsorted). Zero is returned for values of h
+//' that are below a tree's height to crown base.
+//'
+//' @examples
+//' # compute crown width at 
+//' fia <- 202
+//' dbh <- 10
+//' height <- 60
+//' hcb <- 20
+//' cr <- (1-hcb)/height
+//' lcw <- lcw( fia, dbh, cr )
+//' h <- seq( 0, height, 1)
+//' 
+//' crown_profile_v( fia, dbh, height, hcb, lcw, h )
+//'
+
+ //' @export
+ // [[Rcpp::export]]
+ std::vector<double> crown_profile_v( 
+         const int    &fia, 
+         const double &dbh, 
+         const double &height,
+         const double &hcb, 
+         const double &lcw,
+         const std::vector<double> &h, 
+         const bool imperial_units = true )
+ {
+     std::vector<double> cwa( h.size(), 0.0 );
+     
+     for( size_t i = 0; i < h.size(); ++i )
+     {
+         cwa[i] = compute_crown_profile( fia, dbh, height, hcb, lcw, h[i], imperial_units );
+     }
+     
+     return cwa;
+ }
+

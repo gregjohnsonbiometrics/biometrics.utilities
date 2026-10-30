@@ -68,7 +68,6 @@ double compute_cch( const std::vector<int>    &species,
                     const std::vector<double> &dacb,        
                     const std::vector<double> &lcw,
                     const std::vector<double> &expansion,
-                    const std::unordered_map<int,std::vector<double>> &parameters,
                     const bool imperial );
 
 double compute_dominant_dbh( const std::vector<double> &height,
@@ -175,5 +174,14 @@ std::vector<std::vector<Point>> get_voronoi_polygons(
                                     const std::vector<double> &dbh,
                                     const std::array<Point,2> &plot_corners,
                                     const bool weighted );
+
+double compute_crown_profile( 
+                      const int fia, 
+                      const double dbh, 
+                      const double height,
+                      const double hcb, 
+                      const double lcw,
+                      const double h, 
+                      const bool imperial_units ); 
 
 #endif
